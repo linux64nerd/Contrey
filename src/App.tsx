@@ -6,6 +6,7 @@ import { TripProvider } from './context/TripContext';
 import { LandingPage } from './pages/LandingPage';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { MapRecommendationsPage } from './pages/MapRecommendationsPage';
 import { ProtectedRoute } from './components/layout/ProtectedRoute';
 import { AuthModal } from './components/auth/AuthModal';
 import { Toaster } from 'sonner';
@@ -24,6 +25,14 @@ const AppContent: React.FC = () => {
             element={
               <ProtectedRoute>
                 <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/map"
+            element={
+              <ProtectedRoute>
+                <MapRecommendationsPage />
               </ProtectedRoute>
             }
           />

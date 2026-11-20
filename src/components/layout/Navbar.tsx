@@ -71,13 +71,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuth }) => {
             Live Preview
           </a>
           {isAuthenticated && (
-            <Link
-              to="/dashboard"
-              className="text-emerald-700 font-semibold flex items-center gap-1 hover:text-emerald-800 transition-colors"
-            >
-              <LayoutDashboard className="w-4 h-4" />
-              <span>Dashboard</span>
-            </Link>
+            <>
+              <Link
+                to="/dashboard"
+                className="text-emerald-700 font-semibold flex items-center gap-1 hover:text-emerald-800 transition-colors"
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                <span>Dashboard</span>
+              </Link>
+              <Link
+                to="/map"
+                className="text-slate-600 font-semibold flex items-center gap-1 hover:text-emerald-700 transition-colors"
+              >
+                <Compass className="w-4 h-4 text-emerald-600" />
+                <span>Travel Map</span>
+              </Link>
+            </>
           )}
         </nav>
 

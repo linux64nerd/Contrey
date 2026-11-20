@@ -12,7 +12,8 @@ import { BalanceBarChart } from '../components/dashboard/BalanceBarChart';
 import { SpendingTrendPlot } from '../components/dashboard/SpendingTrendPlot';
 import { SettlementList } from '../components/dashboard/SettlementList';
 import { Expense } from '../types/expense';
-import { Plus } from 'lucide-react';
+import { Plus, Compass } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export const DashboardPage: React.FC = () => {
   const {
@@ -125,11 +126,19 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2">
+            <Link
+              to="/map"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold shadow-sm transition-all"
+            >
+              <Compass className="w-4 h-4 text-emerald-600" />
+              <span>Travel Map & Spots</span>
+            </Link>
+
             <button
               onClick={handleOpenEditTrip}
               className="px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition-all"
             >
-              Edit Trip Settings
+              Edit Trip
             </button>
 
             <button
