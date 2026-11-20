@@ -1,23 +1,34 @@
 import React from 'react';
 import { Settlement, Traveler } from '../../types/trip';
 import { useCurrency } from '../../context/CurrencyContext';
-import { RefreshCw, CheckCircle2, Clock, ArrowRight } from 'lucide-react';
+import { RefreshCw, CheckCircle2, Clock, ArrowRight, MessageSquare, QrCode } from 'lucide-react';
+import { generateSettlementWhatsAppUrl } from '../../utils/whatsapp';
 
 interface SettlementListProps {
   settlements: Settlement[];
   travelers: Traveler[];
   baseCurrency: string;
+  tripName?: string;
   onToggleSettlement: (settlementId: string) => void;
+  onOpenQr?: (settlement: Settlement, debtor: Traveler, creditor: Traveler) => void;
 }
 
 export const SettlementList: React.FC<SettlementListProps> = ({
   settlements,
   travelers,
   baseCurrency,
+  tripName = 'Trip',
   onToggleSettlement,
+  onOpenQr,
 }) => {
   const { currentCurrency, format, convertAmount } = useCurrency();
   const travelerMap = new Map(travelers.map((t) => [t.id, t]));
+
+  const symbols: Record<string, string> = {
+    INR: '₹',
+    EUR: '€',
+    USD: '$',
+  };
 
   return (
     <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4">
@@ -51,6 +62,19 @@ export const SettlementList: React.FC<SettlementListProps> = ({
             const creditor = travelerMap.get(s.toTravelerId);
             const convertedAmount = convertAmount(s.amount, baseCurrency as any, currentCurrency);
 
+            const whatsAppUrl =
+              debtor && creditor
+                ? generateSettlementWhatsAppUrl(
+                    debtor.phone,
+                    debtor.name,
+                    creditor.name,
+                    convertedAmount,
+                    symbols[currentCurrency] || currentCurrency,
+                    creditor.upiId,
+                    tripName
+                  )
+                : '#';
+
             return (
               <div
                 key={s.id}
@@ -79,16 +103,16 @@ export const SettlementList: React.FC<SettlementListProps> = ({
                       <span className="text-emerald-700">{creditor?.name || 'Traveler B'}</span>
                     </div>
                     <div className="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
-                      <span>UPI: {creditor?.upiId || 'Not configured'}</span>
+                      <span>UPI: {creditor?.upiId || 'Not set'}</span>
                       <span>•</span>
-                      <span>Phone: {debtor?.phone || 'N/A'}</span>
+                      <span>WhatsApp: {debtor?.phone || 'N/A'}</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Amount and Status Actions */}
-                <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200">
-                  <div className="text-right">
+                {/* Amount, WhatsApp, QR, and Mark Paid Actions */}
+                <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2.5 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200">
+                  <div className="text-right mr-1">
                     <span className="text-base font-black text-slate-900 block">
                       {format(convertedAmount)}
                     </span>
@@ -98,6 +122,30 @@ export const SettlementList: React.FC<SettlementListProps> = ({
                       </span>
                     )}
                   </div>
+
+                  {/* 1-Click WhatsApp Button */}
+                  <a
+                    href={whatsAppUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="p-2 rounded-xl bg-green-50 hover:bg-green-100 text-green-700 border border-green-200 text-xs font-bold flex items-center gap-1 transition-colors"
+                    title="Send Reminder via WhatsApp"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5 text-green-600" />
+                    <span className="hidden sm:inline">WhatsApp</span>
+                  </a>
+
+                  {/* Instant QR Payment Modal Trigger */}
+                  {debtor && creditor && onOpenQr && (
+                    <button
+                      onClick={() => onOpenQr(s, debtor, creditor)}
+                      className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 text-xs font-bold flex items-center gap-1 transition-colors"
+                      title="Open Instant QR Code"
+                    >
+                      <QrCode className="w-3.5 h-3.5 text-slate-700" />
+                      <span className="hidden sm:inline">Pay QR</span>
+                    </button>
+                  )}
 
                   {/* Toggle Settled Status */}
                   <button

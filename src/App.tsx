@@ -2,7 +2,8 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { CurrencyProvider } from './context/CurrencyContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { TripProvider } from './context/TripContext';
+import { TripProvider, useTrip } from './context/TripContext';
+import { NotificationProvider } from './context/NotificationContext';
 import { LandingPage } from './pages/LandingPage';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
@@ -13,9 +14,10 @@ import { Toaster } from 'sonner';
 
 const AppContent: React.FC = () => {
   const { isAuthModalOpen, closeAuthModal, authModalTab } = useAuth();
+  const { activeTrip, activeTripExpenses } = useTrip();
 
   return (
-    <>
+    <NotificationProvider activeTrip={activeTrip} expenses={activeTripExpenses}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
@@ -48,7 +50,7 @@ const AppContent: React.FC = () => {
       />
 
       <Toaster position="top-right" richColors />
-    </>
+    </NotificationProvider>
   );
 };
 

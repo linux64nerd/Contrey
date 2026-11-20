@@ -11,8 +11,12 @@ import { CategoryDonutChart } from '../components/dashboard/CategoryDonutChart';
 import { BalanceBarChart } from '../components/dashboard/BalanceBarChart';
 import { SpendingTrendPlot } from '../components/dashboard/SpendingTrendPlot';
 import { SettlementList } from '../components/dashboard/SettlementList';
+import { UrgencyBanner } from '../components/dashboard/UrgencyBanner';
+import { SettlementQrModal } from '../components/qr/SettlementQrModal';
+import { TripShareQrModal } from '../components/qr/TripShareQrModal';
 import { Expense } from '../types/expense';
-import { Plus, Compass } from 'lucide-react';
+import { Settlement, Traveler } from '../types/trip';
+import { Plus, Compass, Share2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const DashboardPage: React.FC = () => {
@@ -35,6 +39,15 @@ export const DashboardPage: React.FC = () => {
   const [editingTrip, setEditingTrip] = useState<any>(null);
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState<boolean>(false);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+
+  // QR Modals state
+  const [activeQrSettlement, setActiveQrSettlement] = useState<{
+    settlement: Settlement;
+    debtor: Traveler;
+    creditor: Traveler;
+  } | null>(null);
+
+  const [isTripShareQrOpen, setIsTripShareQrOpen] = useState<boolean>(false);
 
   // Active view tab: 'overview' | 'expenses' | 'settlements'
   const [activeTab, setActiveTab] = useState<'overview' | 'expenses' | 'settlements'>('overview');
@@ -81,7 +94,10 @@ export const DashboardPage: React.FC = () => {
     <div className="min-h-screen flex flex-col bg-slate-50 selection:bg-emerald-500 selection:text-white">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+        {/* High-Priority Smart Urgency Spend Alert Banner */}
+        <UrgencyBanner />
+
         {/* Trip Space Header & Switcher */}
         <TripSelector
           trips={trips}
@@ -125,14 +141,25 @@ export const DashboardPage: React.FC = () => {
             </button>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Link
               to="/map"
               className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold shadow-sm transition-all"
             >
               <Compass className="w-4 h-4 text-emerald-600" />
-              <span>Travel Map & Spots</span>
+              <span>Travel Map</span>
             </Link>
+
+            {activeTrip && (
+              <button
+                onClick={() => setIsTripShareQrOpen(true)}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold shadow-sm transition-all"
+                title="Generate Trip Share Pass QR"
+              >
+                <Share2 className="w-4 h-4 text-slate-500" />
+                <span>Share QR</span>
+              </button>
+            )}
 
             <button
               onClick={handleOpenEditTrip}
@@ -192,7 +219,11 @@ export const DashboardPage: React.FC = () => {
               settlements={settlementResult.settlements}
               travelers={activeTrip.travelers}
               baseCurrency={activeTrip.baseCurrency}
+              tripName={activeTrip.name}
               onToggleSettlement={toggleSettlementStatus}
+              onOpenQr={(settlement, debtor, creditor) =>
+                setActiveQrSettlement({ settlement, debtor, creditor })
+              }
             />
 
             {/* Quick Expenses Table */}
@@ -251,7 +282,11 @@ export const DashboardPage: React.FC = () => {
               settlements={settlementResult.settlements}
               travelers={activeTrip.travelers}
               baseCurrency={activeTrip.baseCurrency}
+              tripName={activeTrip.name}
               onToggleSettlement={toggleSettlementStatus}
+              onOpenQr={(settlement, debtor, creditor) =>
+                setActiveQrSettlement({ settlement, debtor, creditor })
+              }
             />
           </div>
         )}
@@ -279,6 +314,28 @@ export const DashboardPage: React.FC = () => {
           travelers={activeTrip.travelers}
           defaultCurrency={activeTrip.baseCurrency}
           initialExpense={editingExpense}
+        />
+      )}
+
+      {/* Settlement QR Modal */}
+      {activeQrSettlement && activeTrip && (
+        <SettlementQrModal
+          isOpen={!!activeQrSettlement}
+          onClose={() => setActiveQrSettlement(null)}
+          settlement={activeQrSettlement.settlement}
+          debtor={activeQrSettlement.debtor}
+          creditor={activeQrSettlement.creditor}
+          baseCurrency={activeTrip.baseCurrency}
+        />
+      )}
+
+      {/* Trip Share QR Modal */}
+      {isTripShareQrOpen && activeTrip && (
+        <TripShareQrModal
+          isOpen={isTripShareQrOpen}
+          onClose={() => setIsTripShareQrOpen(false)}
+          trip={activeTrip}
+          totalSpent={settlementResult.totalSpent}
         />
       )}
     </div>

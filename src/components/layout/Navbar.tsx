@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useAuth } from '../../context/AuthContext';
+import { NotificationCenter } from '../notifications/NotificationCenter';
 import { CurrencyCode } from '../../types/currency';
 
 interface NavbarProps {
@@ -117,6 +118,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuth }) => {
               ))}
             </div>
           </div>
+
+          {/* In-App & Push Notification Center */}
+          <NotificationCenter />
 
           {/* Authenticated State vs Guest State */}
           {isAuthenticated && user ? (
