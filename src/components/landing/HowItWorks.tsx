@@ -35,7 +35,7 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ onGetStarted }) => {
             Frictionless Flow
           </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            How TripMate Works
+            How Contrey Works
           </h2>
           <p className="text-base text-slate-600">
             From arrival to settlement, manage your group funds in three effortless steps.

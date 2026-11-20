@@ -8,7 +8,7 @@ import { Toaster } from 'sonner';
 const LoginPlaceholder: React.FC = () => (
   <div className="min-h-screen flex items-center justify-center bg-slate-100 p-4">
     <div className="p-8 bg-white rounded-2xl shadow-xl max-w-md w-full text-center space-y-4">
-      <h2 className="text-2xl font-bold text-slate-900">TripMate Authentication Gate</h2>
+      <h2 className="text-2xl font-bold text-slate-900">Contrey Authentication Gate</h2>
       <p className="text-sm text-slate-600">
         Multi-method authentication (Phone + OTP, Email, Google, User ID) is arriving in Checkpoint 2!
       </p>

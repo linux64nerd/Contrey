@@ -27,10 +27,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuth }) => {
           <div>
             <div className="flex items-center gap-1.5">
               <span className="font-extrabold text-xl tracking-tight text-slate-900">
-                Trip<span className="text-emerald-600">Mate</span>
-              </span>
-              <span className="px-1.5 py-0.5 text-[10px] font-semibold bg-emerald-100 text-emerald-800 rounded-full">
-                PRO
+                Con<span className="text-emerald-600">trey</span>
               </span>
             </div>
             <p className="text-[10px] text-slate-500 tracking-wide font-medium hidden sm:block">

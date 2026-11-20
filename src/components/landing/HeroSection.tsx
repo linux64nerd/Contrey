@@ -32,7 +32,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onGetStarted }) => {
 
             {/* Subheading */}
             <p className="text-base sm:text-lg text-slate-600 max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
-              Say goodbye to messy spreadsheets and awkward money chats. TripMate automatically converts currencies, calculates minimal transactions, guides your stay with nearby map recommendations, and alerts you before you overspend.
+              Say goodbye to messy spreadsheets and awkward money chats. Contrey automatically converts currencies, calculates minimal transactions, guides your stay with nearby map recommendations, and alerts you before you overspend.
             </p>
 
             {/* Action Buttons */}

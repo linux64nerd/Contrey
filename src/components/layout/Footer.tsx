@@ -13,7 +13,7 @@ export const Footer: React.FC = () => {
                 <Plane className="w-4 h-4 -rotate-45" />
               </div>
               <span className="font-extrabold text-lg text-white">
-                Trip<span className="text-emerald-400">Mate</span>
+                Con<span className="text-emerald-400">trey</span>
               </span>
             </div>
             <p className="text-sm text-slate-400 max-w-sm leading-relaxed">
@@ -63,7 +63,7 @@ export const Footer: React.FC = () => {
 
         <div className="pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
           <p className="flex items-center gap-1 text-slate-500">
-            © {new Date().getFullYear()} TripMate. Crafted with <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" /> for travelers worldwide.
+            © {new Date().getFullYear()} Contrey. Crafted with <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" /> for travelers worldwide.
           </p>
           <div className="flex items-center gap-4 text-slate-400">
             <a href="https://github.com" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-white transition-colors">
