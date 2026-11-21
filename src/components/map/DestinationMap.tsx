@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from 'react-le
 import L from 'leaflet';
 import { PlaceRecommendation, PlaceCategory } from '../../types/map';
 import { useCurrency } from '../../context/CurrencyContext';
+import { isValidCoordinate } from '../../services/geocodingService';
 
 // Helper component to programmatically pan/zoom map
 const MapController: React.FC<{ center: [number, number]; selectedPlace: PlaceRecommendation | null }> = ({
@@ -12,9 +13,9 @@ const MapController: React.FC<{ center: [number, number]; selectedPlace: PlaceRe
   const map = useMap();
 
   useEffect(() => {
-    if (selectedPlace) {
+    if (selectedPlace && isValidCoordinate(selectedPlace.lat, selectedPlace.lng)) {
       map.flyTo([selectedPlace.lat, selectedPlace.lng], 16, { animate: true, duration: 1.2 });
-    } else {
+    } else if (isValidCoordinate(center[0], center[1])) {
       map.flyTo(center, 14, { animate: true, duration: 1.2 });
     }
   }, [center, selectedPlace, map]);
@@ -91,17 +92,25 @@ export const DestinationMap: React.FC<DestinationMapProps> = ({
   onSelectPlace,
 }) => {
   const { currentCurrency, format, convertAmount } = useCurrency();
-  const radiusMeters = radiusKm * 1000;
+
+  // Validate center coordinate to prevent Leaflet Invalid LatLng crash
+  const safeCenter: [number, number] =
+    center && isValidCoordinate(center[0], center[1])
+      ? center
+      : [15.2993, 74.1240];
+
+  const radiusMeters = Math.max(100, Math.min(50000, (radiusKm || 2) * 1000));
+  const validPlaces = (places || []).filter((p) => isValidCoordinate(p.lat, p.lng));
 
   return (
     <div className="relative w-full h-[450px] sm:h-[550px] rounded-[10px] overflow-hidden border border-[rgba(0,0,0,0.08)]">
       <MapContainer
-        center={center}
+        center={safeCenter}
         zoom={14}
         scrollWheelZoom={false}
         className="w-full h-full z-0"
       >
-        <MapController center={center} selectedPlace={selectedPlace} />
+        <MapController center={safeCenter} selectedPlace={selectedPlace} />
 
         {/* OpenStreetMap standard free tiles */}
         <TileLayer
@@ -111,7 +120,7 @@ export const DestinationMap: React.FC<DestinationMapProps> = ({
 
         {/* Dynamic Radius Circle in Notion Blue tint */}
         <Circle
-          center={center}
+          center={safeCenter}
           radius={radiusMeters}
           pathOptions={{
             color: '#0075de',
@@ -123,7 +132,7 @@ export const DestinationMap: React.FC<DestinationMapProps> = ({
         />
 
         {/* Center / Destination Marker */}
-        <Marker position={center} icon={createCustomPin('center')}>
+        <Marker position={safeCenter} icon={createCustomPin('center')}>
           <Popup>
             <div className="text-xs p-1">
               <span className="font-bold text-[#000000] block">{destinationName}</span>
@@ -135,7 +144,7 @@ export const DestinationMap: React.FC<DestinationMapProps> = ({
         </Marker>
 
         {/* Nearby Recommendation Pins */}
-        {places.map((place) => {
+        {validPlaces.map((place) => {
           const isSelected = selectedPlace?.id === place.id;
           const convertedPrice = convertAmount(place.estimatedPrice, 'EUR', currentCurrency);
 

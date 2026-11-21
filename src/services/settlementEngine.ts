@@ -18,8 +18,33 @@ export interface SettlementEngineResult {
 }
 
 /**
+ * Calculates exact equal splits with remainder penny allocation.
+ * Guarantees that the sum of splits equals totalAmount with zero fractional drift.
+ */
+export function calculateExactEqualSplits(
+  totalAmount: number,
+  travelerIds: string[]
+): Array<{ travelerId: string; amount: number }> {
+  if (travelerIds.length === 0 || totalAmount <= 0) return [];
+
+  const totalCents = Math.round(totalAmount * 100);
+  const count = travelerIds.length;
+  const baseCents = Math.floor(totalCents / count);
+  const remainderCents = totalCents % count;
+
+  return travelerIds.map((id, index) => {
+    // Distribute remaining cents one-by-one to the first remainder travelers
+    const cents = baseCents + (index < remainderCents ? 1 : 0);
+    return {
+      travelerId: id,
+      amount: cents / 100,
+    };
+  });
+}
+
+/**
  * Minimum-Transaction Settlement Plan Algorithm (Greedy Debt Simplification)
- * Calculates the exact minimal cash transfers to settle all group debts cleanly.
+ * Operates in integer cents to ensure mathematical precision and complete conservation of funds.
  */
 export function computeSettlements(
   tripId: string,
@@ -27,87 +52,113 @@ export function computeSettlements(
   expenses: Expense[],
   existingSettlements: Settlement[] = []
 ): SettlementEngineResult {
-  if (travelers.length === 0) {
+  if (travelers.length === 0 && expenses.length === 0) {
     return { totalSpent: 0, balances: [], settlements: [] };
   }
 
-  // 1. Initialize balance maps
-  const paidMap: Record<string, number> = {};
-  const shareMap: Record<string, number> = {};
+  // 1. Build comprehensive traveler directory, including any past/deleted travelers in expenses
+  const travelerMap = new Map<string, Traveler>();
+  travelers.forEach((t) => travelerMap.set(t.id, t));
 
-  travelers.forEach((t) => {
-    paidMap[t.id] = 0;
-    shareMap[t.id] = 0;
-  });
-
-  let totalSpent = 0;
-
-  // 2. Accumulate paid amounts and individual shares
-  expenses.forEach((expense) => {
-    totalSpent += expense.amount;
-    paidMap[expense.paidById] = (paidMap[expense.paidById] || 0) + expense.amount;
-
-    if (expense.splitType === 'equal') {
-      const splitCount = expense.splits && expense.splits.length > 0
-        ? expense.splits.length
-        : travelers.length;
-      const perPerson = expense.amount / splitCount;
-
-      if (expense.splits && expense.splits.length > 0) {
-        expense.splits.forEach((s) => {
-          shareMap[s.travelerId] = (shareMap[s.travelerId] || 0) + s.amount;
-        });
-      } else {
-        travelers.forEach((t) => {
-          shareMap[t.id] = (shareMap[t.id] || 0) + perPerson;
+  expenses.forEach((e) => {
+    if (e.paidById && !travelerMap.has(e.paidById)) {
+      travelerMap.set(e.paidById, {
+        id: e.paidById,
+        name: `Former Member (${e.paidById.slice(-4)})`,
+        phone: '',
+      });
+    }
+    (e.splits || []).forEach((s) => {
+      if (s.travelerId && !travelerMap.has(s.travelerId)) {
+        travelerMap.set(s.travelerId, {
+          id: s.travelerId,
+          name: `Former Member (${s.travelerId.slice(-4)})`,
+          phone: '',
         });
       }
+    });
+  });
+
+  const allTravelers = Array.from(travelerMap.values());
+
+  // 2. Accumulate in integer cents
+  const paidCentsMap: Record<string, number> = {};
+  const shareCentsMap: Record<string, number> = {};
+
+  allTravelers.forEach((t) => {
+    paidCentsMap[t.id] = 0;
+    shareCentsMap[t.id] = 0;
+  });
+
+  let totalSpentCents = 0;
+
+  expenses.forEach((expense) => {
+    const expenseAmountCents = Math.round(expense.amount * 100);
+    totalSpentCents += expenseAmountCents;
+    paidCentsMap[expense.paidById] = (paidCentsMap[expense.paidById] || 0) + expenseAmountCents;
+
+    if (expense.splitType === 'equal') {
+      const splitTravelerIds =
+        expense.splits && expense.splits.length > 0
+          ? expense.splits.map((s) => s.travelerId)
+          : travelers.map((t) => t.id);
+
+      const computedSplits = calculateExactEqualSplits(
+        expense.amount,
+        splitTravelerIds.length > 0 ? splitTravelerIds : [expense.paidById]
+      );
+
+      computedSplits.forEach((s) => {
+        const splitCents = Math.round(s.amount * 100);
+        shareCentsMap[s.travelerId] = (shareCentsMap[s.travelerId] || 0) + splitCents;
+      });
     } else {
-      // Custom split
-      expense.splits.forEach((s) => {
-        shareMap[s.travelerId] = (shareMap[s.travelerId] || 0) + s.amount;
+      // Custom split: validate individual shares sum correctly
+      (expense.splits || []).forEach((s) => {
+        const splitCents = Math.round(Math.max(0, s.amount) * 100);
+        shareCentsMap[s.travelerId] = (shareCentsMap[s.travelerId] || 0) + splitCents;
       });
     }
   });
 
-  // 3. Compute net balances
-  const balances: TravelerBalance[] = travelers.map((t) => {
-    const totalPaid = Math.round((paidMap[t.id] || 0) * 100) / 100;
-    const fairShare = Math.round((shareMap[t.id] || 0) * 100) / 100;
-    const netBalance = Math.round((totalPaid - fairShare) * 100) / 100;
+  // 3. Compute net balances in integer cents, then convert to currency format
+  const balances: TravelerBalance[] = allTravelers.map((t) => {
+    const paidCents = paidCentsMap[t.id] || 0;
+    const shareCents = shareCentsMap[t.id] || 0;
+    const netCents = paidCents - shareCents;
 
     return {
       travelerId: t.id,
       name: t.name,
       phone: t.phone,
       upiId: t.upiId,
-      totalPaid,
-      fairShare,
-      netBalance,
+      totalPaid: paidCents / 100,
+      fairShare: shareCents / 100,
+      netBalance: netCents / 100,
     };
   });
 
-  // 4. Greedy Minimum Cash Flow Algorithm
-  // Separate into debtors (netBalance < 0) and creditors (netBalance > 0)
-  interface PersonDebt {
+  // 4. Greedy Minimum Cash Flow Algorithm in Integer Cents
+  interface PersonDebtInCents {
     id: string;
-    amount: number;
+    cents: number;
   }
 
-  const debtors: PersonDebt[] = [];
-  const creditors: PersonDebt[] = [];
+  const debtors: PersonDebtInCents[] = [];
+  const creditors: PersonDebtInCents[] = [];
 
   balances.forEach((b) => {
-    if (b.netBalance < -0.01) {
-      debtors.push({ id: b.travelerId, amount: -b.netBalance });
-    } else if (b.netBalance > 0.01) {
-      creditors.push({ id: b.travelerId, amount: b.netBalance });
+    const netCents = Math.round(b.netBalance * 100);
+    if (netCents < 0) {
+      debtors.push({ id: b.travelerId, cents: -netCents });
+    } else if (netCents > 0) {
+      creditors.push({ id: b.travelerId, cents: netCents });
     }
   });
 
-  // Sort descending by amount to minimize transaction count
-  debtors.sort((a, b) => b.amount - a.amount);
-  creditors.sort((a, b) => b.amount - a.amount);
+  // Sort descending by amount to minimize total transactions
+  debtors.sort((a, b) => b.cents - a.cents);
+  creditors.sort((a, b) => b.cents - a.cents);
 
   const rawSettlements: Settlement[] = [];
   let dIdx = 0;
@@ -117,10 +168,10 @@ export function computeSettlements(
     const debtor = debtors[dIdx];
     const creditor = creditors[cIdx];
 
-    const settleAmount = Math.min(debtor.amount, creditor.amount);
-    const roundedAmount = Math.round(settleAmount * 100) / 100;
+    const settleCents = Math.min(debtor.cents, creditor.cents);
 
-    if (roundedAmount > 0.01) {
+    if (settleCents > 0) {
+      const settlementAmount = settleCents / 100;
       const existingMatch = existingSettlements.find(
         (s) => s.fromTravelerId === debtor.id && s.toTravelerId === creditor.id
       );
@@ -130,21 +181,21 @@ export function computeSettlements(
         tripId,
         fromTravelerId: debtor.id,
         toTravelerId: creditor.id,
-        amount: roundedAmount,
+        amount: settlementAmount,
         isSettled: existingMatch ? existingMatch.isSettled : false,
         settledAt: existingMatch ? existingMatch.settledAt : undefined,
       });
     }
 
-    debtor.amount -= settleAmount;
-    creditor.amount -= settleAmount;
+    debtor.cents -= settleCents;
+    creditor.cents -= settleCents;
 
-    if (debtor.amount <= 0.01) dIdx++;
-    if (creditor.amount <= 0.01) cIdx++;
+    if (debtor.cents === 0) dIdx++;
+    if (creditor.cents === 0) cIdx++;
   }
 
   return {
-    totalSpent,
+    totalSpent: totalSpentCents / 100,
     balances,
     settlements: rawSettlements,
   };

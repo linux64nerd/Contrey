@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Trip, Traveler, Settlement } from '../types/trip';
 import { Expense } from '../types/expense';
-import { storageService } from '../services/storageService';
+import { storageService, STORAGE_KEYS } from '../services/storageService';
 import { computeSettlements, SettlementEngineResult } from '../services/settlementEngine';
 import { toast } from 'sonner';
 
@@ -25,7 +25,7 @@ interface TripContextType {
   settlementResult: SettlementEngineResult;
 }
 
-// Initial realistic demo trip with expenses so the user can test all charts & splits right away
+// Initial realistic demo trip with expenses
 const INITIAL_DEMO_TRAVELERS: Traveler[] = [
   { id: 't1', name: 'Rohan Mehta', phone: '+919820012345', email: 'rohan@contrey.travel', upiId: 'rohan@okaxis' },
   { id: 't2', name: 'Aisha Khan', phone: '+919876543210', email: 'aisha@contrey.travel', upiId: 'aisha@okhdfc' },
@@ -140,43 +140,45 @@ const TripContext = createContext<TripContextType | undefined>(undefined);
 
 export const TripProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [trips, setTrips] = useState<Trip[]>(() => {
-    return storageService.getItem<Trip[]>('contrey_trips', [INITIAL_DEMO_TRIP]);
+    return storageService.getItem<Trip[]>(STORAGE_KEYS.TRIPS, [INITIAL_DEMO_TRIP]);
   });
 
   const [activeTripId, setActiveTripId] = useState<string | null>(() => {
-    const saved = localStorage.getItem('contrey_active_trip_id');
-    return saved || 'trip_goa_001';
+    return storageService.getItem<string>(STORAGE_KEYS.ACTIVE_TRIP_ID, 'trip_goa_001');
   });
 
   const [expenses, setExpenses] = useState<Expense[]>(() => {
-    return storageService.getItem<Expense[]>('contrey_expenses', INITIAL_DEMO_EXPENSES);
+    return storageService.getItem<Expense[]>(STORAGE_KEYS.EXPENSES, INITIAL_DEMO_EXPENSES);
   });
 
   const [settlementOverrides, setSettlementOverrides] = useState<Record<string, { isSettled: boolean; settledAt?: string }>>(() => {
-    return storageService.getItem<Record<string, { isSettled: boolean; settledAt?: string }>>('contrey_settlement_states', {});
+    return storageService.getItem<Record<string, { isSettled: boolean; settledAt?: string }>>(
+      STORAGE_KEYS.SETTLEMENT_STATES,
+      {}
+    );
   });
 
-  // Sync with localStorage
+  // Sync with storageService
   useEffect(() => {
-    storageService.setItem('contrey_trips', trips);
+    storageService.setItem(STORAGE_KEYS.TRIPS, trips);
   }, [trips]);
 
   useEffect(() => {
     if (activeTripId) {
-      localStorage.setItem('contrey_active_trip_id', activeTripId);
+      storageService.setItem(STORAGE_KEYS.ACTIVE_TRIP_ID, activeTripId);
     }
   }, [activeTripId]);
 
   useEffect(() => {
-    storageService.setItem('contrey_expenses', expenses);
+    storageService.setItem(STORAGE_KEYS.EXPENSES, expenses);
   }, [expenses]);
 
   useEffect(() => {
-    storageService.setItem('contrey_settlement_states', settlementOverrides);
+    storageService.setItem(STORAGE_KEYS.SETTLEMENT_STATES, settlementOverrides);
   }, [settlementOverrides]);
 
   const activeTrip = trips.find((t) => t.id === activeTripId) || trips[0] || null;
-  const activeTripExpenses = expenses.filter((e) => e.tripId === activeTripId);
+  const activeTripExpenses = expenses.filter((e) => e.tripId === (activeTrip ? activeTrip.id : activeTripId));
 
   // Compute minimum transactions dynamically
   const existingSettlementsList: Settlement[] = Object.entries(settlementOverrides).map(([id, state]) => ({

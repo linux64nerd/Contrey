@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { CurrencyCode, ExchangeRates } from '../types/currency';
+import { storageService, STORAGE_KEYS } from '../services/storageService';
 
 interface CurrencyContextType {
   currentCurrency: CurrencyCode;
@@ -21,22 +22,26 @@ const DEFAULT_RATES: ExchangeRates = {
   },
 };
 
+const VALID_CURRENCIES: CurrencyCode[] = ['INR', 'EUR', 'USD'];
+
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
 export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentCurrency, setCurrentCurrency] = useState<CurrencyCode>(() => {
-    const saved = localStorage.getItem('tripmate_currency');
-    return (saved as CurrencyCode) || 'INR';
+    const saved = storageService.getItem<string>(STORAGE_KEYS.CURRENCY, 'INR');
+    return VALID_CURRENCIES.includes(saved as CurrencyCode) ? (saved as CurrencyCode) : 'INR';
   });
 
   const [rates, setRates] = useState<ExchangeRates>(() => {
-    const cached = localStorage.getItem('tripmate_rates');
-    if (cached) {
-      try {
-        return JSON.parse(cached);
-      } catch {
-        // fallback
-      }
+    const cached = storageService.getItem<ExchangeRates>(STORAGE_KEYS.EXCHANGE_RATES, DEFAULT_RATES);
+    if (
+      cached &&
+      cached.rates &&
+      typeof cached.rates.EUR === 'number' &&
+      typeof cached.rates.USD === 'number' &&
+      typeof cached.rates.INR === 'number'
+    ) {
+      return cached;
     }
     return DEFAULT_RATES;
   });
@@ -44,49 +49,70 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [isLoadingRates, setIsLoadingRates] = useState<boolean>(false);
 
   useEffect(() => {
-    localStorage.setItem('tripmate_currency', currentCurrency);
+    storageService.setItem(STORAGE_KEYS.CURRENCY, currentCurrency);
   }, [currentCurrency]);
 
   useEffect(() => {
     let isMounted = true;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
     const fetchRates = async () => {
       setIsLoadingRates(true);
       try {
-        const res = await fetch('https://api.frankfurter.app/latest?from=EUR&to=USD,INR');
-        if (!res.ok) throw new Error('Failed to fetch rates');
+        const res = await fetch('https://api.frankfurter.app/latest?from=EUR&to=USD,INR', {
+          signal: controller.signal,
+        });
+        if (!res.ok) throw new Error(`Rates API responded with status ${res.status}`);
         const data = await res.json();
-        if (isMounted && data && data.rates) {
+        if (
+          isMounted &&
+          data &&
+          data.rates &&
+          typeof data.rates.USD === 'number' &&
+          typeof data.rates.INR === 'number'
+        ) {
           const newRates: ExchangeRates = {
             base: 'EUR',
-            date: data.date,
+            date: data.date || new Date().toISOString().split('T')[0],
             rates: {
               EUR: 1,
-              USD: data.rates.USD || 1.09,
-              INR: data.rates.INR || 91.50,
+              USD: data.rates.USD,
+              INR: data.rates.INR,
             },
           };
           setRates(newRates);
-          localStorage.setItem('tripmate_rates', JSON.stringify(newRates));
+          storageService.setItem(STORAGE_KEYS.EXCHANGE_RATES, newRates);
         }
-      } catch (err) {
-        // Fallback silently without throwing error
-        console.warn('Using offline fallback exchange rates', err);
+      } catch (err: any) {
+        if (err?.name === 'AbortError') {
+          console.warn('Rates fetch timed out after 5000ms. Using cached/default rates.');
+        } else {
+          console.warn('Using offline fallback exchange rates', err);
+        }
       } finally {
         if (isMounted) setIsLoadingRates(false);
+        clearTimeout(timeoutId);
       }
     };
 
     fetchRates();
     return () => {
       isMounted = false;
+      controller.abort();
+      clearTimeout(timeoutId);
     };
   }, []);
 
   const convertAmount = (amount: number, from: CurrencyCode, to: CurrencyCode = currentCurrency): number => {
     if (from === to) return amount;
+    if (!isFinite(amount) || isNaN(amount)) return 0;
+
     // Normalize to EUR first
-    const fromRate = rates.rates[from] || 1;
-    const toRate = rates.rates[to] || 1;
+    const fromRate = rates.rates[from] || (DEFAULT_RATES.rates[from] ?? 1);
+    const toRate = rates.rates[to] || (DEFAULT_RATES.rates[to] ?? 1);
+
+    if (fromRate <= 0) return amount;
     const amountInEUR = amount / fromRate;
     return amountInEUR * toRate;
   };
@@ -98,10 +124,11 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       USD: '$',
     };
     const symbol = symbols[currency] || currency;
+    const safeAmount = isFinite(amount) && !isNaN(amount) ? amount : 0;
     const formatted = new Intl.NumberFormat('en-US', {
       minimumFractionDigits: 0,
       maximumFractionDigits: 2,
-    }).format(amount);
+    }).format(safeAmount);
     return `${symbol}${formatted}`;
   };
 

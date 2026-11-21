@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:audit": "esbuild scripts/verify_audit.ts --bundle --platform=node --outfile=node_modules/.cache/verify_audit.mjs && node node_modules/.cache/verify_audit.mjs"
   },
   "dependencies": {
     "canvas-confetti": "^1.9.3",

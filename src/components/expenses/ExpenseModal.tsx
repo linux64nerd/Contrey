@@ -4,6 +4,7 @@ import { Expense, ExpenseCategory, SplitDetail } from '../../types/expense';
 import { Traveler } from '../../types/trip';
 import { CurrencyCode } from '../../types/currency';
 import { CATEGORY_CONFIG } from './CategoryBadge';
+import { calculateExactEqualSplits } from '../../services/settlementEngine';
 import { toast } from 'sonner';
 
 interface ExpenseModalProps {
@@ -47,7 +48,7 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
       setNotes(initialExpense.notes || '');
 
       const splitMap: Record<string, string> = {};
-      initialExpense.splits.forEach((s) => {
+      (initialExpense.splits || []).forEach((s) => {
         splitMap[s.travelerId] = s.amount.toString();
       });
       setCustomSplits(splitMap);
@@ -84,58 +85,84 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
 
   const handleDistributeCustomEqually = () => {
     if (totalAmountNum <= 0 || travelers.length === 0) return;
-    const equalShare = (totalAmountNum / travelers.length).toFixed(2);
+    const exactSplits = calculateExactEqualSplits(
+      totalAmountNum,
+      travelers.map((t) => t.id)
+    );
     const newSplits: Record<string, string> = {};
-    travelers.forEach((t) => {
-      newSplits[t.id] = equalShare;
+    exactSplits.forEach((s) => {
+      newSplits[s.travelerId] = s.amount.toFixed(2);
     });
     setCustomSplits(newSplits);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim()) {
+    const cleanTitle = title.trim().slice(0, 80);
+
+    if (!cleanTitle) {
       toast.error('Please enter an expense title');
       return;
     }
-    if (totalAmountNum <= 0) {
+
+    if (!isFinite(totalAmountNum) || isNaN(totalAmountNum) || totalAmountNum <= 0) {
       toast.error('Please enter a valid amount greater than 0');
       return;
     }
+
+    if (totalAmountNum > 100000000) {
+      toast.error('Amount exceeds maximum permissible limit');
+      return;
+    }
+
     if (!paidById) {
       toast.error('Please select who paid for this expense');
       return;
     }
 
+    if (travelers.length === 0) {
+      toast.error('Cannot record expense without travelers');
+      return;
+    }
+
     let finalSplits: SplitDetail[] = [];
     if (splitType === 'equal') {
-      const perPerson = totalAmountNum / travelers.length;
-      finalSplits = travelers.map((t) => ({
-        travelerId: t.id,
-        amount: Math.round(perPerson * 100) / 100,
-      }));
+      finalSplits = calculateExactEqualSplits(
+        totalAmountNum,
+        travelers.map((t) => t.id)
+      );
     } else {
+      // Validate custom splits
+      for (const t of travelers) {
+        const shareVal = parseFloat(customSplits[t.id]) || 0;
+        if (shareVal < 0) {
+          toast.error(`Custom share for ${t.name} cannot be negative`);
+          return;
+        }
+      }
+
       if (Math.abs(remainingCustom) > 0.05) {
         toast.error(`Custom split totals do not match total expense. Remaining: ${remainingCustom}`);
         return;
       }
+
       finalSplits = travelers.map((t) => ({
         travelerId: t.id,
-        amount: parseFloat(customSplits[t.id]) || 0,
+        amount: Math.round((parseFloat(customSplits[t.id]) || 0) * 100) / 100,
       }));
     }
 
     onSubmit({
       tripId,
-      title: title.trim(),
-      amount: totalAmountNum,
+      title: cleanTitle,
+      amount: Math.round(totalAmountNum * 100) / 100,
       currency,
       category,
       paidById,
       splitType,
       splits: finalSplits,
       date: date ? new Date(date).toISOString() : new Date().toISOString(),
-      notes: notes.trim(),
+      notes: notes.trim().slice(0, 250),
     });
 
     onClose();
@@ -173,6 +200,7 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
               </label>
               <input
                 type="text"
+                maxLength={80}
                 placeholder="e.g. Seafood Dinner, Surf Lessons"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -189,6 +217,7 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
                 type="number"
                 step="0.01"
                 min="0.01"
+                max="100000000"
                 placeholder="0.00"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
@@ -243,11 +272,10 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
                     key={cat}
                     type="button"
                     onClick={() => setCategory(cat)}
-                    className={`p-2 rounded-[8px] border flex flex-col items-center justify-center gap-1 transition-all ${
-                      isSelected
-                        ? `${conf.bgClass} ${conf.colorClass} border-[#0075de] font-semibold ring-1 ring-[#0075de]`
-                        : 'bg-[#f6f5f4] border-[rgba(0,0,0,0.06)] text-[#615d59] hover:bg-[#ffffff]'
-                    }`}
+                    className={`p-2 rounded-[8px] border flex flex-col items-center justify-center gap-1 transition-all ${isSelected
+                      ? `${conf.bgClass} ${conf.colorClass} border-[#0075de] font-semibold ring-1 ring-[#0075de]`
+                      : 'bg-[#f6f5f4] border-[rgba(0,0,0,0.06)] text-[#615d59] hover:bg-[#ffffff]'
+                      }`}
                   >
                     <Icon className="w-4 h-4" />
                     <span className="text-[10px] truncate max-w-full">{cat}</span>
@@ -295,22 +323,20 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
               <button
                 type="button"
                 onClick={() => setSplitType('equal')}
-                className={`py-1.5 rounded-[6px] font-medium transition-all ${
-                  splitType === 'equal'
-                    ? 'bg-[#ffffff] text-[#0075de] shadow-xs font-semibold'
-                    : 'text-[#757575] hover:text-[#000000]'
-                }`}
+                className={`py-1.5 rounded-[6px] font-medium transition-all ${splitType === 'equal'
+                  ? 'bg-[#ffffff] text-[#0075de] shadow-xs font-semibold'
+                  : 'text-[#757575] hover:text-[#000000]'
+                  }`}
               >
                 Equal Split ({travelers.length})
               </button>
               <button
                 type="button"
                 onClick={() => setSplitType('custom')}
-                className={`py-1.5 rounded-[6px] font-medium transition-all ${
-                  splitType === 'custom'
-                    ? 'bg-[#ffffff] text-[#0075de] shadow-xs font-semibold'
-                    : 'text-[#757575] hover:text-[#000000]'
-                }`}
+                className={`py-1.5 rounded-[6px] font-medium transition-all ${splitType === 'custom'
+                  ? 'bg-[#ffffff] text-[#0075de] shadow-xs font-semibold'
+                  : 'text-[#757575] hover:text-[#000000]'
+                  }`}
               >
                 Custom Split
               </button>
@@ -345,9 +371,8 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
               <div className="pt-2 border-t border-[rgba(0,0,0,0.08)] flex items-center justify-between text-xs">
                 <span className="text-[#757575]">Unallocated Remaining:</span>
                 <span
-                  className={`font-mono font-bold ${
-                    Math.abs(remainingCustom) < 0.05 ? 'text-[#0075de]' : 'text-[#f64932]'
-                  }`}
+                  className={`font-mono font-bold ${Math.abs(remainingCustom) < 0.05 ? 'text-[#0075de]' : 'text-[#f64932]'
+                    }`}
                 >
                   {remainingCustom} {currency}
                 </span>
@@ -362,6 +387,7 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
             </label>
             <input
               type="text"
+              maxLength={250}
               placeholder="e.g. Paid via card, Table 4"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}

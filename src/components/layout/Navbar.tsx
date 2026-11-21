@@ -36,6 +36,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuth }) => {
     }
   };
 
+  const displayName = user?.name || 'Traveler';
+  const displayInitial = (displayName.charAt(0) || 'T').toUpperCase();
+
   return (
     <header className="sticky top-0 z-40 w-full bg-[#f6f5f4]/95 backdrop-blur-sm border-b border-[rgba(0,0,0,0.08)] shadow-[0px_0.7px_1.462px_0px_rgba(0,0,0,0.015),0px_3px_9px_0px_rgba(0,0,0,0.03)] transition-all">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -66,13 +69,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuth }) => {
               <span>Travel Map</span>
             </Link>
             <a
-              href="#features"
+              href="/#features"
               className="px-3 py-1.5 rounded-[8px] text-[rgba(0,0,0,0.60)] hover:text-[#000000] hover:bg-[rgba(0,0,0,0.04)] transition-all"
             >
               Features
             </a>
             <a
-              href="#how-it-works"
+              href="/#how-it-works"
               className="px-3 py-1.5 rounded-[8px] text-[rgba(0,0,0,0.60)] hover:text-[#000000] hover:bg-[rgba(0,0,0,0.04)] transition-all"
             >
               How It Works
@@ -109,10 +112,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuth }) => {
                 className="flex items-center gap-2 p-1 rounded-[8px] hover:bg-[rgba(0,0,0,0.05)] transition-colors"
               >
                 <div className="w-7 h-7 rounded-[6px] bg-[#0075de] text-[#ffffff] flex items-center justify-center font-semibold text-xs">
-                  {user.name.charAt(0).toUpperCase()}
+                  {displayInitial}
                 </div>
                 <span className="text-xs font-medium text-[#000000] hidden sm:inline max-w-[100px] truncate">
-                  {user.name}
+                  {displayName}
                 </span>
                 <ChevronDown className="w-3.5 h-3.5 text-[#757575]" />
               </button>
@@ -126,7 +129,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuth }) => {
                   />
                   <div className="absolute right-0 mt-2 w-56 bg-[#ffffff] rounded-[12px] border border-[rgba(0,0,0,0.08)] shadow-[0_4px_12px_rgba(0,0,0,0.1)] z-20 py-2 animate-in fade-in slide-in-from-top-1">
                     <div className="px-4 py-2 border-b border-[rgba(0,0,0,0.08)]">
-                      <p className="text-xs font-semibold text-[#000000] truncate">{user.name}</p>
+                      <p className="text-xs font-semibold text-[#000000] truncate">{displayName}</p>
                       <p className="text-[11px] text-[#757575] truncate">
                         {user.phone || user.email || user.id}
                       </p>

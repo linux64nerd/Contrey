@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, AuthState } from '../types/auth';
-import { storageService } from '../services/storageService';
+import { storageService, isValidUser } from '../services/storageService';
 import { toast } from 'sonner';
 
 interface AuthContextType extends AuthState {
@@ -18,6 +18,8 @@ interface AuthContextType extends AuthState {
   authModalTab: 'phone' | 'email' | 'google' | 'userid';
 }
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -27,10 +29,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [authModalTab, setAuthModalTab] = useState<'phone' | 'email' | 'google' | 'userid'>('phone');
 
   useEffect(() => {
-    // Initial sync
+    // Initial sync with schema validation
     const storedUser = storageService.getUser<User>();
-    if (storedUser) {
+    if (storedUser && isValidUser(storedUser)) {
       setUser(storedUser);
+    } else {
+      setUser(null);
     }
     setIsLoading(false);
   }, []);
@@ -46,14 +50,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // 1. Phone + OTP Flow
   const sendPhoneOtp = async (countryCode: string, phone: string): Promise<string> => {
-    if (!phone || phone.length < 7) {
-      toast.error('Please enter a valid phone number');
+    const cleanDigits = (phone || '').replace(/\D/g, '');
+    if (cleanDigits.length < 7 || cleanDigits.length > 15) {
+      toast.error('Please enter a valid phone number (7-15 digits)');
       throw new Error('Invalid phone number');
     }
 
-    // Demo OTP is 123456
     const demoOtp = '123456';
-    await new Promise((resolve) => setTimeout(resolve, 600));
+    await new Promise((resolve) => setTimeout(resolve, 400));
 
     toast.info(`🔑 Demo OTP for ${countryCode} ${phone}: ${demoOtp}`, {
       duration: 10000,
@@ -64,18 +68,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const loginWithPhone = async (countryCode: string, phone: string, otp: string): Promise<boolean> => {
+    const cleanDigits = (phone || '').replace(/\D/g, '');
+    if (cleanDigits.length < 7) {
+      toast.error('Invalid phone number');
+      return false;
+    }
+
     if (otp.trim() !== '123456') {
       toast.error('Invalid OTP. Use demo OTP: 123456');
       return false;
     }
 
+    const lastFour = cleanDigits.slice(-4);
     const newUser: User = {
       id: `usr_${Date.now()}`,
-      name: `Traveler ${phone.slice(-4)}`,
-      phone: `${countryCode}${phone}`,
+      name: `Traveler ${lastFour}`,
+      phone: `${countryCode}${cleanDigits}`,
       authMethod: 'phone',
-      avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${phone}`,
-      upiId: `${phone.slice(-4)}@upi`,
+      avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${cleanDigits}`,
+      upiId: `${lastFour}@upi`,
     };
 
     setUser(newUser);
@@ -87,25 +98,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // 2. Email + Password Flow
   const loginWithEmail = async (email: string, password: string): Promise<boolean> => {
-    if (!email || !password) {
+    const cleanEmail = (email || '').trim().toLowerCase();
+    if (!cleanEmail || !password) {
       toast.error('Please enter both email and password');
       return false;
     }
+
+    if (!EMAIL_REGEX.test(cleanEmail)) {
+      toast.error('Please enter a valid email address');
+      return false;
+    }
+
     if (password.length < 6) {
       toast.error('Password must be at least 6 characters');
       return false;
     }
 
-    const cleanName = email.split('@')[0].replace(/[._]/g, ' ');
-    const formattedName = cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
+    const cleanUsername = cleanEmail.split('@')[0].replace(/[._]/g, ' ');
+    const formattedName = cleanUsername.charAt(0).toUpperCase() + cleanUsername.slice(1);
 
     const newUser: User = {
       id: `usr_${Date.now()}`,
-      name: formattedName || 'Traveler',
-      email,
+      name: formattedName.slice(0, 40) || 'Traveler',
+      email: cleanEmail,
       authMethod: 'email',
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
-      upiId: `${email.split('@')[0]}@okaxis`,
+      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${cleanEmail}`,
+      upiId: `${cleanEmail.split('@')[0].slice(0, 20)}@okaxis`,
     };
 
     setUser(newUser);
@@ -116,10 +134,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signupWithEmail = async (name: string, email: string, password: string, phone?: string): Promise<boolean> => {
-    if (!name || !email || !password) {
+    const cleanName = (name || '').trim().slice(0, 50);
+    const cleanEmail = (email || '').trim().toLowerCase();
+
+    if (!cleanName || !cleanEmail || !password) {
       toast.error('Please fill in all required fields');
       return false;
     }
+
+    if (!EMAIL_REGEX.test(cleanEmail)) {
+      toast.error('Please enter a valid email address');
+      return false;
+    }
+
     if (password.length < 6) {
       toast.error('Password must be at least 6 characters');
       return false;
@@ -127,24 +154,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const newUser: User = {
       id: `usr_${Date.now()}`,
-      name,
-      email,
-      phone: phone || '+919876543210',
+      name: cleanName,
+      email: cleanEmail,
+      phone: phone ? phone.trim().slice(0, 20) : '+919876543210',
       authMethod: 'email',
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`,
-      upiId: `${name.toLowerCase().replace(/\s+/g, '')}@okaxis`,
+      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${cleanName}`,
+      upiId: `${cleanName.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 20)}@okaxis`,
     };
 
     setUser(newUser);
     storageService.setUser(newUser);
-    toast.success(`Account created! Welcome to Contrey, ${name}!`);
+    toast.success(`Account created! Welcome to Contrey, ${cleanName}!`);
     closeAuthModal();
     return true;
   };
 
   // 3. Google Account Flow
   const loginWithGoogle = async (): Promise<boolean> => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
     const googleUser: User = {
       id: 'usr_google_demo_99',
@@ -165,22 +192,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // 4. User ID & Password Flow
   const loginWithUserId = async (userId: string, password: string): Promise<boolean> => {
-    if (!userId || !password) {
-      toast.error('Please enter User ID and Password');
+    const cleanUserId = (userId || '').trim().replace(/[^\w-]/g, '').slice(0, 30);
+    if (!cleanUserId || cleanUserId.length < 3) {
+      toast.error('User ID must be at least 3 alphanumeric characters');
+      return false;
+    }
+
+    if (!password || password.length < 6) {
+      toast.error('Password must be at least 6 characters');
       return false;
     }
 
     const newUser: User = {
-      id: `usr_${userId}`,
-      name: userId,
+      id: `usr_${cleanUserId}`,
+      name: cleanUserId,
       authMethod: 'userid',
-      avatar: `https://api.dicebear.com/7.x/identicon/svg?seed=${userId}`,
-      upiId: `${userId}@upi`,
+      avatar: `https://api.dicebear.com/7.x/identicon/svg?seed=${cleanUserId}`,
+      upiId: `${cleanUserId.slice(0, 20)}@upi`,
     };
 
     setUser(newUser);
     storageService.setUser(newUser);
-    toast.success(`Logged in as @${userId}`);
+    toast.success(`Logged in as @${cleanUserId}`);
     closeAuthModal();
     return true;
   };
@@ -209,11 +242,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     toast.info('Signed out of Contrey');
   };
 
+  const isAuthenticated = !!(user && isValidUser(user));
+
   return (
     <AuthContext.Provider
       value={{
         user,
-        isAuthenticated: !!user,
+        isAuthenticated,
         isLoading,
         sendPhoneOtp,
         loginWithPhone,

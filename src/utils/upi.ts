@@ -12,13 +12,29 @@ export interface UpiPayloadOptions {
   tn?: string; // Transaction Note
 }
 
+export function isValidVpa(vpa: string): boolean {
+  if (!vpa) return false;
+  const clean = vpa.trim();
+  // Standard NPCI UPI VPA format
+  return /^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/.test(clean);
+}
+
 export function generateUpiLink(options: UpiPayloadOptions): string {
+  const cleanPa = options.pa.trim();
+  // Sanitize payee name and note to prevent URL parameter injection
+  const cleanPn = options.pn.trim().replace(/[&?=#]/g, '').slice(0, 70);
+  const safeAmount = Math.max(0.01, isFinite(options.am) ? options.am : 0.01);
+  const cleanTn = (options.tn || 'Contrey Trip Settlement')
+    .trim()
+    .replace(/[&?=#]/g, '')
+    .slice(0, 80);
+
   const params = new URLSearchParams({
-    pa: options.pa.trim(),
-    pn: options.pn.trim(),
-    am: options.am.toFixed(2),
+    pa: cleanPa,
+    pn: cleanPn || 'Traveler',
+    am: safeAmount.toFixed(2),
     cu: options.cu || 'INR',
-    tn: options.tn || 'Contrey Trip Settlement',
+    tn: cleanTn,
   });
 
   return `upi://pay?${params.toString()}`;

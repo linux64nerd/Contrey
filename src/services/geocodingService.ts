@@ -6,6 +6,22 @@ export interface GeocodingResult {
   displayName: string;
 }
 
+/**
+ * Validates that latitude and longitude are valid finite numbers within geographical bounds
+ */
+export function isValidCoordinate(lat: unknown, lng: unknown): boolean {
+  return (
+    typeof lat === 'number' &&
+    typeof lng === 'number' &&
+    isFinite(lat) &&
+    isFinite(lng) &&
+    lat >= -90 &&
+    lat <= 90 &&
+    lng >= -180 &&
+    lng <= 180
+  );
+}
+
 // Destination coordinates lookup with fallback
 const KNOWN_DESTINATIONS: Record<string, { lat: number; lng: number }> = {
   'goa': { lat: 15.2993, lng: 74.1240 },
@@ -22,10 +38,10 @@ const KNOWN_DESTINATIONS: Record<string, { lat: number; lng: number }> = {
 };
 
 /**
- * Geocode destination string using Nominatim OpenStreetMap API
+ * Geocode destination string using Nominatim OpenStreetMap API with 5s timeout & resilience
  */
 export async function geocodeDestination(query: string): Promise<GeocodingResult> {
-  const normalized = query.trim().toLowerCase();
+  const normalized = (query || '').trim().toLowerCase();
 
   // Instant match for common spots
   for (const [key, coords] of Object.entries(KNOWN_DESTINATIONS)) {
@@ -38,22 +54,41 @@ export async function geocodeDestination(query: string): Promise<GeocodingResult
     }
   }
 
-  try {
-    const res = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`,
-      { headers: { 'User-Agent': 'Contrey-TravelApp/1.0' } }
-    );
-    if (!res.ok) throw new Error('Geocoding network error');
-    const data = await res.json();
-    if (data && data.length > 0) {
-      return {
-        lat: parseFloat(data[0].lat),
-        lng: parseFloat(data[0].lon),
-        displayName: data[0].display_name,
-      };
+  if (normalized.length >= 2) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`,
+        {
+          headers: { 'User-Agent': 'Contrey-TravelApp/1.0' },
+          signal: controller.signal,
+        }
+      );
+      if (!res.ok) throw new Error(`Geocoding HTTP error: ${res.status}`);
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        const parsedLat = parseFloat(data[0].lat);
+        const parsedLng = parseFloat(data[0].lon);
+
+        if (isValidCoordinate(parsedLat, parsedLng)) {
+          return {
+            lat: parsedLat,
+            lng: parsedLng,
+            displayName: data[0].display_name || query,
+          };
+        }
+      }
+    } catch (err: any) {
+      if (err?.name === 'AbortError') {
+        console.warn('Nominatim geocoding timed out after 5000ms. Falling back.');
+      } else {
+        console.warn('Nominatim geocoding failed, using destination fallback', err);
+      }
+    } finally {
+      clearTimeout(timeoutId);
     }
-  } catch (err) {
-    console.warn('Nominatim geocoding failed, using destination fallback', err);
   }
 
   // Resilient fallback (Goa coords default)
@@ -68,6 +103,9 @@ export async function geocodeDestination(query: string): Promise<GeocodingResult
  * Calculate distance in kilometers using Haversine formula
  */
 export function calculateDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  if (!isValidCoordinate(lat1, lon1) || !isValidCoordinate(lat2, lon2)) {
+    return 0;
+  }
   const R = 6371; // Earth's radius in km
   const dLat = (lat2 - lat1) * (Math.PI / 180);
   const dLon = (lon2 - lon1) * (Math.PI / 180);
@@ -90,8 +128,13 @@ export function getCuratedRecommendations(
   radiusKm: number,
   destinationName: string
 ): PlaceRecommendation[] {
-  const isParis = destinationName.toLowerCase().includes('paris');
-  const isManali = destinationName.toLowerCase().includes('manali');
+  const safeLat = isValidCoordinate(centerLat, centerLng) ? centerLat : 15.2993;
+  const safeLng = isValidCoordinate(centerLat, centerLng) ? centerLng : 74.1240;
+  const safeRadius = Math.max(0.5, Math.min(50, radiusKm || 2));
+
+  const destLower = (destinationName || '').toLowerCase();
+  const isParis = destLower.includes('paris');
+  const isManali = destLower.includes('manali');
 
   let baseList: Array<{
     name: string;
@@ -138,11 +181,9 @@ export function getCuratedRecommendations(
 
   // Generate recommendation items with calculated distance
   const places: PlaceRecommendation[] = baseList.map((item, idx) => {
-    const lat = centerLat + item.offsetLat;
-    const lng = centerLng + item.offsetLng;
-    const distanceKm = calculateDistanceKm(centerLat, centerLng, lat, lng);
-
-    // "Best Value" criteria: Rating >= 4.7 and PriceLevel <= 2
+    const lat = safeLat + item.offsetLat;
+    const lng = safeLng + item.offsetLng;
+    const distanceKm = calculateDistanceKm(safeLat, safeLng, lat, lng);
     const isBestValue = item.rating >= 4.7 && item.priceLevel <= 2;
 
     return {
@@ -160,6 +201,5 @@ export function getCuratedRecommendations(
     };
   });
 
-  // Filter strictly by selected radius
-  return places.filter((p) => p.distanceKm <= radiusKm);
+  return places.filter((p) => p.distanceKm <= safeRadius);
 }

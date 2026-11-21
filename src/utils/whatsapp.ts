@@ -4,8 +4,13 @@
  */
 
 export function cleanPhoneNumber(phone: string): string {
-  // Strip non-digits, keep leading country code
+  if (!phone) return '';
   return phone.replace(/[^0-9]/g, '');
+}
+
+export function isValidPhoneNumber(phone: string): boolean {
+  const cleaned = cleanPhoneNumber(phone);
+  return cleaned.length >= 7 && cleaned.length <= 15;
 }
 
 export function generateSettlementWhatsAppUrl(
@@ -18,16 +23,19 @@ export function generateSettlementWhatsAppUrl(
   tripName?: string
 ): string {
   const cleanPhone = cleanPhoneNumber(debtorPhone);
+  const safeDebtorName = debtorName.trim().slice(0, 50) || 'Traveler';
+  const safeCreditorName = creditorName.trim().slice(0, 50) || 'Friend';
+  const safeAmount = Math.max(0, isFinite(amount) ? amount : 0);
 
   const message = [
     `✈️ *Contrey Travel Settlement Reminder*`,
-    tripName ? `📍 *Trip:* ${tripName}` : '',
+    tripName ? `📍 *Trip:* ${tripName.trim().slice(0, 80)}` : '',
     ``,
-    `Hey ${debtorName}! 👋`,
+    `Hey ${safeDebtorName}! 👋`,
     `Here is the minimal settlement breakdown for our group trip:`,
-    `👉 *Amount Due:* ${currencySymbol}${amount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`,
-    `👉 *Pay To:* ${creditorName}`,
-    upiId ? `👉 *UPI ID:* \`${upiId}\`` : '',
+    `👉 *Amount Due:* ${currencySymbol}${safeAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`,
+    `👉 *Pay To:* ${safeCreditorName}`,
+    upiId ? `👉 *UPI ID:* \`${upiId.trim()}\`` : '',
     ``,
     `Please settle this transfer when you get a moment. You can also scan the instant QR code on Contrey!`,
     `_Sent via Contrey – Travel Smart, Spend Smart_ 🌴`,
@@ -35,7 +43,11 @@ export function generateSettlementWhatsAppUrl(
     .filter(Boolean)
     .join('\n');
 
-  return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+  const encodedText = encodeURIComponent(message);
+  // If phone is valid, target that phone; otherwise use wa.me share URL to let user select recipient
+  return cleanPhone.length >= 7
+    ? `https://wa.me/${cleanPhone}?text=${encodedText}`
+    : `https://wa.me/?text=${encodedText}`;
 }
 
 export function generateTripSummaryWhatsAppUrl(
@@ -48,15 +60,18 @@ export function generateTripSummaryWhatsAppUrl(
   const cleanPhone = cleanPhoneNumber(phone);
 
   const message = [
-    `🌴 *${tripName} – Group Trip Expense Summary*`,
+    `🌴 *${tripName.trim().slice(0, 80)} – Group Trip Expense Summary*`,
     `_Managed with Contrey – Travel Smart, Spend Smart_`,
     ``,
     `📊 *Total Group Spent:* ${totalSpent}`,
-    `👥 *Travelers:* ${numTravelers} Friends`,
+    `👥 *Travelers:* ${Math.max(1, numTravelers)} Friends`,
     `⚖️ *Fair Share / Person:* ${fairShare}`,
     ``,
     `Check the full itemized breakdown, charts, and minimal settlement plan on your Contrey Dashboard!`,
   ].join('\n');
 
-  return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+  const encodedText = encodeURIComponent(message);
+  return cleanPhone.length >= 7
+    ? `https://wa.me/${cleanPhone}?text=${encodedText}`
+    : `https://wa.me/?text=${encodedText}`;
 }

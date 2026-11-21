@@ -22,7 +22,7 @@ export const SettlementList: React.FC<SettlementListProps> = ({
   onOpenQr,
 }) => {
   const { currentCurrency, format, convertAmount } = useCurrency();
-  const travelerMap = new Map(travelers.map((t) => [t.id, t]));
+  const travelerMap = new Map((travelers || []).map((t) => [t.id, t]));
 
   const symbols: Record<string, string> = {
     INR: '₹',
@@ -58,22 +58,27 @@ export const SettlementList: React.FC<SettlementListProps> = ({
       ) : (
         <div className="space-y-3">
           {settlements.map((s) => {
-            const debtor = travelerMap.get(s.fromTravelerId);
-            const creditor = travelerMap.get(s.toTravelerId);
+            const debtor = travelerMap.get(s.fromTravelerId) || {
+              id: s.fromTravelerId,
+              name: 'Crew Member',
+              phone: '',
+            };
+            const creditor = travelerMap.get(s.toTravelerId) || {
+              id: s.toTravelerId,
+              name: 'Crew Member',
+              phone: '',
+            };
             const convertedAmount = convertAmount(s.amount, baseCurrency as any, currentCurrency);
 
-            const whatsAppUrl =
-              debtor && creditor
-                ? generateSettlementWhatsAppUrl(
-                    debtor.phone,
-                    debtor.name,
-                    creditor.name,
-                    convertedAmount,
-                    symbols[currentCurrency] || currentCurrency,
-                    creditor.upiId,
-                    tripName
-                  )
-                : '#';
+            const whatsAppUrl = generateSettlementWhatsAppUrl(
+              debtor.phone,
+              debtor.name,
+              creditor.name,
+              convertedAmount,
+              symbols[currentCurrency] || currentCurrency,
+              creditor.upiId,
+              tripName
+            );
 
             return (
               <div
@@ -98,14 +103,14 @@ export const SettlementList: React.FC<SettlementListProps> = ({
 
                   <div>
                     <div className="flex items-center gap-1.5 text-xs font-semibold text-[#000000]">
-                      <span>{debtor?.name || 'Traveler A'}</span>
+                      <span>{debtor.name}</span>
                       <ArrowRight className="w-3.5 h-3.5 text-[#757575]" />
-                      <span className="text-[#0075de]">{creditor?.name || 'Traveler B'}</span>
+                      <span className="text-[#0075de]">{creditor.name}</span>
                     </div>
                     <div className="text-[11px] text-[#757575] flex items-center gap-2 mt-0.5">
-                      <span>UPI: {creditor?.upiId || 'Not set'}</span>
+                      <span>UPI: {creditor.upiId || 'Not set'}</span>
                       <span>•</span>
-                      <span>Phone: {debtor?.phone || 'N/A'}</span>
+                      <span>Phone: {debtor.phone || 'N/A'}</span>
                     </div>
                   </div>
                 </div>
@@ -136,7 +141,7 @@ export const SettlementList: React.FC<SettlementListProps> = ({
                   </a>
 
                   {/* Instant QR Payment Modal Trigger */}
-                  {debtor && creditor && onOpenQr && (
+                  {onOpenQr && (
                     <button
                       onClick={() => onOpenQr(s, debtor, creditor)}
                       className="px-2.5 py-1.5 rounded-[6px] bg-[#f6f5f4] hover:bg-[rgba(0,0,0,0.05)] text-[#000000] border border-[rgba(0,0,0,0.08)] text-xs font-medium flex items-center gap-1 transition-colors"

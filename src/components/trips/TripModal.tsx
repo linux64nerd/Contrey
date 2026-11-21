@@ -52,6 +52,10 @@ export const TripModal: React.FC<TripModalProps> = ({
   if (!isOpen) return null;
 
   const handleAddTraveler = () => {
+    if (travelers.length >= 25) {
+      toast.error('Maximum 25 travelers allowed per trip');
+      return;
+    }
     const newId = `t_${Date.now()}_${travelers.length}`;
     setTravelers((prev) => [
       ...prev,
@@ -75,33 +79,64 @@ export const TripModal: React.FC<TripModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) {
+    const cleanName = name.trim().slice(0, 80);
+    const cleanDestination = destination.trim().slice(0, 80);
+
+    if (!cleanName) {
       toast.error('Please enter a trip name');
       return;
     }
-    if (!destination.trim()) {
+    if (!cleanDestination) {
       toast.error('Please enter a destination');
       return;
     }
-    const budgetNum = parseFloat(totalBudget) || 0;
-    if (budgetNum <= 0) {
-      toast.error('Please enter a total trip budget');
+
+    const budgetNum = parseFloat(totalBudget);
+    if (!isFinite(budgetNum) || isNaN(budgetNum) || budgetNum <= 0) {
+      toast.error('Please enter a valid total trip budget greater than 0');
       return;
     }
-    if (travelers.some((t) => !t.name.trim())) {
-      toast.error('All travelers must have a name');
+    if (budgetNum > 1000000000) {
+      toast.error('Budget cannot exceed 1,000,000,000');
       return;
     }
 
+    // Validate dates
+    if (startDate && endDate) {
+      const startMs = new Date(startDate).getTime();
+      const endMs = new Date(endDate).getTime();
+      if (endMs < startMs) {
+        toast.error('Trip end date cannot be earlier than start date');
+        return;
+      }
+    }
+
+    if (travelers.length === 0) {
+      toast.error('At least one traveler is required');
+      return;
+    }
+
+    if (travelers.some((t) => !t.name.trim())) {
+      toast.error('All travelers must have a non-empty name');
+      return;
+    }
+
+    const sanitizedTravelers = travelers.map((t) => ({
+      ...t,
+      name: t.name.trim().slice(0, 50),
+      phone: t.phone.trim().slice(0, 20),
+      upiId: t.upiId ? t.upiId.trim().slice(0, 50) : undefined,
+    }));
+
     onSubmit({
       userId: 'usr_current',
-      name: name.trim(),
-      destination: destination.trim(),
-      startDate,
-      endDate,
-      totalBudget: budgetNum,
+      name: cleanName,
+      destination: cleanDestination,
+      startDate: startDate || new Date().toISOString().split('T')[0],
+      endDate: endDate || new Date(Date.now() + 5 * 86400000).toISOString().split('T')[0],
+      totalBudget: Math.round(budgetNum * 100) / 100,
       baseCurrency,
-      travelers,
+      travelers: sanitizedTravelers,
     });
 
     onClose();
@@ -139,6 +174,7 @@ export const TripModal: React.FC<TripModalProps> = ({
               </label>
               <input
                 type="text"
+                maxLength={80}
                 placeholder="e.g. Manali Snow Expedition"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -153,6 +189,7 @@ export const TripModal: React.FC<TripModalProps> = ({
               </label>
               <input
                 type="text"
+                maxLength={80}
                 placeholder="e.g. Goa, Paris, Manali, Tokyo"
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
@@ -184,6 +221,7 @@ export const TripModal: React.FC<TripModalProps> = ({
               <input
                 type="date"
                 value={endDate}
+                min={startDate}
                 onChange={(e) => setEndDate(e.target.value)}
                 className="w-full px-3 py-2 rounded-[8px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-[#000000] focus:outline-none focus:border-[#0075de]"
                 required
@@ -200,6 +238,8 @@ export const TripModal: React.FC<TripModalProps> = ({
               <input
                 type="number"
                 min="1"
+                max="1000000000"
+                step="0.01"
                 placeholder="e.g. 50000"
                 value={totalBudget}
                 onChange={(e) => setTotalBudget(e.target.value)}
@@ -249,6 +289,7 @@ export const TripModal: React.FC<TripModalProps> = ({
                   <div className="sm:col-span-4">
                     <input
                       type="text"
+                      maxLength={50}
                       placeholder="Name"
                       value={traveler.name}
                       onChange={(e) => handleUpdateTraveler(traveler.id, 'name', e.target.value)}
@@ -260,6 +301,7 @@ export const TripModal: React.FC<TripModalProps> = ({
                   <div className="sm:col-span-4">
                     <input
                       type="tel"
+                      maxLength={20}
                       placeholder="Phone (+91...)"
                       value={traveler.phone}
                       onChange={(e) => handleUpdateTraveler(traveler.id, 'phone', e.target.value)}
@@ -270,6 +312,7 @@ export const TripModal: React.FC<TripModalProps> = ({
                   <div className="sm:col-span-3">
                     <input
                       type="text"
+                      maxLength={50}
                       placeholder="UPI ID (optional)"
                       value={traveler.upiId || ''}
                       onChange={(e) => handleUpdateTraveler(traveler.id, 'upiId', e.target.value)}

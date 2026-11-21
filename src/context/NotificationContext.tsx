@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { InAppNotification, Trip } from '../types/trip';
 import { Expense } from '../types/expense';
 import { evaluateTripUrgency, sendBrowserPushNotification, UrgencyAnalysis } from '../services/urgencyService';
-import { storageService } from '../services/storageService';
+import { storageService, STORAGE_KEYS } from '../services/storageService';
 import { toast } from 'sonner';
 
 interface NotificationContextType {
@@ -26,7 +26,7 @@ export const NotificationProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ activeTrip, expenses, children }) => {
   const [notifications, setNotifications] = useState<InAppNotification[]>(() => {
-    return storageService.getItem<InAppNotification[]>('contrey_notifications', [
+    return storageService.getItem<InAppNotification[]>(STORAGE_KEYS.NOTIFICATIONS, [
       {
         id: 'notif_welcome',
         title: 'Welcome to Contrey PRO',
@@ -46,11 +46,11 @@ export const NotificationProvider: React.FC<{
   });
 
   const [isUrgencyBannerDismissed, setIsUrgencyBannerDismissed] = useState<boolean>(false);
-  const [lastAlertKey, setLastAlertKey] = useState<string>('');
+  const lastAlertKeyRef = useRef<string>('');
 
-  // Save notifications
+  // Persist notifications
   useEffect(() => {
-    storageService.setItem('contrey_notifications', notifications);
+    storageService.setItem(STORAGE_KEYS.NOTIFICATIONS, notifications);
   }, [notifications]);
 
   // Evaluate urgency whenever activeTrip or expenses change
@@ -60,24 +60,30 @@ export const NotificationProvider: React.FC<{
     if (!currentUrgency || currentUrgency.alerts.length === 0) return;
 
     // Check if new alert generated
-    const alertSignature = currentUrgency.alerts.map((a) => a.title).join('|');
-    if (alertSignature !== lastAlertKey) {
-      setLastAlertKey(alertSignature);
+    const alertSignature = `${activeTrip?.id || ''}:${currentUrgency.alerts.map((a) => a.title).join('|')}`;
+    if (alertSignature !== lastAlertKeyRef.current) {
+      lastAlertKeyRef.current = alertSignature;
       setIsUrgencyBannerDismissed(false); // reset banner so user sees the new alert
 
-      // Add to persistent in-app notifications
+      // Add to persistent in-app notifications if not already recorded recently
       currentUrgency.alerts.forEach((alert) => {
-        const newNotif: InAppNotification = {
-          id: `notif_${Date.now()}_${Math.random().toString(36).substring(7)}`,
-          tripId: activeTrip?.id,
-          title: alert.title,
-          message: alert.message,
-          severity: alert.severity,
-          timestamp: new Date().toISOString(),
-          read: false,
-        };
+        setNotifications((prev) => {
+          const isRecentDuplicate = prev.some(
+            (n) => n.title === alert.title && n.tripId === activeTrip?.id
+          );
+          if (isRecentDuplicate) return prev;
 
-        setNotifications((prev) => [newNotif, ...prev.slice(0, 40)]);
+          const newNotif: InAppNotification = {
+            id: `notif_${Date.now()}_${Math.random().toString(36).substring(7)}`,
+            tripId: activeTrip?.id,
+            title: alert.title,
+            message: alert.message,
+            severity: alert.severity,
+            timestamp: new Date().toISOString(),
+            read: false,
+          };
+          return [newNotif, ...prev.slice(0, 39)];
+        });
 
         // Trigger native browser notification
         sendBrowserPushNotification(alert.title, alert.message);
@@ -86,17 +92,17 @@ export const NotificationProvider: React.FC<{
         if (alert.severity === 'urgent') {
           toast.error(alert.title, {
             description: alert.message,
-            duration: 8000,
+            duration: 7000,
           });
         } else {
           toast.warning(alert.title, {
             description: alert.message,
-            duration: 6000,
+            duration: 5000,
           });
         }
       });
     }
-  }, [currentUrgency, lastAlertKey, activeTrip?.id]);
+  }, [currentUrgency, activeTrip?.id]);
 
   const requestPushPermission = async (): Promise<boolean> => {
     if (typeof window === 'undefined' || !('Notification' in window)) {
