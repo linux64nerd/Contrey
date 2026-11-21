@@ -56,16 +56,14 @@ export const RecommendationsPanel: React.FC<RecommendationsPanelProps> = ({
       </div>
 
       <div className="space-y-3">
-        {places.map((place, idx) => {
+        {places.map((place) => {
           const isSelected = selectedPlace?.id === place.id;
           const convertedPrice = convertAmount(place.estimatedPrice, 'EUR', currentCurrency);
-          const staggerClass = `stagger-${(idx % 6) + 1}`;
-
           return (
             <div
               key={place.id}
               onClick={() => onSelectPlace(place)}
-              className={`group p-4 rounded-xl border transition-all duration-200 cursor-pointer flex flex-col justify-between hover-lift-sm animate-fade-in-up ${staggerClass} ${
+              className={`group p-4 rounded-xl border transition-colors duration-150 cursor-pointer flex flex-col justify-between ${
                 isSelected
                   ? 'bg-indigo-50/60 dark:bg-indigo-950/40 border-indigo-400 dark:border-indigo-600 shadow-md ring-1 ring-indigo-500/20'
                   : 'bg-white dark:bg-slate-900 hover:bg-slate-50/80 dark:hover:bg-slate-800/80 border-slate-200/90 dark:border-slate-800 shadow-xs'

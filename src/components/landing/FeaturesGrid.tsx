@@ -79,11 +79,10 @@ export const FeaturesGrid: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {features.map((feat, idx) => {
             const Icon = feat.icon;
-            const staggerClass = `stagger-${idx + 1}`;
             return (
               <div
                 key={idx}
-                className={`contrey-card p-6 sm:p-7 flex flex-col justify-between group hover-lift animate-fade-in-up ${staggerClass} hover:border-indigo-300 dark:hover:border-indigo-600 transition-all`}
+                className="contrey-card p-6 sm:p-7 flex flex-col justify-between group hover:border-indigo-300 dark:hover:border-indigo-600 transition-colors"
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">

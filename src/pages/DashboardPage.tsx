@@ -91,7 +91,7 @@ export const DashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans selection:bg-indigo-100 selection:text-indigo-900 transition-colors duration-300 page-enter">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans selection:bg-indigo-100 selection:text-indigo-900 transition-colors duration-200">
       <Navbar />
 
       <main className="flex-1 max-w-[1400px] mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-6">
@@ -99,7 +99,7 @@ export const DashboardPage: React.FC = () => {
         <UrgencyBanner />
 
         {/* Top Trip Header & Action Ribbon */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 animate-fade-in-down">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="flex-1">
             <TripSelector
               trips={trips}
@@ -210,7 +210,7 @@ export const DashboardPage: React.FC = () => {
 
             {/* Tab 1: Overview & Visual Analytics */}
             {activeTab === 'overview' && (
-              <div key="overview" className="space-y-6 animate-fade-in-up">
+              <div key="overview" className="space-y-6">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Category Donut Chart */}
                   <CategoryDonutChart expenses={activeTripExpenses} />
@@ -247,7 +247,7 @@ export const DashboardPage: React.FC = () => {
 
             {/* Tab 2: Full Expense Ledger */}
             {activeTab === 'expenses' && (
-              <div key="expenses" className="space-y-4 animate-fade-in-up">
+              <div key="expenses" className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="font-heading text-lg font-bold text-slate-900 dark:text-white tracking-tight">
@@ -277,7 +277,7 @@ export const DashboardPage: React.FC = () => {
 
             {/* Tab 3: Detailed Settlement Plan */}
             {activeTab === 'settlements' && (
-              <div key="settlements" className="space-y-4 animate-fade-in-up">
+              <div key="settlements" className="space-y-4">
                 <SettlementList
                   settlements={settlementResult.settlements}
                   travelers={activeTrip.travelers}

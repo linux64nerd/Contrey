@@ -14,4 +14,17 @@ export default defineConfig({
     port: 5173,
     host: true,
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-charts': ['recharts'],
+          'vendor-maps': ['leaflet', 'react-leaflet'],
+          'vendor-ui': ['lucide-react', 'clsx', 'tailwind-merge', 'date-fns', 'sonner', 'qrcode.react'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600,
+  },
 });

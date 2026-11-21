@@ -36,18 +36,14 @@
   }
 }
 
-/* Glass Surface Utility */
+/* Glass Surface Utility - lightweight solid surface for high frame rates on low-end machines */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: #ffffff;
   border: 1px solid #e2e2e2;
 }
 
 .dark .glass-panel {
-  background: rgba(16, 16, 19, 0.9);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: #101013;
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -231,58 +227,43 @@
 }
 
 /* ----------------------------------------------------
-   Animation Suite & Micro-Interactions
+   Lightweight Micro-Interactions (Optimized for Low-Spec Hardware)
 ---------------------------------------------------- */
 
-/* Page transition entrance */
-@keyframes page-enter-fade {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-    transform: none;
-  }
-}
-
 .page-enter {
-  animation: page-enter-fade 0.25s ease-out both;
+  /* Instant page display without blocking animation delay */
+  opacity: 1;
 }
 
-/* Hover elevation physics */
+/* Fast, GPU-efficient hover states */
 .hover-lift {
-  transition: transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 250ms ease, border-color 200ms ease;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 .hover-lift:hover {
-  transform: translateY(-4px);
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08);
 }
 
 .hover-lift-sm {
-  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 200ms ease;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 .hover-lift-sm:hover {
-  transform: translateY(-2px);
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.06);
 }
 
 /* Interactive button press */
 .interactive-press {
-  transition: transform 150ms ease, opacity 150ms ease;
+  transition: opacity 120ms ease;
 }
 .interactive-press:active {
-  transform: scale(0.96);
+  opacity: 0.85;
 }
 
-/* Stagger entrance delays for lists and grids */
-.stagger-1 { animation-delay: 50ms; }
-.stagger-2 { animation-delay: 100ms; }
-.stagger-3 { animation-delay: 150ms; }
-.stagger-4 { animation-delay: 200ms; }
-.stagger-5 { animation-delay: 250ms; }
-.stagger-6 { animation-delay: 300ms; }
-.stagger-7 { animation-delay: 350ms; }
-.stagger-8 { animation-delay: 400ms; }
-
-/* Subtle pulse glow for highlights */
-.glow-pulse {
-  animation: pulse-glow 3s ease-in-out infinite;
+/* Global reduced motion support for low-spec laptops & battery-saving mode */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

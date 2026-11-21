@@ -83,15 +83,14 @@ export const ExpenseTable: React.FC<ExpenseTableProps> = ({
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-900 dark:text-slate-100">
-              {filteredExpenses.map((expense, idx) => {
+              {filteredExpenses.map((expense) => {
                 const payer = travelerMap.get(expense.paidById);
                 const convertedAmount = convertAmount(expense.amount, expense.currency, currentCurrency);
-                const staggerClass = `stagger-${(idx % 6) + 1}`;
 
                 return (
                   <tr
                     key={expense.id}
-                    className={`hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-all duration-200 group animate-fade-in-up ${staggerClass}`}
+                    className="hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-colors duration-150 group"
                   >
                     {/* Title & Date */}
                     <td className="px-5 py-3.5">

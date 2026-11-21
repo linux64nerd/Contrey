@@ -58,7 +58,7 @@ export const SettlementList: React.FC<SettlementListProps> = ({
         </div>
       ) : (
         <div className="space-y-3">
-          {settlements.map((s, sIdx) => {
+          {settlements.map((s) => {
             const debtor = travelerMap.get(s.fromTravelerId) || {
               id: s.fromTravelerId,
               name: 'Crew Member',
@@ -81,12 +81,10 @@ export const SettlementList: React.FC<SettlementListProps> = ({
               tripName
             );
 
-            const staggerClass = `stagger-${(sIdx % 6) + 1}`;
-
             return (
               <div
                 key={s.id}
-                className={`p-4 rounded-xl border transition-all duration-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover-lift-sm animate-fade-in-up ${staggerClass} ${
+                className={`p-4 rounded-xl border transition-colors duration-150 flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
                   s.isSettled
                     ? 'bg-slate-50/70 dark:bg-slate-950/50 border-slate-200 dark:border-slate-800 opacity-60'
                     : 'bg-white dark:bg-slate-800/80 border-slate-200/90 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600 shadow-xs'

@@ -18,7 +18,7 @@ export const UrgencyBanner: React.FC = () => {
 
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl p-4 border transition-all animate-in fade-in slide-in-from-top-1 ${
+      className={`relative overflow-hidden rounded-2xl p-4 border transition-colors ${
         isCritical
           ? 'bg-rose-50/90 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900/60 text-rose-950 dark:text-rose-100 shadow-xs'
           : 'bg-amber-50/90 dark:bg-amber-950/40 border-amber-200 dark:border-amber-900/60 text-amber-950 dark:text-amber-100 shadow-xs'

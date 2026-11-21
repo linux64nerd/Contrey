@@ -31,7 +31,7 @@ export const KpiSummaryCards: React.FC<KpiSummaryCardsProps> = ({
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
       {/* 1. Total Budget */}
-      <div className="contrey-card p-5 flex flex-col justify-between dark:bg-slate-900 dark:border-slate-800 hover-lift animate-fade-in-up stagger-1 group">
+      <div className="contrey-card p-5 flex flex-col justify-between dark:bg-slate-900 dark:border-slate-800 group">
         <div className="flex items-center justify-between mb-3">
           <span className="text-[11px] uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400">
             Total Budget
@@ -51,7 +51,7 @@ export const KpiSummaryCards: React.FC<KpiSummaryCardsProps> = ({
       </div>
 
       {/* 2. Total Spent */}
-      <div className="contrey-card p-5 flex flex-col justify-between dark:bg-slate-900 dark:border-slate-800 hover-lift animate-fade-in-up stagger-2 group">
+      <div className="contrey-card p-5 flex flex-col justify-between dark:bg-slate-900 dark:border-slate-800 group">
         <div className="flex items-center justify-between mb-3">
           <span className="text-[11px] uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400">
             Total Spent
@@ -86,7 +86,7 @@ export const KpiSummaryCards: React.FC<KpiSummaryCardsProps> = ({
       </div>
 
       {/* 3. Fair Share Per Person */}
-      <div className="contrey-card p-5 flex flex-col justify-between dark:bg-slate-900 dark:border-slate-800 hover-lift animate-fade-in-up stagger-3 group">
+      <div className="contrey-card p-5 flex flex-col justify-between dark:bg-slate-900 dark:border-slate-800 group">
         <div className="flex items-center justify-between mb-3">
           <span className="text-[11px] uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400">
             Share / Person
@@ -106,7 +106,7 @@ export const KpiSummaryCards: React.FC<KpiSummaryCardsProps> = ({
       </div>
 
       {/* 4. Remaining Buffer */}
-      <div className="contrey-card p-5 flex flex-col justify-between dark:bg-slate-900 dark:border-slate-800 hover-lift animate-fade-in-up stagger-4 group">
+      <div className="contrey-card p-5 flex flex-col justify-between dark:bg-slate-900 dark:border-slate-800 group">
         <div className="flex items-center justify-between mb-3">
           <span className="text-[11px] uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400">
             Remaining Buffer
@@ -140,7 +140,7 @@ export const KpiSummaryCards: React.FC<KpiSummaryCardsProps> = ({
       </div>
 
       {/* 5. Settlement Debt Resolution */}
-      <div className="contrey-card p-5 flex flex-col justify-between dark:bg-slate-900 dark:border-slate-800 hover-lift animate-fade-in-up stagger-5 group">
+      <div className="contrey-card p-5 flex flex-col justify-between dark:bg-slate-900 dark:border-slate-800 group">
         <div className="flex items-center justify-between mb-3">
           <span className="text-[11px] uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400">
             Settlement Progress

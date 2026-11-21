@@ -82,7 +82,7 @@ export const SettlementQrModal: React.FC<SettlementQrModalProps> = ({
 
   const modalContent = (
     <div
-      className="fixed inset-0 z-[100] flex min-h-screen items-center justify-center p-4 overflow-y-auto bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-[100] flex min-h-screen items-center justify-center p-4 overflow-y-auto bg-slate-900/60 transition-opacity duration-150"
       onClick={onClose}
       role="dialog"
       aria-modal="true"

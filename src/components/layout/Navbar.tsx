@@ -52,16 +52,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuth }) => {
     (location.pathname === '/' && !isAuthenticated);
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white/85 dark:bg-slate-950/85 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 transition-colors duration-300">
+    <header className="sticky top-0 z-40 w-full bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 transition-colors duration-200">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Brand Logo - links to /home if authenticated, or / */}
+        {/* Brand Logo - always links to homepage / */}
         <div className="flex items-center gap-8">
           <Link
-            to={isAuthenticated ? '/home' : '/'}
+            to="/"
             className="flex items-center gap-2.5 group"
             title="Contrey - Return to Homepage"
           >
-            <div className="w-9 h-9 rounded-xl bg-[#4d49fc] text-white flex items-center justify-center font-bold text-base shadow-sm shadow-[#4d49fc]/30 group-hover:scale-105 group-hover:rotate-3 transition-all duration-300">
+            <div className="w-9 h-9 rounded-xl bg-[#4d49fc] text-white flex items-center justify-center font-bold text-base shadow-sm shadow-[#4d49fc]/20 transition-all">
               <span>C</span>
             </div>
             <div className="flex flex-col">
@@ -76,11 +76,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuth }) => {
 
           {/* Navigation Links */}
           <nav className="hidden md:flex items-center gap-1 text-sm font-medium">
-            {/* Always accessible Home link so logged in users can view the homepage anytime! */}
+            {/* Always accessible Home link */}
             <Link
-              to="/home"
-              className={`px-3 py-1.5 rounded-lg transition-all hover-lift-sm ${
-                location.pathname === '/home' || (location.pathname === '/' && !isAuthenticated)
+              to="/"
+              className={`px-3 py-1.5 rounded-lg transition-colors ${
+                location.pathname === '/' || location.pathname === '/home'
                   ? 'bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 font-bold'
                   : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
@@ -92,8 +92,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuth }) => {
               <>
                 <Link
                   to="/dashboard"
-                  className={`px-3 py-1.5 rounded-lg transition-all hover-lift-sm ${
-                    location.pathname === '/dashboard' || (location.pathname === '/' && isAuthenticated)
+                  className={`px-3 py-1.5 rounded-lg transition-colors ${
+                    location.pathname === '/dashboard'
                       ? 'bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 font-bold'
                       : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                   }`}
@@ -102,7 +102,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuth }) => {
                 </Link>
                 <Link
                   to="/map"
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all hover-lift-sm ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors ${
                     location.pathname === '/map'
                       ? 'bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 font-bold'
                       : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -117,7 +117,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuth }) => {
             {/* Dedicated Full Page for Features */}
             <Link
               to="/features"
-              className={`px-3 py-1.5 rounded-lg transition-all hover-lift-sm ${
+              className={`px-3 py-1.5 rounded-lg transition-colors ${
                 location.pathname === '/features'
                   ? 'bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 font-bold'
                   : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -129,7 +129,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuth }) => {
             {/* Dedicated Full Page for How It Works */}
             <Link
               to="/how-it-works"
-              className={`px-3 py-1.5 rounded-lg transition-all hover-lift-sm ${
+              className={`px-3 py-1.5 rounded-lg transition-colors ${
                 location.pathname === '/how-it-works' || location.pathname === '/guide'
                   ? 'bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 font-bold'
                   : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -199,7 +199,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuth }) => {
                     className="fixed inset-0 z-40"
                     onClick={() => setIsProfileMenuOpen(false)}
                   />
-                  <div className="absolute right-0 mt-2 w-56 rounded-2xl bg-white dark:bg-slate-900 shadow-xl border border-slate-200/90 dark:border-slate-800 py-1.5 z-50 animate-fade-in-down">
+                  <div className="absolute right-0 mt-2 w-56 rounded-2xl bg-white dark:bg-slate-900 shadow-xl border border-slate-200/90 dark:border-slate-800 py-1.5 z-50">
                     <div className="px-3.5 py-2 border-b border-slate-100 dark:border-slate-800">
                       <p className="text-xs font-semibold text-slate-900 dark:text-white truncate">
                         {displayName}
@@ -219,7 +219,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAuth }) => {
                     </Link>
 
                     <Link
-                      to="/home"
+                      to="/"
                       onClick={() => setIsProfileMenuOpen(false)}
                       className="flex items-center gap-2 px-3.5 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
                     >

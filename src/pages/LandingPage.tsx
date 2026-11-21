@@ -35,7 +35,7 @@ export const LandingPage: React.FC = () => {
   }, [location.pathname, location.hash]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans selection:bg-indigo-100 selection:text-indigo-900 transition-colors duration-300 page-enter">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans selection:bg-indigo-100 selection:text-indigo-900 transition-colors duration-200">
       <Navbar onOpenAuth={handleOpenAuth} />
       <main className="flex-1">
         <HeroSection onGetStarted={handleOpenAuth} />

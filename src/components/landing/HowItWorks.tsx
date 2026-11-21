@@ -44,11 +44,10 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ onGetStarted }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {steps.map((step, idx) => {
-            const staggerClass = `stagger-${idx + 1}`;
             return (
               <div
                 key={idx}
-                className={`contrey-card p-7 flex flex-col justify-between bg-white dark:bg-slate-900 relative overflow-hidden hover-lift animate-fade-in-up ${staggerClass} group`}
+                className="contrey-card p-7 flex flex-col justify-between bg-white dark:bg-slate-900 relative overflow-hidden group hover:border-indigo-300 dark:hover:border-indigo-600 transition-colors"
               >
                 <div className="space-y-4">
                   <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${step.gradient} text-white flex items-center justify-center font-heading font-extrabold text-lg shadow-md group-hover:scale-110 transition-transform duration-300`}>
@@ -66,7 +65,7 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ onGetStarted }) => {
           })}
         </div>
 
-        <div className="mt-14 text-center animate-fade-in-up stagger-4">
+        <div className="mt-14 text-center">
           <button
             onClick={onGetStarted}
             className="btn-primary hover-lift interactive-press"

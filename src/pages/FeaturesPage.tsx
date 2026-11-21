@@ -20,29 +20,29 @@ export const FeaturesPage: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans selection:bg-indigo-100 selection:text-indigo-900 transition-colors duration-300 page-enter">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans selection:bg-indigo-100 selection:text-indigo-900 transition-colors duration-200">
       <Navbar />
 
       <main className="flex-1">
         {/* Hero Banner */}
         <section className="relative overflow-hidden pt-12 pb-16 md:pt-16 md:pb-24 border-b border-slate-200/80 dark:border-slate-800">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-[#4d49fc]/10 via-[#c4baff]/5 to-transparent dark:from-[#4d49fc]/15 dark:via-transparent blur-3xl pointer-events-none -z-10" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-64 bg-gradient-to-b from-[#4d49fc]/10 via-[#c4baff]/5 to-transparent dark:from-[#4d49fc]/15 dark:via-transparent blur-xl pointer-events-none -z-10" />
 
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-5">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-indigo-100 dark:border-indigo-900/60 text-xs font-semibold text-indigo-700 dark:text-indigo-300 shadow-xs animate-fade-in-down">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-indigo-100 dark:border-indigo-900/60 text-xs font-semibold text-indigo-700 dark:text-indigo-300 shadow-xs">
               <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
               <span>Full System Architecture & Capabilities</span>
             </div>
 
-            <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white tracking-tight max-w-3xl mx-auto leading-tight animate-fade-in-up">
+            <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white tracking-tight max-w-3xl mx-auto leading-tight">
               Engineered for Mathematical Certainty & Group Travel Ease
             </h1>
 
-            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed animate-fade-in-up stagger-1">
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
               Explore the six core technical systems powering Contrey: from greedy debt minimization to real-time FX conversions and radius radar discovery.
             </p>
 
-            <div className="pt-2 flex flex-wrap items-center justify-center gap-3 animate-fade-in-up stagger-2">
+            <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
               {isAuthenticated ? (
                 <Link
                   to="/dashboard"
