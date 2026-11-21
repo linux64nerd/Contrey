@@ -23,52 +23,52 @@ export const RadiusSelector: React.FC<RadiusSelectorProps> = ({
   const categories: { id: string; label: string }[] = [
     { id: 'all', label: 'All Categories' },
     { id: 'hotel', label: 'Hotels' },
-    { id: 'restaurant', label: 'Dining & Cafes' },
+    { id: 'restaurant', label: 'Dining & Cafés' },
     { id: 'shopping', label: 'Shopping' },
     { id: 'attraction', label: 'Attractions' },
   ];
 
   return (
-    <div className="bg-[#ffffff] rounded-[12px] p-4 sm:p-5 border border-[rgba(0,0,0,0.08)] space-y-3.5">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div className="contrey-card p-5 space-y-4 dark:bg-slate-900 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Radius Filter */}
         <div className="flex items-center gap-3">
-          <span className="text-xs font-semibold text-[#000000] flex items-center gap-1.5">
-            <Compass className="w-3.5 h-3.5 text-[#0075de]" />
-            <span>Search Radius:</span>
+          <span className="text-xs uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+            <Compass className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+            <span>Search Radar:</span>
           </span>
-          <div className="flex p-0.5 bg-[#f6f5f4] rounded-[6px] border border-[rgba(0,0,0,0.06)]">
+          <div className="flex p-0.5 bg-slate-100 dark:bg-slate-800 rounded-xl">
             <button
               onClick={() => onSelectRadius(1)}
-              className={`px-3 py-1 rounded-[4px] text-xs font-medium transition-all ${
+              className={`px-3.5 py-1 rounded-lg text-xs font-bold transition-all ${
                 radiusKm === 1
-                  ? 'bg-[#ffffff] text-[#0075de] shadow-xs font-semibold'
-                  : 'text-[#757575] hover:text-[#000000]'
+                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              1 km
+              1 km Radius
             </button>
             <button
               onClick={() => onSelectRadius(2)}
-              className={`px-3 py-1 rounded-[4px] text-xs font-medium transition-all ${
+              className={`px-3.5 py-1 rounded-lg text-xs font-bold transition-all ${
                 radiusKm === 2
-                  ? 'bg-[#ffffff] text-[#0075de] shadow-xs font-semibold'
-                  : 'text-[#757575] hover:text-[#000000]'
+                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              2 km
+              2 km Radius
             </button>
           </div>
         </div>
 
         {/* Sort Selector */}
         <div className="flex items-center gap-2">
-          <ArrowUpDown className="w-3.5 h-3.5 text-[#757575]" />
-          <span className="text-xs font-medium text-[#757575]">Sort By:</span>
+          <ArrowUpDown className="w-4 h-4 text-slate-400" />
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Sort By:</span>
           <select
             value={sortBy}
             onChange={(e) => onSelectSortBy(e.target.value as any)}
-            className="px-2.5 py-1 rounded-[6px] border border-[rgba(0,0,0,0.12)] text-xs font-medium text-[#000000] bg-[#ffffff] focus:outline-none focus:border-[#0075de] cursor-pointer"
+            className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 cursor-pointer"
           >
             <option value="best-value">✨ Best Value</option>
             <option value="rating">★ Highest Rating</option>
@@ -80,21 +80,21 @@ export const RadiusSelector: React.FC<RadiusSelectorProps> = ({
 
       {/* Category Pills Bar */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
-        <Filter className="w-3.5 h-3.5 text-[#757575] shrink-0" />
+        <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0" />
         {categories.map((cat) => (
           <button
             key={cat.id}
             onClick={() => onSelectCategory(cat.id)}
-            className={`px-3 py-1 rounded-full whitespace-nowrap font-medium transition-all border ${
+            className={`px-3.5 py-1 rounded-xl whitespace-nowrap text-xs font-semibold transition-all ${
               selectedCategory === cat.id
-                ? 'bg-[#0075de] text-[#ffffff] border-[#0075de]'
-                : 'bg-[#f6f5f4] hover:bg-[#ffffff] text-[#615d59] border-[rgba(0,0,0,0.08)]'
+                ? 'bg-indigo-600 text-white shadow-xs'
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
             }`}
           >
             {cat.label}
           </button>
         ))}
-        <span className="text-xs text-[#757575] ml-auto whitespace-nowrap font-medium">
+        <span className="text-xs font-bold text-slate-500 dark:text-slate-400 ml-auto whitespace-nowrap">
           {totalFound} spots found
         </span>
       </div>

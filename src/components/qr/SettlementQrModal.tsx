@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { QRCodeCanvas } from 'qrcode.react';
 import { X, QrCode, Download, Copy, ArrowRight } from 'lucide-react';
 import { Settlement, Traveler } from '../../types/trip';
@@ -25,6 +26,24 @@ export const SettlementQrModal: React.FC<SettlementQrModalProps> = ({
 }) => {
   const { currentCurrency, format, convertAmount } = useCurrency();
   const qrRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -60,21 +79,28 @@ export const SettlementQrModal: React.FC<SettlementQrModalProps> = ({
     toast.success('Payment link copied to clipboard!');
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
+  const modalContent = (
+    <div
+      className="fixed inset-0 z-[100] flex min-h-screen items-center justify-center p-4 overflow-y-auto bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+    >
       <div
-        className="relative w-full max-w-sm bg-[#ffffff] rounded-[12px] shadow-[0_4px_16px_rgba(0,0,0,0.15)] border border-[rgba(0,0,0,0.08)] overflow-hidden text-center flex flex-col"
+        className="relative w-full max-w-sm my-auto bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200/90 dark:border-slate-800 overflow-hidden text-center flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-4 bg-[#ffffff] border-b border-[rgba(0,0,0,0.08)] flex items-center justify-between">
+        <div className="p-4 bg-slate-50/70 dark:bg-slate-850/80 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <QrCode className="w-4 h-4 text-[#0075de]" />
-            <h3 className="text-sm font-bold text-[#000000]">Instant Settlement QR</h3>
+            <QrCode className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+            <h3 className="font-heading text-sm font-bold text-slate-900 dark:text-white">
+              Instant Settlement QR
+            </h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-[6px] hover:bg-[#f6f5f4] text-[#757575] hover:text-[#000000] transition-colors"
+            className="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -82,64 +108,67 @@ export const SettlementQrModal: React.FC<SettlementQrModalProps> = ({
 
         {/* Body */}
         <div className="p-6 space-y-4">
-          <div className="flex items-center justify-center gap-2 text-xs font-semibold text-[#000000]">
+          <div className="flex items-center justify-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
             <span>{debtor.name}</span>
-            <ArrowRight className="w-3.5 h-3.5 text-[#757575]" />
-            <span className="text-[#0075de]">{creditor.name}</span>
+            <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+            <span className="text-indigo-600 dark:text-indigo-400 font-bold">{creditor.name}</span>
           </div>
 
-          <div className="text-3xl font-bold text-[#000000] tracking-tight">
+          <div className="font-heading text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             {format(convertedAmount)}
           </div>
 
-          {/* Scannable Canvas QR */}
+          {/* Scannable Canvas QR - always white background for scannability */}
           <div
             ref={qrRef}
-            className="p-3 bg-[#ffffff] rounded-[8px] border border-[rgba(0,0,0,0.12)] inline-block mx-auto shadow-xs"
+            className="p-3 bg-white rounded-xl border border-slate-200 dark:border-slate-700 inline-block mx-auto shadow-sm"
           >
             <QRCodeCanvas
               value={qrPayload}
               size={180}
               level="H"
               marginSize={2}
-              fgColor="#000000"
+              fgColor="#0f172a"
             />
           </div>
 
-          {/* Payment Method Details */}
-          <div className="p-3 rounded-[8px] bg-[#f6f5f4] border border-[rgba(0,0,0,0.08)] text-xs text-[#615d59] space-y-0.5">
-            <p className="font-semibold text-[#000000]">
-              {isUpiSupported ? '📱 UPI Direct Transfer QR' : '💳 Bank / Card Transfer'}
-            </p>
+          <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/80 text-xs space-y-1">
+            <span className="text-slate-500 dark:text-slate-400 font-medium block">
+              {isUpiSupported ? 'NPCI UPI Scannable Payload' : 'Payment Ledger Reference'}
+            </span>
             {creditor.upiId && (
-              <p className="font-mono text-[11px] text-[#0075de]">
-                UPI ID: {creditor.upiId}
-              </p>
+              <span className="font-mono text-slate-800 dark:text-slate-200 font-bold block">
+                {creditor.upiId}
+              </span>
             )}
-            <p className="text-[10px] text-[#757575]">
-              Scan with GPay, PhonePe, Paytm, or any banking app.
+            <p className="text-[11px] text-slate-400 dark:text-slate-500">
+              Scan with GPay, PhonePe, Paytm or banking app
             </p>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex items-center gap-2 pt-2">
-            <button
-              onClick={handleCopyLink}
-              className="flex-1 py-2 px-3 rounded-[8px] bg-[#f6f5f4] hover:bg-[rgba(0,0,0,0.05)] border border-[rgba(0,0,0,0.08)] text-[#000000] text-xs font-medium flex items-center justify-center gap-1.5 transition-colors"
-            >
-              <Copy className="w-3.5 h-3.5 text-[#757575]" />
-              <span>Copy Link</span>
-            </button>
+          {/* Actions */}
+          <div className="flex items-center justify-center gap-2 pt-1">
             <button
               onClick={handleDownloadQr}
-              className="flex-1 py-2 px-3 rounded-[8px] bg-[#0075de] hover:bg-[#0066c0] text-[#ffffff] text-xs font-medium shadow-xs flex items-center justify-center gap-1.5 transition-colors"
+              className="btn-secondary !py-2 !px-3.5 !text-xs !rounded-xl"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>Download QR</span>
+              <span>Download PNG</span>
+            </button>
+            <button
+              onClick={handleCopyLink}
+              className="btn-secondary !py-2 !px-3.5 !text-xs !rounded-xl"
+            >
+              <Copy className="w-3.5 h-3.5" />
+              <span>Copy Link</span>
             </button>
           </div>
         </div>
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined'
+    ? createPortal(modalContent, document.body)
+    : null;
 };

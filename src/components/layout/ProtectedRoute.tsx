@@ -10,10 +10,13 @@ export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ childr
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f6f5f4]">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 transition-colors">
         <div className="text-center space-y-3">
-          <Loader2 className="w-8 h-8 animate-spin text-[#0075de] mx-auto" />
-          <p className="text-xs text-[#757575] font-medium">Verifying Contrey session...</p>
+          <div className="w-9 h-9 rounded-xl bg-[#4d49fc] text-white flex items-center justify-center font-bold text-sm shadow-md shadow-[#4d49fc]/30 mx-auto animate-pulse">
+            C
+          </div>
+          <Loader2 className="w-5 h-5 animate-spin text-[#4d49fc] mx-auto" />
+          <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Verifying Contrey session...</p>
         </div>
       </div>
     );

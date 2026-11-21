@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { X, Plane, Users, Plus, Trash2 } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { X, Plane, Plus, Trash2 } from 'lucide-react';
 import { Trip, Traveler } from '../../types/trip';
 import { CurrencyCode } from '../../types/currency';
 import { toast } from 'sonner';
@@ -48,6 +49,24 @@ export const TripModal: React.FC<TripModalProps> = ({
       ]);
     }
   }, [initialTrip, isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -101,258 +120,244 @@ export const TripModal: React.FC<TripModalProps> = ({
       return;
     }
 
-    // Validate dates
-    if (startDate && endDate) {
-      const startMs = new Date(startDate).getTime();
-      const endMs = new Date(endDate).getTime();
-      if (endMs < startMs) {
-        toast.error('Trip end date cannot be earlier than start date');
-        return;
-      }
-    }
-
     if (travelers.length === 0) {
       toast.error('At least one traveler is required');
       return;
     }
 
-    if (travelers.some((t) => !t.name.trim())) {
-      toast.error('All travelers must have a non-empty name');
-      return;
-    }
-
-    const sanitizedTravelers = travelers.map((t) => ({
-      ...t,
-      name: t.name.trim().slice(0, 50),
+    // Clean travelers
+    const sanitizedTravelers = travelers.map((t, idx) => ({
+      id: t.id || `t_${Date.now()}_${idx}`,
+      name: t.name.trim().slice(0, 40) || `Traveler ${idx + 1}`,
       phone: t.phone.trim().slice(0, 20),
       upiId: t.upiId ? t.upiId.trim().slice(0, 50) : undefined,
     }));
 
     onSubmit({
-      userId: 'usr_current',
       name: cleanName,
       destination: cleanDestination,
       startDate: startDate || new Date().toISOString().split('T')[0],
       endDate: endDate || new Date(Date.now() + 5 * 86400000).toISOString().split('T')[0],
-      totalBudget: Math.round(budgetNum * 100) / 100,
+      totalBudget: budgetNum,
       baseCurrency,
       travelers: sanitizedTravelers,
+      userId: initialTrip?.userId || 'usr_organizer',
     });
 
     onClose();
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
+  const modalContent = (
+    <div
+      className="fixed inset-0 z-[100] flex min-h-screen items-center justify-center p-4 overflow-y-auto bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+    >
       <div
-        className="relative w-full max-w-xl bg-[#ffffff] rounded-[12px] shadow-[0_4px_16px_rgba(0,0,0,0.15)] border border-[rgba(0,0,0,0.08)] overflow-hidden max-h-[90vh] flex flex-col"
+        className="relative w-full max-w-xl my-auto bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200/90 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-6 py-4 bg-[#ffffff] border-b border-[rgba(0,0,0,0.08)] flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Plane className="w-5 h-5 text-[#0075de] -rotate-45" />
-            <h3 className="text-base font-bold text-[#000000]">
-              {initialTrip ? 'Edit Trip Notebook' : 'Create New Trip Notebook'}
-            </h3>
+        <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/60 dark:bg-slate-850/80">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+              <Plane className="w-4 h-4" />
+            </div>
+            <div>
+              <h3 className="font-heading text-base font-bold text-slate-900 dark:text-white">
+                {initialTrip ? 'Configure Trip Space' : 'Create New Trip Space'}
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Setup destination anchor, crew members, and base ledger currency
+              </p>
+            </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-[6px] hover:bg-[#f6f5f4] text-[#757575] hover:text-[#000000] transition-colors"
+            className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4 text-xs font-normal">
+        {/* Scrollable Form */}
+        <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto flex-1">
           {/* Trip Name & Destination */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-[#000000] mb-1">
-                Trip Name
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                Trip Name *
               </label>
               <input
                 type="text"
-                maxLength={80}
-                placeholder="e.g. Manali Snow Expedition"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-3 py-2 rounded-[8px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-[#000000] focus:outline-none focus:border-[#0075de]"
+                placeholder="e.g. Goa Sun & Sand 2026"
+                className="w-full px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
                 required
               />
             </div>
-
             <div>
-              <label className="block text-xs font-medium text-[#000000] mb-1">
-                Destination City
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                Destination Anchor *
               </label>
               <input
                 type="text"
-                maxLength={80}
-                placeholder="e.g. Goa, Paris, Manali, Tokyo"
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
-                className="w-full px-3 py-2 rounded-[8px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-[#000000] focus:outline-none focus:border-[#0075de]"
+                placeholder="e.g. Goa, India or Bali, Indonesia"
+                className="w-full px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
                 required
               />
             </div>
           </div>
 
-          {/* Dates */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* Budget & Base Currency */}
+          <div className="grid grid-cols-3 gap-3">
+            <div className="col-span-2">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                Total Budget Target *
+              </label>
+              <input
+                type="number"
+                step="1"
+                min="1"
+                value={totalBudget}
+                onChange={(e) => setTotalBudget(e.target.value)}
+                placeholder="60000"
+                className="w-full px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 font-mono"
+                required
+              />
+            </div>
             <div>
-              <label className="block text-xs font-medium text-[#000000] mb-1">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                Base Currency
+              </label>
+              <select
+                value={baseCurrency}
+                onChange={(e) => setBaseCurrency(e.target.value as CurrencyCode)}
+                className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 cursor-pointer"
+              >
+                <option value="INR">INR (₹)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="USD">USD ($)</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Dates */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                 Start Date
               </label>
               <input
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full px-3 py-2 rounded-[8px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-[#000000] focus:outline-none focus:border-[#0075de]"
-                required
+                className="w-full px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
               />
             </div>
-
             <div>
-              <label className="block text-xs font-medium text-[#000000] mb-1">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                 End Date
               </label>
               <input
                 type="date"
                 value={endDate}
-                min={startDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="w-full px-3 py-2 rounded-[8px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-[#000000] focus:outline-none focus:border-[#0075de]"
-                required
+                className="w-full px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
               />
             </div>
           </div>
 
-          {/* Budget & Currency */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-[#000000] mb-1">
-                Total Trip Budget
-              </label>
-              <input
-                type="number"
-                min="1"
-                max="1000000000"
-                step="0.01"
-                placeholder="e.g. 50000"
-                value={totalBudget}
-                onChange={(e) => setTotalBudget(e.target.value)}
-                className="w-full px-3 py-2 rounded-[8px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-[#000000] font-bold focus:outline-none focus:border-[#0075de]"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-[#000000] mb-1">
-                Base Currency
-              </label>
-              <select
-                value={baseCurrency}
-                onChange={(e) => setBaseCurrency(e.target.value as CurrencyCode)}
-                className="w-full px-3 py-2 rounded-[8px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-[#000000] focus:outline-none focus:border-[#0075de]"
-              >
-                <option value="INR">INR (₹) - Indian Rupee</option>
-                <option value="EUR">EUR (€) - Euro</option>
-                <option value="USD">USD ($) - US Dollar</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Travelers Roster Editor */}
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-medium text-[#000000] flex items-center gap-1.5">
-                <Users className="w-3.5 h-3.5 text-[#0075de]" />
-                <span>Travelers List ({travelers.length})</span>
-              </label>
+          {/* Travelers Management */}
+          <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="block text-xs font-bold text-slate-900 dark:text-white">
+                  Crew Members ({travelers.length})
+                </label>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  Add phone numbers for WhatsApp & UPI handles for instant QR
+                </p>
+              </div>
               <button
                 type="button"
                 onClick={handleAddTraveler}
-                className="text-xs font-medium text-[#0075de] hover:underline flex items-center gap-1 px-2 py-0.5 rounded-[6px] bg-[#e6f3fe]"
+                className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 text-xs font-semibold transition-colors"
               >
-                <Plus className="w-3 h-3" /> Add Traveler
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add Member</span>
               </button>
             </div>
 
             <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
-              {travelers.map((traveler) => (
+              {travelers.map((t) => (
                 <div
-                  key={traveler.id}
-                  className="p-2.5 rounded-[8px] bg-[#f6f5f4] border border-[rgba(0,0,0,0.08)] grid grid-cols-1 sm:grid-cols-12 gap-2 items-center"
+                  key={t.id}
+                  className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex items-center gap-2"
                 >
-                  <div className="sm:col-span-4">
-                    <input
-                      type="text"
-                      maxLength={50}
-                      placeholder="Name"
-                      value={traveler.name}
-                      onChange={(e) => handleUpdateTraveler(traveler.id, 'name', e.target.value)}
-                      className="w-full px-2.5 py-1 rounded-[6px] bg-[#ffffff] border border-[rgba(0,0,0,0.1)] text-[#000000] focus:outline-none focus:border-[#0075de]"
-                      required
-                    />
-                  </div>
-
-                  <div className="sm:col-span-4">
-                    <input
-                      type="tel"
-                      maxLength={20}
-                      placeholder="Phone (+91...)"
-                      value={traveler.phone}
-                      onChange={(e) => handleUpdateTraveler(traveler.id, 'phone', e.target.value)}
-                      className="w-full px-2.5 py-1 rounded-[6px] bg-[#ffffff] border border-[rgba(0,0,0,0.1)] text-[#000000] focus:outline-none focus:border-[#0075de]"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-3">
-                    <input
-                      type="text"
-                      maxLength={50}
-                      placeholder="UPI ID (optional)"
-                      value={traveler.upiId || ''}
-                      onChange={(e) => handleUpdateTraveler(traveler.id, 'upiId', e.target.value)}
-                      className="w-full px-2.5 py-1 rounded-[6px] bg-[#ffffff] border border-[rgba(0,0,0,0.1)] text-[#000000] focus:outline-none focus:border-[#0075de]"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-1 text-right">
+                  <input
+                    type="text"
+                    value={t.name}
+                    onChange={(e) => handleUpdateTraveler(t.id, 'name', e.target.value)}
+                    placeholder="Traveler Name"
+                    className="flex-1 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
+                    required
+                  />
+                  <input
+                    type="tel"
+                    value={t.phone}
+                    onChange={(e) => handleUpdateTraveler(t.id, 'phone', e.target.value)}
+                    placeholder="+91 Phone"
+                    className="w-28 px-2 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 font-mono focus:outline-none focus:border-indigo-500"
+                  />
+                  <input
+                    type="text"
+                    value={t.upiId || ''}
+                    onChange={(e) => handleUpdateTraveler(t.id, 'upiId', e.target.value)}
+                    placeholder="UPI ID"
+                    className="w-28 px-2 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 font-mono focus:outline-none focus:border-indigo-500"
+                  />
+                  {travelers.length > 1 && (
                     <button
                       type="button"
-                      onClick={() => handleRemoveTraveler(traveler.id)}
-                      className="p-1 rounded-[6px] text-[#757575] hover:text-[#f64932] transition-colors"
-                      title="Remove traveler"
+                      onClick={() => handleRemoveTraveler(t.id)}
+                      className="p-1 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+                      title="Remove Member"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
-                  </div>
+                  )}
                 </div>
               ))}
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="pt-4 border-t border-[rgba(0,0,0,0.08)] flex items-center justify-end gap-2">
+          <div className="pt-3 flex items-center justify-end gap-2 border-t border-slate-100 dark:border-slate-800">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-[8px] text-[#757575] hover:text-[#000000] font-medium"
+              className="btn-secondary !py-2 !px-4 !text-xs !rounded-xl"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-[8px] bg-[#0075de] hover:bg-[#0066c0] text-[#ffffff] font-medium shadow-xs transition-colors"
+              className="btn-primary !py-2 !px-5 !text-xs !rounded-xl"
             >
-              {initialTrip ? 'Save Changes' : 'Create Notebook'}
+              {initialTrip ? 'Update Trip Space' : 'Create Trip'}
             </button>
           </div>
         </form>
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined'
+    ? createPortal(modalContent, document.body)
+    : null;
 };

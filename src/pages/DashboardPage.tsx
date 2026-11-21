@@ -16,7 +16,7 @@ import { SettlementQrModal } from '../components/qr/SettlementQrModal';
 import { TripShareQrModal } from '../components/qr/TripShareQrModal';
 import { Expense } from '../types/expense';
 import { Settlement, Traveler } from '../types/trip';
-import { Plus, Compass, Share2 } from 'lucide-react';
+import { Plus, Compass, Share2, Receipt, BarChart3, ListFilter, Edit2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const DashboardPage: React.FC = () => {
@@ -91,197 +91,252 @@ export const DashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f6f5f4] text-[#000000] font-sans selection:bg-[#e6f3fe] selection:text-[#0075de]">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans selection:bg-indigo-100 selection:text-indigo-900 transition-colors duration-300 page-enter">
       <Navbar />
 
-      <main className="flex-1 max-w-[1440px] mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <main className="flex-1 max-w-[1400px] mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         {/* Urgency Alert Callout Banner */}
         <UrgencyBanner />
 
-        {/* Trip Notebook Header & Switcher */}
-        <TripSelector
-          trips={trips}
-          activeTrip={activeTrip}
-          onSelectTrip={(id) => setActiveTripId(id)}
-          onCreateNewTrip={handleOpenCreateTrip}
-        />
-
-        {/* Action Bar & Section Tabs (Notion 8px pill selector) */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-          <div className="flex p-1 bg-[#ffffff] rounded-[8px] border border-[rgba(0,0,0,0.08)] text-xs font-medium">
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={`px-3 py-1.5 rounded-[6px] transition-all ${
-                activeTab === 'overview'
-                  ? 'bg-[#f6f5f4] text-[#000000] font-semibold shadow-xs'
-                  : 'text-[#757575] hover:text-[#000000]'
-              }`}
-            >
-              Overview & Analytics
-            </button>
-            <button
-              onClick={() => setActiveTab('expenses')}
-              className={`px-3 py-1.5 rounded-[6px] transition-all ${
-                activeTab === 'expenses'
-                  ? 'bg-[#f6f5f4] text-[#000000] font-semibold shadow-xs'
-                  : 'text-[#757575] hover:text-[#000000]'
-              }`}
-            >
-              Expenses ({activeTripExpenses.length})
-            </button>
-            <button
-              onClick={() => setActiveTab('settlements')}
-              className={`px-3 py-1.5 rounded-[6px] transition-all ${
-                activeTab === 'settlements'
-                  ? 'bg-[#f6f5f4] text-[#000000] font-semibold shadow-xs'
-                  : 'text-[#757575] hover:text-[#000000]'
-              }`}
-            >
-              Settlement Plan ({settlementResult.settlements.length})
-            </button>
+        {/* Top Trip Header & Action Ribbon */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 animate-fade-in-down">
+          <div className="flex-1">
+            <TripSelector
+              trips={trips}
+              activeTrip={activeTrip}
+              onSelectTrip={setActiveTripId}
+              onCreateNewTrip={handleOpenCreateTrip}
+            />
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <Link
-              to="/map"
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-[8px] bg-[#ffffff] hover:bg-[#f6f5f4] border border-[rgba(0,0,0,0.1)] text-[#000000] text-xs font-medium transition-colors"
-            >
-              <Compass className="w-3.5 h-3.5 text-[#0075de]" />
-              <span>Explore Map</span>
-            </Link>
-
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
             {activeTrip && (
-              <button
-                onClick={() => setIsTripShareQrOpen(true)}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-[8px] bg-[#ffffff] hover:bg-[#f6f5f4] border border-[rgba(0,0,0,0.1)] text-[#615d59] hover:text-[#000000] text-xs font-medium transition-colors"
-                title="Generate Trip Share Pass QR"
-              >
-                <Share2 className="w-3.5 h-3.5" />
-                <span>Share QR</span>
-              </button>
+              <>
+                <button
+                  onClick={handleOpenEditTrip}
+                  className="btn-secondary !py-2 !px-3.5 !text-xs !rounded-xl hover-lift-sm interactive-press"
+                  title="Edit trip details & travelers"
+                >
+                  <Edit2 className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+                  <span>Trip Config</span>
+                </button>
+
+                <button
+                  onClick={() => setIsTripShareQrOpen(true)}
+                  className="btn-secondary !py-2 !px-3.5 !text-xs !rounded-xl hover-lift-sm interactive-press"
+                  title="Generate Trip Share Pass QR"
+                >
+                  <Share2 className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+                  <span>Share Pass QR</span>
+                </button>
+
+                <Link
+                  to="/map"
+                  className="btn-secondary !py-2 !px-3.5 !text-xs !rounded-xl hover-lift-sm interactive-press"
+                  title="Explore local spots near trip destination"
+                >
+                  <Compass className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                  <span>Travel Radar</span>
+                </Link>
+
+                <button
+                  onClick={handleOpenAddExpense}
+                  className="btn-primary !py-2 !px-4 !text-xs !rounded-xl hover-lift interactive-press"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Add Expense</span>
+                </button>
+              </>
             )}
-
-            <button
-              onClick={handleOpenEditTrip}
-              className="px-3.5 py-1.5 rounded-[8px] border border-[rgba(0,0,0,0.1)] bg-[#ffffff] hover:bg-[#f6f5f4] text-[#615d59] hover:text-[#000000] text-xs font-medium transition-colors"
-            >
-              Edit Trip
-            </button>
-
-            {/* Primary Action Button */}
-            <button
-              onClick={handleOpenAddExpense}
-              className="flex items-center gap-1.5 px-4 py-1.5 rounded-[8px] bg-[#0075de] hover:bg-[#0066c0] text-[#ffffff] text-xs font-medium shadow-xs transition-colors"
-            >
-              <Plus className="w-4 h-4" />
-              <span>New Expense</span>
-            </button>
           </div>
         </div>
 
-        {/* Real-time KPI Summary Cards */}
-        {activeTrip && (
-          <KpiSummaryCards
-            totalBudget={activeTrip.totalBudget}
-            totalSpent={settlementResult.totalSpent}
-            numTravelers={activeTrip.travelers.length}
-            baseCurrency={activeTrip.baseCurrency}
-            totalSettlements={settlementResult.settlements.length}
-            settledCount={settledCount}
-          />
-        )}
+        {activeTrip ? (
+          <>
+            {/* 5 KPI Summary Metric Cards */}
+            <KpiSummaryCards
+              totalBudget={activeTrip.totalBudget}
+              totalSpent={settlementResult.totalSpent}
+              numTravelers={activeTrip.travelers.length}
+              baseCurrency={activeTrip.baseCurrency}
+              totalSettlements={settlementResult.settlements.length}
+              settledCount={settledCount}
+            />
 
-        {/* VIEW TAB: Overview & Analytics */}
-        {activeTab === 'overview' && activeTrip && (
-          <div className="space-y-6">
-            {/* 3 Recharts Visualizations (Pure white cards, 12px radius, no shadow) */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Chart 1: Donut Category Distribution */}
-              <CategoryDonutChart expenses={activeTripExpenses} />
+            {/* View Navigation Tabs */}
+            <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800 pt-2 pb-1">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setActiveTab('overview')}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all hover-lift-sm interactive-press ${
+                    activeTab === 'overview'
+                      ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-xs border border-slate-200/90 dark:border-slate-700'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
+                  }`}
+                >
+                  <BarChart3 className="w-3.5 h-3.5" />
+                  <span>Analytics & Visuals</span>
+                </button>
 
-              {/* Chart 2: Net Balances Paid vs Fair Share */}
-              <BalanceBarChart
-                balances={settlementResult.balances}
-                baseCurrency={activeTrip.baseCurrency}
-              />
+                <button
+                  onClick={() => setActiveTab('expenses')}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all hover-lift-sm interactive-press ${
+                    activeTab === 'expenses'
+                      ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-xs border border-slate-200/90 dark:border-slate-700'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
+                  }`}
+                >
+                  <Receipt className="w-3.5 h-3.5" />
+                  <span>Expense Ledger ({activeTripExpenses.length})</span>
+                </button>
 
-              {/* Chart 3: Cumulative Spending Velocity Plot */}
-              <SpendingTrendPlot
-                expenses={activeTripExpenses}
-                startDate={activeTrip.startDate}
-                endDate={activeTrip.endDate}
-                totalBudget={activeTrip.totalBudget}
-                baseCurrency={activeTrip.baseCurrency}
-              />
+                <button
+                  onClick={() => setActiveTab('settlements')}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all hover-lift-sm interactive-press ${
+                    activeTab === 'settlements'
+                      ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-xs border border-slate-200/90 dark:border-slate-700'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
+                  }`}
+                >
+                  <ListFilter className="w-3.5 h-3.5" />
+                  <span>Settlement Plan ({settlementResult.settlements.length})</span>
+                </button>
+              </div>
+
+              <span className="hidden sm:inline text-xs text-slate-500 dark:text-slate-400 font-medium">
+                Auto-saved to device storage
+              </span>
             </div>
 
-            {/* Quick Settlement Summary Section */}
-            <SettlementList
-              settlements={settlementResult.settlements}
-              travelers={activeTrip.travelers}
-              baseCurrency={activeTrip.baseCurrency}
-              tripName={activeTrip.name}
-              onToggleSettlement={toggleSettlementStatus}
-              onOpenQr={(settlement, debtor, creditor) =>
-                setActiveQrSettlement({ settlement, debtor, creditor })
-              }
-            />
-          </div>
-        )}
+            {/* Tab 1: Overview & Visual Analytics */}
+            {activeTab === 'overview' && (
+              <div key="overview" className="space-y-6 animate-fade-in-up">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Category Donut Chart */}
+                  <CategoryDonutChart expenses={activeTripExpenses} />
 
-        {/* VIEW TAB: Expenses Table */}
-        {activeTab === 'expenses' && activeTrip && (
-          <div className="space-y-4">
-            <ExpenseTable
-              expenses={activeTripExpenses}
-              travelers={activeTrip.travelers}
-              onEditExpense={handleOpenEditExpense}
-              onDeleteExpense={deleteExpense}
-            />
-          </div>
-        )}
+                  {/* Individual Balances Bar Chart */}
+                  <BalanceBarChart
+                    balances={settlementResult.balances}
+                    baseCurrency={activeTrip.baseCurrency}
+                  />
+                </div>
 
-        {/* VIEW TAB: Settlements */}
-        {activeTab === 'settlements' && activeTrip && (
-          <div className="space-y-4">
-            <SettlementList
-              settlements={settlementResult.settlements}
-              travelers={activeTrip.travelers}
-              baseCurrency={activeTrip.baseCurrency}
-              tripName={activeTrip.name}
-              onToggleSettlement={toggleSettlementStatus}
-              onOpenQr={(settlement, debtor, creditor) =>
-                setActiveQrSettlement({ settlement, debtor, creditor })
-              }
-            />
+                {/* Spending Velocity Trajectory Area Chart */}
+                <SpendingTrendPlot
+                  expenses={activeTripExpenses}
+                  startDate={activeTrip.startDate}
+                  endDate={activeTrip.endDate}
+                  totalBudget={activeTrip.totalBudget}
+                  baseCurrency={activeTrip.baseCurrency}
+                />
+
+                {/* Greedy Settlement List Preview */}
+                <SettlementList
+                  settlements={settlementResult.settlements}
+                  travelers={activeTrip.travelers}
+                  baseCurrency={activeTrip.baseCurrency}
+                  tripName={activeTrip.name}
+                  onToggleSettlement={toggleSettlementStatus}
+                  onOpenQr={(settlement, debtor, creditor) => {
+                    setActiveQrSettlement({ settlement, debtor, creditor });
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Tab 2: Full Expense Ledger */}
+            {activeTab === 'expenses' && (
+              <div key="expenses" className="space-y-4 animate-fade-in-up">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-heading text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+                      Trip Expense Ledger
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Record, search, and manage every group transaction
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleOpenAddExpense}
+                    className="btn-primary !py-1.5 !px-3.5 !text-xs !rounded-xl hover-lift-sm interactive-press"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>New Expense</span>
+                  </button>
+                </div>
+
+                <ExpenseTable
+                  expenses={activeTripExpenses}
+                  travelers={activeTrip.travelers}
+                  onEditExpense={handleOpenEditExpense}
+                  onDeleteExpense={deleteExpense}
+                />
+              </div>
+            )}
+
+            {/* Tab 3: Detailed Settlement Plan */}
+            {activeTab === 'settlements' && (
+              <div key="settlements" className="space-y-4 animate-fade-in-up">
+                <SettlementList
+                  settlements={settlementResult.settlements}
+                  travelers={activeTrip.travelers}
+                  baseCurrency={activeTrip.baseCurrency}
+                  tripName={activeTrip.name}
+                  onToggleSettlement={toggleSettlementStatus}
+                  onOpenQr={(settlement, debtor, creditor) => {
+                    setActiveQrSettlement({ settlement, debtor, creditor });
+                  }}
+                />
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="contrey-card p-12 text-center space-y-4 dark:bg-slate-900 dark:border-slate-800">
+            <div className="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-3xl mx-auto shadow-sm">
+              🧭
+            </div>
+            <div className="space-y-1">
+              <h2 className="font-heading text-2xl font-bold text-slate-900 dark:text-white">
+                No Active Trip Found
+              </h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+                Create your first trip space to start logging expenses, splitting bills, and settling balances.
+              </p>
+            </div>
+            <button
+              onClick={handleOpenCreateTrip}
+              className="btn-primary"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Create First Trip</span>
+            </button>
           </div>
         )}
       </main>
 
-      <Footer />
-
-      {/* Trip Modal (Create/Edit) */}
-      <TripModal
-        isOpen={isTripModalOpen}
-        onClose={() => setIsTripModalOpen(false)}
-        onSubmit={handleTripSubmit}
-        initialTrip={editingTrip}
-      />
-
-      {/* Expense Modal (Create/Edit) */}
+      {/* Modals */}
       {activeTrip && (
-        <ExpenseModal
-          isOpen={isExpenseModalOpen}
-          onClose={() => setIsExpenseModalOpen(false)}
-          onSubmit={handleExpenseSubmit}
-          tripId={activeTrip.id}
-          travelers={activeTrip.travelers}
-          defaultCurrency={activeTrip.baseCurrency}
-          initialExpense={editingExpense}
-        />
+        <>
+          <ExpenseModal
+            isOpen={isExpenseModalOpen}
+            onClose={() => setIsExpenseModalOpen(false)}
+            onSubmit={handleExpenseSubmit}
+            tripId={activeTrip.id}
+            travelers={activeTrip.travelers}
+            defaultCurrency={activeTrip.baseCurrency}
+            initialExpense={editingExpense}
+          />
+
+          <TripShareQrModal
+            isOpen={isTripShareQrOpen}
+            onClose={() => setIsTripShareQrOpen(false)}
+            trip={activeTrip}
+            totalSpent={settlementResult.totalSpent}
+          />
+        </>
       )}
 
-      {/* Individual Settlement QR Modal */}
       {activeQrSettlement && activeTrip && (
         <SettlementQrModal
           isOpen={!!activeQrSettlement}
@@ -293,15 +348,14 @@ export const DashboardPage: React.FC = () => {
         />
       )}
 
-      {/* Trip Share Pass QR Modal */}
-      {activeTrip && (
-        <TripShareQrModal
-          isOpen={isTripShareQrOpen}
-          onClose={() => setIsTripShareQrOpen(false)}
-          trip={activeTrip}
-          totalSpent={settlementResult.totalSpent}
-        />
-      )}
+      <TripModal
+        isOpen={isTripModalOpen}
+        onClose={() => setIsTripModalOpen(false)}
+        onSubmit={handleTripSubmit}
+        initialTrip={editingTrip}
+      />
+
+      <Footer />
     </div>
   );
 };

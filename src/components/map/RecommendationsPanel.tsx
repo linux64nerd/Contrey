@@ -34,120 +34,103 @@ export const RecommendationsPanel: React.FC<RecommendationsPanelProps> = ({
 
   if (places.length === 0) {
     return (
-      <div className="bg-[#ffffff] rounded-[12px] p-8 border border-[rgba(0,0,0,0.08)] text-center text-[#757575] space-y-2">
-        <MapPin className="w-8 h-8 mx-auto text-[#757575]" />
-        <p className="text-sm font-semibold text-[#000000]">No places found in this radius</p>
+      <div className="contrey-card p-8 text-center text-slate-500 dark:text-slate-400 space-y-2 dark:bg-slate-900 dark:border-slate-800">
+        <MapPin className="w-8 h-8 mx-auto text-slate-400" />
+        <p className="font-heading text-lg font-bold text-slate-900 dark:text-white">
+          No Places Found in Radius
+        </p>
         <p className="text-xs">Try switching to a 2 km search radius or clearing category filters.</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div className="flex items-center justify-between px-1">
-        <h3 className="text-base font-bold text-[#000000]">
+        <h3 className="font-heading font-bold text-base text-slate-900 dark:text-white">
           Curated Travel Spots
         </h3>
-        <span className="text-xs text-[#757575] font-medium">
-          {places.length} spots
+        <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+          {places.length} SPOTS
         </span>
       </div>
 
       <div className="space-y-3">
-        {places.map((place) => {
+        {places.map((place, idx) => {
           const isSelected = selectedPlace?.id === place.id;
           const convertedPrice = convertAmount(place.estimatedPrice, 'EUR', currentCurrency);
+          const staggerClass = `stagger-${(idx % 6) + 1}`;
 
           return (
             <div
               key={place.id}
               onClick={() => onSelectPlace(place)}
-              className={`group relative p-4 rounded-[12px] border transition-all cursor-pointer flex flex-col justify-between ${
+              className={`group p-4 rounded-xl border transition-all duration-200 cursor-pointer flex flex-col justify-between hover-lift-sm animate-fade-in-up ${staggerClass} ${
                 isSelected
-                  ? 'bg-[#e6f3fe]/40 border-[#0075de] ring-1 ring-[#0075de]'
-                  : 'bg-[#ffffff] hover:bg-[#f6f5f4] border-[rgba(0,0,0,0.08)]'
+                  ? 'bg-indigo-50/60 dark:bg-indigo-950/40 border-indigo-400 dark:border-indigo-600 shadow-md ring-1 ring-indigo-500/20'
+                  : 'bg-white dark:bg-slate-900 hover:bg-slate-50/80 dark:hover:bg-slate-800/80 border-slate-200/90 dark:border-slate-800 shadow-xs'
               }`}
             >
               {/* Header: Name and Best Value Badge */}
               <div>
                 <div className="flex items-start justify-between gap-2 mb-1.5">
                   <div className="flex-1">
-                    <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#f6f5f4] text-[#757575] border border-[rgba(0,0,0,0.08)] mb-1">
+                    <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 mb-1">
                       {getCategoryLabel(place.category)}
                     </span>
-                    <h4 className="font-bold text-sm text-[#000000] group-hover:text-[#0075de] transition-colors">
+                    <h4 className="font-heading font-bold text-sm text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                       {place.name}
                     </h4>
                   </div>
 
                   {place.isBestValue && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#ffb110] text-[#000000] text-[10px] font-bold shadow-xs">
-                      <Sparkles className="w-3 h-3 text-[#000000]" /> Best Value
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 text-[10px] font-bold">
+                      <Sparkles className="w-3 h-3 text-indigo-600 dark:text-indigo-400" /> Best Value
                     </span>
                   )}
                 </div>
 
                 {/* Rating & Distance */}
-                <div className="flex items-center gap-3 text-xs text-[#757575] mb-2">
-                  <span className="flex items-center gap-1 font-semibold text-[#000000]">
-                    <Star className="w-3.5 h-3.5 fill-[#ffb110] text-[#ffb110]" />
+                <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 font-medium mb-2">
+                  <span className="flex items-center gap-1 font-bold text-amber-500">
+                    <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
                     <span>{place.rating.toFixed(1)}</span>
                   </span>
                   <span>•</span>
                   <span className="flex items-center gap-1">
-                    <MapPin className="w-3.5 h-3.5 text-[#757575]" />
+                    <MapPin className="w-3.5 h-3.5 text-slate-400" />
                     <span>{place.distanceKm} km away</span>
                   </span>
                 </div>
 
-                {/* Review Quote */}
-                <p className="text-xs text-[#615d59] italic bg-[#f6f5f4] p-2.5 rounded-[8px] border border-[rgba(0,0,0,0.06)] line-clamp-2 mb-3">
-                  "{place.reviewSnippet}"
+                <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed font-normal">
+                  {place.reviewSnippet}
                 </p>
               </div>
 
-              {/* Price & Actions Footer */}
-              <div className="pt-3 border-t border-[rgba(0,0,0,0.06)] flex items-center justify-between">
+              {/* Price & Action */}
+              <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] uppercase tracking-wider text-[#757575] font-semibold block">
-                    Estimated
+                  <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 block">
+                    Estimated Cost
                   </span>
-                  <span className="text-sm font-bold text-[#0075de]">
-                    {format(convertedPrice)}
+                  <span className="font-heading font-extrabold text-sm text-slate-900 dark:text-white">
+                    ~{format(convertedPrice)}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-1.5">
-                  {onQuickAddExpense && (
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onQuickAddExpense(place);
-                      }}
-                      className="px-2.5 py-1 rounded-[6px] bg-[#f6f5f4] hover:bg-[#e6f3fe] text-[#000000] hover:text-[#0075de] border border-[rgba(0,0,0,0.08)] text-xs font-medium flex items-center gap-1 transition-colors"
-                      title="Log as Trip Expense"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                      <span>Log Expense</span>
-                    </button>
-                  )}
-
+                {onQuickAddExpense && (
                   <button
-                    type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onSelectPlace(place);
+                      onQuickAddExpense(place);
                     }}
-                    className={`px-3 py-1 rounded-[6px] text-xs font-medium transition-all ${
-                      isSelected
-                        ? 'bg-[#0075de] text-[#ffffff] shadow-xs'
-                        : 'bg-[#ffffff] hover:bg-[#f6f5f4] text-[#757575] border border-[rgba(0,0,0,0.1)]'
-                    }`}
+                    className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900 text-indigo-700 dark:text-indigo-300 text-xs font-semibold transition-colors border border-indigo-200 dark:border-indigo-800/80"
                   >
-                    <span>{isSelected ? 'Selected' : 'View'}</span>
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Log Expense</span>
                   </button>
-                </div>
+                )}
               </div>
             </div>
           );

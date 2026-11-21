@@ -18,41 +18,48 @@ export const UrgencyBanner: React.FC = () => {
 
   return (
     <div
-      className={`relative overflow-hidden rounded-[12px] p-4 border transition-all animate-in fade-in slide-in-from-top-1 ${isCritical
-        ? 'bg-[#f64932]/10 border-[#f64932]/30 text-[#000000]'
-        : 'bg-[#ffb110]/15 border-[#ffb110]/40 text-[#000000]'
-        }`}
+      className={`relative overflow-hidden rounded-2xl p-4 border transition-all animate-in fade-in slide-in-from-top-1 ${
+        isCritical
+          ? 'bg-rose-50/90 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900/60 text-rose-950 dark:text-rose-100 shadow-xs'
+          : 'bg-amber-50/90 dark:bg-amber-950/40 border-amber-200 dark:border-amber-900/60 text-amber-950 dark:text-amber-100 shadow-xs'
+      }`}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3">
           <div
-            className={`w-8 h-8 rounded-[6px] flex items-center justify-center shrink-0 ${isCritical ? 'bg-[#f64932] text-[#ffffff]' : 'bg-[#ffb110] text-[#000000]'
-              }`}
+            className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-xs ${
+              isCritical
+                ? 'bg-rose-600 text-white'
+                : 'bg-amber-500 text-white'
+            }`}
           >
             {isCritical ? (
-              <ShieldAlert className="w-4 h-4" />
+              <ShieldAlert className="w-5 h-5" />
             ) : (
-              <AlertTriangle className="w-4 h-4" />
+              <AlertTriangle className="w-5 h-5" />
             )}
           </div>
 
           <div className="space-y-0.5">
             <div className="flex items-center gap-2">
               <span
-                className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${isCritical ? 'bg-[#f64932] text-[#ffffff]' : 'bg-[#ffb110] text-[#000000]'
-                  }`}
+                className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                  isCritical
+                    ? 'bg-rose-100 dark:bg-rose-900/80 text-rose-700 dark:text-rose-200'
+                    : 'bg-amber-100 dark:bg-amber-900/80 text-amber-800 dark:text-amber-200'
+                }`}
               >
-                {isCritical ? 'Urgency Alert' : 'Budget Warning'}
+                {isCritical ? 'Urgent Alert' : 'Budget Warning'}
               </span>
-              <span className="text-xs text-[#757575] font-medium">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                 {primaryAlert.category ? `Category: ${primaryAlert.category}` : 'Trip Budget Guard'}
               </span>
             </div>
 
-            <h4 className="text-sm font-bold text-[#000000]">
+            <h4 className="text-sm font-bold text-slate-900 dark:text-white">
               {primaryAlert.title}
             </h4>
-            <p className="text-xs text-[#615d59] leading-relaxed">
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
               {primaryAlert.message}
             </p>
           </div>
@@ -60,7 +67,7 @@ export const UrgencyBanner: React.FC = () => {
 
         <button
           onClick={dismissUrgencyBanner}
-          className="p-1 rounded-[6px] hover:bg-black/5 text-[#757575] transition-colors"
+          className="p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
           title="Dismiss Banner"
         >
           <X className="w-4 h-4" />

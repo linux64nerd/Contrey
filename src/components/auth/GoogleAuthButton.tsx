@@ -21,7 +21,7 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ onSuccess })
 
   return (
     <div className="space-y-4 text-center">
-      <p className="text-xs text-[#757575]">
+      <p className="text-xs text-slate-500 dark:text-slate-400">
         Sign in instantly with your verified Google account
       </p>
 
@@ -29,7 +29,7 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ onSuccess })
         type="button"
         onClick={handleGoogleLogin}
         disabled={isLoading}
-        className="w-full py-2 px-4 rounded-[8px] bg-[#ffffff] hover:bg-[#f6f5f4] text-[#000000] border border-[rgba(0,0,0,0.15)] text-xs font-medium flex items-center justify-center gap-3 transition-colors shadow-xs"
+        className="w-full py-2.5 px-4 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 text-xs font-semibold flex items-center justify-center gap-3 transition-colors shadow-xs"
       >
         <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
           <path
@@ -52,8 +52,8 @@ export const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ onSuccess })
         <span>{isLoading ? 'Connecting to Google…' : 'Continue with Google'}</span>
       </button>
 
-      <div className="flex items-center justify-center gap-1.5 text-[11px] text-[#757575]">
-        <CheckCircle2 className="w-3 h-3 text-[#0075de]" />
+      <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
         <span>OAuth 2.0 Identity Protocol Verified</span>
       </div>
     </div>

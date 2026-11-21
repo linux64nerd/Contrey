@@ -10,6 +10,7 @@ import {
 } from 'recharts';
 import { Expense } from '../../types/expense';
 import { useCurrency } from '../../context/CurrencyContext';
+import { useTheme } from '../../context/ThemeContext';
 import { formatDate } from '../../utils/formatters';
 
 interface SpendingTrendPlotProps {
@@ -26,6 +27,7 @@ export const SpendingTrendPlot: React.FC<SpendingTrendPlotProps> = ({
   baseCurrency,
 }) => {
   const { currentCurrency, format, convertAmount } = useCurrency();
+  const { isDark } = useTheme();
 
   // Sort expenses chronologically
   const sortedExpenses = [...expenses].sort(
@@ -58,15 +60,17 @@ export const SpendingTrendPlot: React.FC<SpendingTrendPlotProps> = ({
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-[#ffffff] text-[#000000] p-3 rounded-[8px] border border-[rgba(0,0,0,0.12)] shadow-[0_4px_12px_rgba(0,0,0,0.08)] text-xs space-y-1.5 min-w-[150px]">
-          <p className="font-bold text-[#000000] border-b border-[rgba(0,0,0,0.08)] pb-1">{data.formattedDate}</p>
+        <div className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-3.5 rounded-xl border border-slate-200/90 dark:border-slate-700 shadow-xl text-xs space-y-1.5 min-w-[150px]">
+          <p className="font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-700 pb-1 font-heading">
+            {data.formattedDate}
+          </p>
           <div className="flex justify-between">
-            <span className="text-[#757575]">Daily Spend:</span>
-            <span className="font-bold text-[#000000]">{format(data.daily)}</span>
+            <span className="text-slate-500 dark:text-slate-400">Daily Spend:</span>
+            <span className="font-bold text-slate-900 dark:text-white">{format(data.daily)}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-[#757575]">Cumulative:</span>
-            <span className="font-bold text-[#0075de]">{format(data.cumulative)}</span>
+            <span className="text-slate-500 dark:text-slate-400">Cumulative:</span>
+            <span className="font-bold text-indigo-600 dark:text-indigo-400">{format(data.cumulative)}</span>
           </div>
         </div>
       );
@@ -75,48 +79,52 @@ export const SpendingTrendPlot: React.FC<SpendingTrendPlotProps> = ({
   };
 
   return (
-    <div className="bg-[#ffffff] rounded-[12px] p-6 border border-[rgba(0,0,0,0.08)] flex flex-col justify-between">
+    <div className="contrey-card p-6 flex flex-col justify-between dark:bg-slate-900 dark:border-slate-800">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <span className="text-xs uppercase tracking-wider font-semibold text-[#757575] block">
-            Velocity & Burn Rate
+          <span className="text-[11px] uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 block">
+            Burn Rate & Velocity
           </span>
-          <h3 className="text-base font-bold text-[#000000] tracking-tight mt-0.5">
-            Cumulative spending trend
+          <h3 className="font-heading text-base font-bold text-slate-900 dark:text-white tracking-tight mt-0.5">
+            Cumulative Spending Trajectory
           </h3>
         </div>
         <div className="text-right">
-          <span className="text-[10px] uppercase tracking-wider text-[#757575] font-semibold block">Target Cap</span>
-          <span className="text-xs font-bold text-[#000000]">{format(convertedBudget)}</span>
+          <span className="text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold block">
+            Trip Cap
+          </span>
+          <span className="text-xs font-bold text-slate-900 dark:text-white font-heading">
+            {format(convertedBudget)}
+          </span>
         </div>
       </div>
 
       {chartData.length === 0 ? (
-        <div className="h-64 flex items-center justify-center text-xs text-[#757575]">
-          No daily expenses recorded yet.
+        <div className="h-64 flex flex-col items-center justify-center text-xs text-slate-400 space-y-1">
+          <span>📈</span>
+          <span>No daily expenses recorded yet.</span>
         </div>
       ) : (
         <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
               <defs>
-                <linearGradient id="notionSpendGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#0075de" stopOpacity={0.25} />
-                  <stop offset="95%" stopColor="#0075de" stopOpacity={0.0} />
+                <linearGradient id="spendGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#4d49fc" stopOpacity={isDark ? 0.4 : 0.25} />
+                  <stop offset="95%" stopColor="#4d49fc" stopOpacity={0.0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0efed" />
-              <XAxis dataKey="formattedDate" tick={{ fontSize: 10, fill: '#757575' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 10, fill: '#757575' }} axisLine={false} tickLine={false} />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? '#1e293b' : '#f1f5f9'} />
+              <XAxis dataKey="formattedDate" tick={{ fontSize: 10, fill: isDark ? '#94a3b8' : '#64748b' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: isDark ? '#94a3b8' : '#64748b' }} axisLine={false} tickLine={false} />
               <Tooltip content={<CustomTooltip />} />
               <Area
                 type="monotone"
                 dataKey="cumulative"
-                name="Cumulative Spend"
-                stroke="#0075de"
-                strokeWidth={2}
+                stroke="#4d49fc"
+                strokeWidth={2.5}
                 fillOpacity={1}
-                fill="url(#notionSpendGradient)"
+                fill="url(#spendGradient)"
               />
             </AreaChart>
           </ResponsiveContainer>

@@ -32,7 +32,7 @@ export const UserIdPasswordForm: React.FC<UserIdPasswordFormProps> = ({ onSucces
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-xs font-medium text-[#000000] mb-1">
+        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
           Custom User ID
         </label>
         <input
@@ -40,13 +40,13 @@ export const UserIdPasswordForm: React.FC<UserIdPasswordFormProps> = ({ onSucces
           value={userId}
           onChange={(e) => setUserId(e.target.value)}
           placeholder="e.g. usr_explorer_99"
-          className="w-full px-3 py-2 rounded-[8px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-[#000000] text-xs font-mono focus:outline-none focus:border-[#0075de]"
+          className="w-full px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs font-mono font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
           required
         />
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-[#000000] mb-1">
+        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
           Password
         </label>
         <input
@@ -54,7 +54,7 @@ export const UserIdPasswordForm: React.FC<UserIdPasswordFormProps> = ({ onSucces
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="••••••••"
-          className="w-full px-3 py-2 rounded-[8px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-[#000000] text-xs focus:outline-none focus:border-[#0075de]"
+          className="w-full px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
           required
         />
       </div>
@@ -62,7 +62,7 @@ export const UserIdPasswordForm: React.FC<UserIdPasswordFormProps> = ({ onSucces
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full py-2.5 rounded-[8px] bg-[#0075de] hover:bg-[#0066c0] text-[#ffffff] text-xs font-medium transition-colors shadow-xs flex items-center justify-center gap-2"
+        className="btn-primary w-full !py-2.5 !text-xs !rounded-xl"
       >
         <span>{isLoading ? 'Verifying credentials…' : 'Sign In with User ID'}</span>
         <ArrowRight className="w-3.5 h-3.5" />

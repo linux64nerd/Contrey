@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -7,51 +8,133 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Notion Palette
-        'notion-blue': '#0075de',
-        'notion-canvas': '#f6f5f4',
-        'notion-white': '#ffffff',
-        'notion-black': '#000000',
-        'notion-charcoal': '#111111',
-        'notion-stone': '#757575',
-        'notion-graphite': '#615d59',
-        'notion-slate': '#696969',
-        'notion-sky-tint': '#e6f3fe',
-        'notion-marigold': '#ffb110',
-        'notion-coral': '#f64932',
-        'notion-saffron': '#e89d01',
-        'notion-vermillion': '#e32d14',
-        'notion-mocha': '#b18164',
-        'notion-signal-blue': '#097fe8',
-        'notion-sky-wash': '#62aef0',
-        'notion-midnight': '#02093a',
-        'notion-peach': '#f6d5b8',
-        'notion-border': 'rgba(0, 0, 0, 0.08)',
+        // Figma Palette — Primary Action: Electric Indigo #4d49fc
+        brand: {
+          50: '#f3f2ff',
+          100: '#ebe9fe',
+          200: '#dcd8fe',
+          300: '#c4baff', // Lilac
+          400: '#8a85fd',
+          500: '#6661fc',
+          600: '#4d49fc', // Electric Indigo (Figma Hero Accent)
+          700: '#3b37ea',
+          800: '#2f2bc4',
+          900: '#28259d',
+          950: '#16145f',
+        },
+        indigo: {
+          50: '#f3f2ff',
+          100: '#ebe9fe',
+          200: '#dcd8fe',
+          300: '#c4baff',
+          400: '#8a85fd',
+          500: '#6661fc',
+          600: '#4d49fc',
+          700: '#3b37ea',
+          800: '#2f2bc4',
+          900: '#28259d',
+          950: '#16145f',
+        },
+        // Official Figma Color Tokens
+        figma: {
+          black: '#000000',      // Ink Black
+          white: '#ffffff',      // Paper White
+          mist: '#e2e2e2',       // Soft Mist
+          graphite: '#595959',   // Graphite
+          indigo: '#4d49fc',     // Electric Indigo
+          cyan: '#00b6ff',       // Figma Cyan
+          green: '#24cb71',      // Figma Green
+          orange: '#ff7237',     // Figma Orange
+          lime: '#e4ff97',       // Lime Wash
+          lilac: '#c4baff',      // Lilac
+          blush: '#ffc9c1',      // Blush
+          aqua: '#c7f8fb',       // Aqua Mist
+          teal: '#33dfdf',       // Earworm Teal
+          mustard: '#b98e01',    // Mustard
+        },
+        // Harmonize Slate to Figma Achromatic Tone Scale
+        slate: {
+          50: '#ffffff',   // Paper White canvas
+          100: '#f7f7f7',  // Clean subtle surface
+          200: '#e2e2e2',  // Soft Mist borders
+          300: '#cccccc',
+          400: '#8c8c8c',
+          500: '#595959',  // Graphite muted text
+          600: '#3d3d3d',
+          700: '#262626',
+          800: '#1a1a1e',  // Dark elevated panel
+          850: '#141417',
+          900: '#101013',  // Dark card
+          950: '#0c0c0e',  // Dark canvas
+        },
+        surface: {
+          canvas: '#ffffff',
+          card: '#ffffff',
+          subtle: '#f7f7f7',
+          muted: '#e2e2e2',
+        },
       },
       fontFamily: {
-        sans: ['NotionInter', 'Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
-        serif: ['Lyon Text', 'Source Serif 4', 'Georgia', 'serif'],
-      },
-      borderRadius: {
-        'notion-card': '12px',
-        'notion-btn': '8px',
-        'notion-sm': '4px',
-        'notion-pill': '9999px',
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+        heading: ['"Plus Jakarta Sans"', 'Inter', 'ui-sans-serif', 'sans-serif'],
       },
       boxShadow: {
-        'notion-nav': '0px 0.7px 1.462px 0px rgba(0, 0, 0, 0.015), 0px 3px 9px 0px rgba(0, 0, 0, 0.03)',
-        'notion-mockup': '0 4px 12px rgba(0, 0, 0, 0.1)',
-        'notion-subtle': '0 1px 3px rgba(0, 0, 0, 0.04)',
+        'card': '0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 8px 24px -4px rgba(15, 23, 42, 0.04)',
+        'card-hover': '0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 16px 32px -4px rgba(15, 23, 42, 0.08)',
+        'glow-brand': '0 0 24px -2px rgba(77, 73, 252, 0.35)',
+        'glow-emerald': '0 0 24px -2px rgba(16, 185, 129, 0.25)',
       },
-      letterSpacing: {
-        'notion-display-lg': '-4.6px',
-        'notion-display': '-2.016px',
-        'notion-display-sm': '-1.89px',
-        'notion-heading-sm': '-0.242px',
+      borderRadius: {
+        '2xl': '1rem',
+        '3xl': '1.5rem',
       },
       maxWidth: {
-        'notion-page': '1440px',
-      }
+        'content': '1400px',
+      },
+      keyframes: {
+        'fade-in': {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        'fade-in-up': {
+          '0%': { opacity: '0', transform: 'translateY(16px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'fade-in-down': {
+          '0%': { opacity: '0', transform: 'translateY(-16px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'scale-in': {
+          '0%': { opacity: '0', transform: 'scale(0.96)' },
+          '100%': { opacity: '1', transform: 'none' },
+        },
+        'slide-in-right': {
+          '0%': { opacity: '0', transform: 'translateX(24px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
+        'slide-in-left': {
+          '0%': { opacity: '0', transform: 'translateX(-24px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
+        'float-slow': {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-8px)' },
+        },
+        'pulse-glow': {
+          '0%, 100%': { opacity: '1', transform: 'scale(1)' },
+          '50%': { opacity: '0.85', transform: 'scale(1.02)' },
+        },
+      },
+      animation: {
+        'fade-in': 'fade-in 0.35s ease-out both',
+        'fade-in-up': 'fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both',
+        'fade-in-down': 'fade-in-down 0.5s cubic-bezier(0.16, 1, 0.3, 1) both',
+        'scale-in': 'scale-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both',
+        'slide-in-right': 'slide-in-right 0.4s cubic-bezier(0.16, 1, 0.3, 1) both',
+        'slide-in-left': 'slide-in-left 0.4s cubic-bezier(0.16, 1, 0.3, 1) both',
+        'float-slow': 'float-slow 4s ease-in-out infinite',
+        'pulse-glow': 'pulse-glow 3s ease-in-out infinite',
+      },
     },
   },
   plugins: [],

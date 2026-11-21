@@ -1,97 +1,126 @@
 import React from 'react';
 import { ArrowRight, Sparkles, Shield, Compass, RefreshCw } from 'lucide-react';
 import { InteractivePreviewCard } from './InteractivePreviewCard';
+import { useAuth } from '../../context/AuthContext';
+import { Link } from 'react-router-dom';
 
 interface HeroSectionProps {
   onGetStarted: () => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ onGetStarted }) => {
-  // Row of Notion-style character marks (40px circles with 2px colored borders)
+  const { isAuthenticated } = useAuth();
   const avatars = [
-    { initial: '👩‍🦰', border: '#f64932', name: 'Aisha' },
-    { initial: '👨‍🦱', border: '#097fe8', name: 'Rohan' },
-    { initial: '🧕', border: '#ffb110', name: 'Sara' },
-    { initial: '🧔', border: '#62aef0', name: 'Arjun' },
-    { initial: '👩‍🎨', border: '#e89d01', name: 'Elena' },
-    { initial: '👨‍💻', border: '#f64932', name: 'Dev' },
-    { initial: '🧑‍🚀', border: '#097fe8', name: 'Liam' },
+    { initial: '👩‍🦰', ring: 'ring-indigo-400', name: 'Aisha' },
+    { initial: '👨‍🦱', ring: 'ring-violet-400', name: 'Rohan' },
+    { initial: '🧕', ring: 'ring-emerald-400', name: 'Sara' },
+    { initial: '🧔', ring: 'ring-sky-400', name: 'Arjun' },
+    { initial: '👩‍🎨', ring: 'ring-amber-400', name: 'Elena' },
+    { initial: '👨‍💻', ring: 'ring-rose-400', name: 'Dev' },
+    { initial: '🧑‍🚀', ring: 'ring-indigo-400', name: 'Liam' },
   ];
 
   return (
-    <section className="relative overflow-hidden pt-12 pb-20 md:pt-16 md:pb-28 bg-[#f6f5f4] text-[#000000]">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden pt-12 pb-20 md:pt-16 md:pb-28">
+      {/* Ambient background glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-[#4d49fc]/10 via-[#c4baff]/5 to-transparent dark:from-[#4d49fc]/15 dark:via-transparent blur-3xl pointer-events-none -z-10" />
+
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-4xl mx-auto space-y-6">
-          {/* Avatar Character Mark Row */}
-          <div className="flex items-center justify-center -space-x-2 pt-2 pb-1">
-            {avatars.map((av, i) => (
-              <div
-                key={i}
-                className="w-10 h-10 rounded-full bg-[#ffffff] flex items-center justify-center text-lg shadow-sm transition-transform hover:-translate-y-1"
-                style={{ border: `2px solid ${av.border}` }}
-                title={av.name}
-              >
-                <span>{av.initial}</span>
-              </div>
-            ))}
+          {/* Top Pill Announcement */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-800 dark:text-slate-200 shadow-xs hover:border-[#4d49fc] dark:hover:border-[#4d49fc] transition-all animate-fade-in-down hover-lift-sm cursor-default">
+            <span className="flex h-2 w-2 rounded-full bg-[#4d49fc] animate-pulse" />
+            <span>Next-Gen Travel Ledger & Debt Settlement</span>
+            <span className="text-slate-300 dark:text-slate-700">|</span>
+            <span className="text-slate-600 dark:text-slate-400 font-medium">Contrey 2.0</span>
           </div>
 
-          {/* Large Two-line Headline with Embedded Hero Highlight Pill */}
-          <h1 className="text-4xl sm:text-6xl lg:text-[72px] font-bold text-[#000000] tracking-[-1.5px] sm:tracking-[-2.016px] leading-[1.08]">
+          {/* Large Headline */}
+          <h1 className="font-heading text-4xl sm:text-6xl lg:text-[68px] font-extrabold text-slate-900 dark:text-white tracking-tight leading-[1.1] animate-fade-in-up">
             Where travel crews and friends{' '}
-            <span className="inline-block bg-[#ffb110] text-[#000000] px-4 py-0.5 sm:px-6 sm:py-1 rounded-full font-semibold mx-1 shadow-xs transform -rotate-1">
+            <span className="text-[#4d49fc] underline decoration-[#4d49fc]/30 dark:decoration-[#4d49fc]/60 decoration-wavy decoration-2">
               Settle
             </span>{' '}
-            together.
+            effortlessly.
           </h1>
 
-          {/* Editorial Subhead in Lyon Text / Source Serif at 18px */}
-          <p className="font-serif text-[18px] sm:text-[20px] text-[#615d59] max-w-2xl mx-auto leading-[1.56]">
-            A warm, notebook-style workspace for group expenses. Settle multi-currency trip debts with greedy minimal transactions and explore spots on interactive maps.
+          {/* Subheading */}
+          <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed animate-fade-in-up stagger-1">
+            Eliminate awkward IOUs and complex split spreadsheets. Contrey condenses group debts into minimal transactions, converts live currencies, and pinpoints curated travel spots.
           </p>
 
-          {/* Two-Button CTA Row: Primary Blue (#0075de) + Ghost Sky Tint (#e6f3fe) */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3">
-            <button
-              onClick={onGetStarted}
-              className="w-full sm:w-auto px-5 py-2.5 rounded-[8px] bg-[#0075de] hover:bg-[#0066c0] text-[#ffffff] text-sm font-medium transition-all shadow-xs flex items-center justify-center gap-2"
-            >
-              <span>Get Contrey free</span>
-              <ArrowRight className="w-4 h-4 text-[#ffffff]" />
-            </button>
+          {/* CTA Row */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2 animate-fade-in-up stagger-2">
+            {isAuthenticated ? (
+              <Link
+                to="/dashboard"
+                className="btn-primary w-full sm:w-auto hover-lift interactive-press"
+              >
+                <span>Go to Your Dashboard</span>
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+            ) : (
+              <button
+                onClick={onGetStarted}
+                className="btn-primary w-full sm:w-auto hover-lift interactive-press"
+              >
+                <span>Get Started Free</span>
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </button>
+            )}
 
             <a
               href="#preview"
-              className="w-full sm:w-auto px-5 py-2.5 rounded-[8px] bg-[#e6f3fe] hover:bg-[#d6ecfd] text-[#0075de] text-sm font-medium transition-all flex items-center justify-center gap-2"
+              className="btn-secondary w-full sm:w-auto hover-lift-sm interactive-press"
             >
-              <span>Try live preview</span>
+              <span>Try Interactive Simulator</span>
             </a>
           </div>
 
-          {/* Greyscale Logo Wall / Trust Marks */}
-          <div className="pt-8 flex flex-wrap items-center justify-center gap-8 text-xs text-[#757575] font-medium">
-            <div className="flex items-center gap-2">
-              <RefreshCw className="w-4 h-4 text-[#757575]" />
+          {/* Avatar Stack & Social Proof */}
+          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3 text-xs text-slate-500 dark:text-slate-400 animate-fade-in stagger-3">
+            <div className="flex items-center -space-x-2">
+              {avatars.map((av, i) => (
+                <div
+                  key={i}
+                  className={`w-9 h-9 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center text-sm shadow-xs ring-2 ${av.ring} transition-transform hover:-translate-y-1.5 hover:z-10`}
+                  title={av.name}
+                >
+                  <span>{av.initial}</span>
+                </div>
+              ))}
+            </div>
+            <span className="font-medium text-slate-600 dark:text-slate-300">
+              Trusted by 10,000+ friends exploring Goa, Bali, Paris, Tokyo & beyond.
+            </span>
+          </div>
+
+          {/* Key Value Badges */}
+          <div className="pt-8 flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-xs text-slate-500 dark:text-slate-400 font-semibold animate-fade-in stagger-4">
+            <div className="flex items-center gap-2 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+              <RefreshCw className="w-4 h-4 text-indigo-600 dark:text-indigo-400 animate-spin" style={{ animationDuration: '10s' }} />
               <span>Greedy Debt Minimizer</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#757575]" />
+            <div className="flex items-center gap-2 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+              <Sparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
               <span>Live FX: INR • EUR • USD</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Compass className="w-4 h-4 text-[#757575]" />
-              <span>Radius Travel Map</span>
+            <div className="flex items-center gap-2 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+              <Compass className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+              <span>1–2 km Radius Radar</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[#757575]" />
-              <span>4-Method Authentication</span>
+            <div className="flex items-center gap-2 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+              <Shield className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <span>Exact Penny Conservation</span>
             </div>
           </div>
         </div>
 
-        {/* Embedded Product UI Mockup (with drop shadow 0 4px 12px) */}
-        <div id="preview" className="mt-14 max-w-4xl mx-auto">
-          <InteractivePreviewCard />
+        {/* Embedded Interactive Product UI Mockup */}
+        <div id="preview" className="mt-14 max-w-4xl mx-auto animate-fade-in-up stagger-5">
+          <div className="hover-lift transition-all duration-300">
+            <InteractivePreviewCard />
+          </div>
         </div>
       </div>
     </section>

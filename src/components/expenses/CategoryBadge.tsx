@@ -15,37 +15,37 @@ export const CATEGORY_CONFIG: Record<
   Hotels: {
     label: 'Hotels',
     icon: Hotel,
-    colorClass: 'text-[#0075de]',
-    bgClass: 'bg-[#e6f3fe]',
-    borderClass: 'border-[#0075de]/20',
+    colorClass: 'text-indigo-700',
+    bgClass: 'bg-indigo-50',
+    borderClass: 'border-indigo-200/80',
   },
   Food: {
     label: 'Dining',
     icon: Utensils,
-    colorClass: 'text-[#000000]',
-    bgClass: 'bg-[#ffb110]/20',
-    borderClass: 'border-[#ffb110]/40',
+    colorClass: 'text-emerald-700',
+    bgClass: 'bg-emerald-50',
+    borderClass: 'border-emerald-200/80',
   },
   Transportation: {
     label: 'Transit',
     icon: Car,
-    colorClass: 'text-[#0075de]',
-    bgClass: 'bg-[#62aef0]/15',
-    borderClass: 'border-[#62aef0]/30',
+    colorClass: 'text-sky-700',
+    bgClass: 'bg-sky-50',
+    borderClass: 'border-sky-200/80',
   },
   Shopping: {
     label: 'Shopping',
     icon: ShoppingBag,
-    colorClass: 'text-[#f64932]',
-    bgClass: 'bg-[#f64932]/10',
-    borderClass: 'border-[#f64932]/25',
+    colorClass: 'text-rose-700',
+    bgClass: 'bg-rose-50',
+    borderClass: 'border-rose-200/80',
   },
   Activities: {
     label: 'Activities',
     icon: Compass,
-    colorClass: 'text-[#000000]',
-    bgClass: 'bg-[#f6f5f4]',
-    borderClass: 'border-[rgba(0,0,0,0.12)]',
+    colorClass: 'text-amber-700',
+    bgClass: 'bg-amber-50',
+    borderClass: 'border-amber-200/80',
   },
 };
 
@@ -61,7 +61,7 @@ export const CategoryBadge: React.FC<CategoryBadgeProps> = ({
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border font-medium ${config.bgClass} ${config.colorClass} ${config.borderClass} ${sizeClasses}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border font-semibold ${config.bgClass} ${config.colorClass} ${config.borderClass} ${sizeClasses}`}
     >
       {showIcon && <Icon className={size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5'} />}
       <span>{config.label}</span>
