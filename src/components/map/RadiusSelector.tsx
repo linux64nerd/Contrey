@@ -67,7 +67,7 @@ export const RadiusSelector: React.FC<RadiusSelectorProps> = ({
           <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Sort By:</span>
           <select
             value={sortBy}
-            onChange={(e) => onSelectSortBy(e.target.value as any)}
+            onChange={(e) => onSelectSortBy(e.target.value as 'best-value' | 'rating' | 'price' | 'distance')}
             className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 cursor-pointer"
           >
             <option value="best-value">✨ Best Value</option>

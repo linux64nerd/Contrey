@@ -3,11 +3,24 @@
  * Generates pre-filled wa.me links for one-click settlement reminders and trip summaries.
  */
 
+/**
+ * Normalizes phone numbers by stripping whitespace, dashes, and non-digit characters,
+ * preserving international country dial codes.
+ *
+ * @param phone - Raw telephone input (e.g., "+91 98200-12345")
+ * @returns String containing only numeric digits
+ */
 export function cleanPhoneNumber(phone: string): string {
   if (!phone) return '';
   return phone.replace(/[^0-9]/g, '');
 }
 
+/**
+ * Validates that a phone number contains an E.164-compliant digit length (7 to 15 digits).
+ *
+ * @param phone - Raw or cleaned phone number string
+ * @returns boolean indicating validity
+ */
 export function isValidPhoneNumber(phone: string): boolean {
   const cleaned = cleanPhoneNumber(phone);
   return cleaned.length >= 7 && cleaned.length <= 15;

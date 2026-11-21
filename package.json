@@ -1,5 +1,6 @@
 {
-  "name": "tripmate",
+  "name": "contrey",
+  "description": "Contrey – Group travel expense ledger, greedy minimum-debt settlement engine, multi-currency converter, and destination radar.",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -7,6 +8,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "lint": "tsc --noEmit",
     "test:audit": "esbuild scripts/verify_audit.ts --bundle --platform=node --outfile=node_modules/.cache/verify_audit.mjs && node node_modules/.cache/verify_audit.mjs"
   },
   "dependencies": {

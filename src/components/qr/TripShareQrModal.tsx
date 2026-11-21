@@ -43,7 +43,7 @@ export const TripShareQrModal: React.FC<TripShareQrModalProps> = ({
   if (!isOpen) return null;
 
   const currentUrl = typeof window !== 'undefined' ? window.location.href : 'https://contrey.travel';
-  const convertedTotal = convertAmount(totalSpent, trip.baseCurrency as any, currentCurrency);
+  const convertedTotal = convertAmount(totalSpent, trip.baseCurrency, currentCurrency);
 
   const sharePayload = `${currentUrl} | TRIP: ${trip.name} (${trip.destination}) | TOTAL SPENT: ${format(
     convertedTotal

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Settlement, Traveler } from '../../types/trip';
+import { CurrencyCode } from '../../types/currency';
 import { useCurrency } from '../../context/CurrencyContext';
 import { CheckCircle2, ArrowRight, MessageSquare, QrCode } from 'lucide-react';
 import { generateSettlementWhatsAppUrl } from '../../utils/whatsapp';
@@ -7,7 +8,7 @@ import { generateSettlementWhatsAppUrl } from '../../utils/whatsapp';
 interface SettlementListProps {
   settlements: Settlement[];
   travelers: Traveler[];
-  baseCurrency: string;
+  baseCurrency: CurrencyCode;
   tripName?: string;
   onToggleSettlement: (settlementId: string) => void;
   onOpenQr?: (settlement: Settlement, debtor: Traveler, creditor: Traveler) => void;
@@ -68,7 +69,7 @@ export const SettlementList: React.FC<SettlementListProps> = ({
               name: 'Crew Member',
               phone: '',
             };
-            const convertedAmount = convertAmount(s.amount, baseCurrency as any, currentCurrency);
+            const convertedAmount = convertAmount(s.amount, baseCurrency, currentCurrency);
 
             const whatsAppUrl = generateSettlementWhatsAppUrl(
               debtor.phone,

@@ -15,7 +15,7 @@ import { UrgencyBanner } from '../components/dashboard/UrgencyBanner';
 import { SettlementQrModal } from '../components/qr/SettlementQrModal';
 import { TripShareQrModal } from '../components/qr/TripShareQrModal';
 import { Expense } from '../types/expense';
-import { Settlement, Traveler } from '../types/trip';
+import { Settlement, Traveler, Trip } from '../types/trip';
 import { Plus, Compass, Share2, Receipt, BarChart3, ListFilter, Edit2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -36,7 +36,7 @@ export const DashboardPage: React.FC = () => {
 
   // Modals state
   const [isTripModalOpen, setIsTripModalOpen] = useState<boolean>(false);
-  const [editingTrip, setEditingTrip] = useState<any>(null);
+  const [editingTrip, setEditingTrip] = useState<Trip | null>(null);
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState<boolean>(false);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
 
@@ -82,7 +82,7 @@ export const DashboardPage: React.FC = () => {
     setIsTripModalOpen(true);
   };
 
-  const handleTripSubmit = (tripData: any) => {
+  const handleTripSubmit = (tripData: Omit<Trip, 'id' | 'createdAt'>) => {
     if (editingTrip) {
       updateTrip(editingTrip.id, tripData);
     } else {

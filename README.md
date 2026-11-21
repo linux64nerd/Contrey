@@ -1,130 +1,146 @@
-# Contrey – Travel Smart, Spend Smart 🌴✈️
+# Contrey
 
-An all-in-one group travel expense management web application featuring multi-currency support, smart bill splitting with greedy minimal debt settlement, interactive charts, radius destination maps, browser push notifications, WhatsApp integration, and instant UPI QR payments.
+> **Travel Smart, Spend Smart**
 
-![Contrey Banner](https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1200&auto=format&fit=crop&q=80)
+Group travel frequently descends into post-vacation friction over shared bills, confusing currency conversions across borders, and chaotic multi-party debts. **Contrey** eliminates travel financial anxiety by combining an exact-split ledger, greedy minimum-transaction settlement engine, live multi-currency converter, proactive spend urgency alerts, and a 1–2 km destination exploration radar into a unified, high-performance web notebook.
 
----
-
-## 🌟 Key Features
-
-### 1. 🛡️ Multi-Method Authentication Gate
-- Protected routes ensuring all trip data is secured.
-- **4 Authentication Methods**:
-  - **Phone Number + OTP**: International country codes (`+91`, `+1`, `+44`, `+49`), 10-digit validation, and instant test OTP flow (`123456`).
-  - **Email ID**: Email and password login & registration with client validation.
-  - **Google Account**: 1-click Google sign-in with instant demo profile fallback.
-  - **User ID & Password**: Unique traveler username and password access.
-  - **1-Click Demo Login**: Fast testing bypass.
-
-### 2. 💱 Real-Time Multi-Currency Engine
-- Supported Currencies: **Indian Rupee (`INR ₹`)**, **Euro (`EUR €`)**, and **US Dollar (`USD $`)**.
-- Switch currencies globally from the navbar or dashboard.
-- Live exchange rates fetched via Frankfurter API with resilient offline fallbacks.
-- Instant conversion across all KPI summaries, graphs, tables, and settlement amounts.
-
-### 3. ⚖️ Smart Expense Splitter & Settlement Engine
-- Log shared expenses across 5 categories: **Hotels**, **Food & Dining**, **Transportation**, **Shopping**, and **Activities**.
-- **Equal vs. Custom Splits**: Allocate custom amounts per traveler with real-time balance validation.
-- **Greedy Minimum-Transaction Algorithm**: Simplifies complex group cross-debts into the minimal number of direct transfers (*"Member A pays Member B — ₹X"*).
-- One-click **"Mark Paid / Settled"** debt status tracking.
-
-### 4. 📊 Interactive Recharts Data Visualizations
-- **Donut Chart**: Category-wise spend distribution with interactive tooltips and center totals.
-- **Bar Graph**: Side-by-side comparison of each traveler's total paid vs. their fair share, highlighting net debtors and creditors.
-- **Area / Line Graph**: Daily spend velocity and cumulative spending trajectory against the trip budget cap.
-
-### 5. 🗺️ Interactive Travel Map & Smart Recommendations
-- Centered on the trip destination with **Nominatim geocoding** (searches any city worldwide).
-- **Radius Filter (`1 km` / `2 km`)**: Visual circle showing nearby spots.
-- Categorized custom SVG map pins for **Hotels**, **Restaurants**, **Shopping**, and **Attractions**.
-- **Smart Recommendations Panel**: Ranked spots comparing price (in active currency), ratings, distance, and review quotes, with a **"Best Value"** badge for high-rated affordable gems.
-- 1-Click **"Log as Expense"** to add recommended spots directly to trip spending.
-
-### 6. 🚨 Urgency Spend Alerts & Push Notifications
-- Browser **Web Push Notifications** (`Notification.requestPermission()`) with fallback to urgent in-app banners.
-- **Automatic Triggers**:
-  - **Heavy Single-Item / Category Spend**: Triggers when any single expense or category consumes **≥ 40%** of the trip budget.
-  - **Critical Remaining Budget**: Triggers when remaining funds drop to **≤ 20%** of the budget with an **essentials-only warning**.
-  - **Budget Overspend**: Critical alert when spend exceeds 100%.
-- **Notification Center**: Bell icon with unread badge, severity tags (`Urgent`, `Warning`, `Info`), and filterable history.
-
-### 7. 💬 WhatsApp & 📱 QR Code Integrations
-- **1-Click WhatsApp Settlement**: Opens `wa.me/<phone>` with a pre-filled itemized payment request and UPI ID details.
-- **Instant Settlement QR**: Generates scannable UPI deep links (`upi://pay`) for INR or payment receipts for EUR/USD.
-- **Trip Share QR Pass**: Share trip summaries with fellow travelers in one scan.
-- **Downloadable PNGs** for both QR passes.
+Built with a minimalist achromatic canvas inspired by Figma's design system, Contrey delivers mathematical certainty, zero-drift financial calculations, and instant local exploration—with zero backend friction.
 
 ---
 
-## 🛠️ Tech Stack
+## Core Features
 
-- **Frontend**: React 18 + TypeScript + Vite
-- **Styling**: Tailwind CSS + Lucide React Icons
-- **Visualizations**: Recharts
-- **Maps**: Leaflet + React-Leaflet + OpenStreetMap + Nominatim
-- **QR Codes**: `qrcode.react`
-- **Routing**: React Router v6
-- **Notifications**: Sonner Toasts + Web Notification API
-- **Date Handling**: `date-fns`
+- **Trip Expense Ledger**: Comprehensive expense tracking across 5 core travel categories (*Hotels*, *Food & Dining*, *Transportation*, *Shopping*, *Activities*) supporting both equal splits and custom per-traveler allocations.
+- **Greedy Minimum-Transaction Splitter**: Optimal two-pointer debt simplification algorithm that collapses an arbitrary $N$-person cross-debt graph into at most $N - 1$ direct bilateral transfers with mathematical zero penny drift.
+- **Live Multi-Currency Engine**: Seamless on-the-fly currency switching across **Indian Rupee (`INR ₹`)**, **Euro (`EUR €`)**, and **US Dollar (`USD $`)** using normalized EUR-pivot exchange math with resilient offline caching.
+- **3 Interactive Data Visualizations**:
+  - *Category Spend Donut*: Percentage breakdown across categories with dynamic center totals.
+  - *Balance Bar Chart*: Side-by-side comparison of total paid vs. fair share, highlighting net debtors and creditors.
+  - *Spending Trajectory Area Plot*: Daily spend velocity and cumulative spending plotted against the trip budget cap.
+- **1–2 km Destination Radar**: Interactive Leaflet + OpenStreetMap exploration panel featuring zero-API-key basemaps, Nominatim destination geocoding, radius filtering, and 1-click expense logging from curated local recommendations.
+- **Spend Urgency & Push Notifications**: Real-time spending anomaly detection with browser Web Push Notifications triggered on $\ge 40\%$ single-item/category spend spikes, $\le 20\%$ remaining budget warnings, and budget cap exhaustion.
+- **Multi-Method Auth Gate**: Protected application gate supporting Phone Number + OTP, Email & Password, Google 1-Click, and Username login flows with strict client-side session schema validation.
+- **WhatsApp Settlement Reminders**: One-click formatted `wa.me` deep links that pre-fill itemized settlement requests and payee handles.
+- **Scannable UPI & Trip QR Codes**: Instant NPCI-compliant `upi://pay` deep link QR generation for Indian UPI apps (GPay, PhonePe, Paytm) and downloadable QR summary passes for group members.
 
 ---
 
-## 🚀 Getting Started
+## Architecture & Directory Structure
+
+Contrey is structured as a decoupled, modular client-side application. Core mathematical and integration services are completely separated from presentation logic, making the system zero-friction for local demo use and drop-in ready for external backends (Firebase, Supabase, or PostgreSQL).
+
+```
+Contrey/
+├── docs/
+│   ├── ARCHITECTURE.md          # Algorithmic proofs, system design & mathematical specs
+│   └── SECURITY_AUDIT.md        # Comprehensive security, logic & reliability audit report
+├── scripts/
+│   └── verify_audit.ts          # Automated Node/TS verification suite (32 unit tests)
+├── src/
+│   ├── types/                   # TypeScript interfaces (trip, expense, currency, map, auth)
+│   ├── services/
+│   │   ├── settlementEngine.ts  # Greedy debt resolution & exact remainder penny distribution
+│   │   ├── storageService.ts    # Schema-validated localStorage driver with quota guards
+│   │   ├── geocodingService.ts  # OSM Nominatim forward geocoding & Haversine distance math
+│   │   └── urgencyService.ts    # Budget threshold evaluator & native push dispatch
+│   ├── context/
+│   │   ├── TripContext.tsx      # Trip state, active ledger & settlement actions
+│   │   ├── CurrencyContext.tsx  # Exchange rate pipeline & normalized EUR pivot converter
+│   │   ├── NotificationContext.tsx # In-app notifications & budget alert dispatcher
+│   │   ├── AuthContext.tsx      # User authentication session management
+│   │   └── ThemeContext.tsx     # Light canvas & dark charcoal palette management
+│   ├── components/
+│   │   ├── layout/              # Navbar, Footer, ProtectedRoute
+│   │   ├── landing/             # HeroSection, FeaturesGrid, HowItWorks
+│   │   ├── dashboard/           # BalanceBarChart, CategoryDonut, SpendingTrend, Kpis, SettlementList
+│   │   ├── expenses/            # ExpenseModal, ExpenseTable, CategoryBadge
+│   │   ├── trips/               # TripModal, TripSelector
+│   │   ├── map/                 # DestinationMap, RadiusSelector, RecommendationsPanel
+│   │   ├── qr/                  # SettlementQrModal, TripShareQrModal
+│   │   └── notifications/       # NotificationCenter modal & toast alerts
+│   ├── pages/                   # Route views (LandingPage, DashboardPage, MapPage, etc.)
+│   ├── utils/                   # UPI deep link builder, WhatsApp formatter, date formatters
+│   ├── App.tsx                  # Root router & context provider tree
+│   ├── main.tsx                 # Application entry point
+│   └── index.css                # Tailwind design tokens & Figma achromatic styles
+├── package.json                 # Project dependencies & npm scripts
+├── tsconfig.json                # Strict TypeScript compilation rules
+└── vite.config.ts               # Vite bundler configuration
+```
+
+---
+
+## Tech Stack
+
+| Layer | Technology | Purpose |
+|---|---|---|
+| **UI Framework** | React 18 + TypeScript | Component tree, hooks, and compile-time type safety |
+| **Build & Tooling** | Vite 5 | Fast HMR dev server and optimized production bundling |
+| **Styling & Tokens** | Tailwind CSS 3 | Utility-first Figma achromatic design palette (`#4d49fc`, `#131215`, `#ffffff`) |
+| **Visualizations** | Recharts 2 | Responsive SVG charts (Donut, Bar, and Area spending plots) |
+| **Mapping Engine** | Leaflet + React-Leaflet | Open-source interactive map canvas with custom SVG markers |
+| **Map Tiles & Geocoding** | OpenStreetMap + Nominatim | Zero-key, watermark-free basemap tiles and global destination search |
+| **Payment & Sharing** | `qrcode.react` + NPCI UPI Spec | On-the-fly QR code generation for UPI and trip summaries |
+| **Messaging & Reminders** | WhatsApp Deep Links (`wa.me`) | Pre-formatted group settlement reminders |
+| **Notifications** | Web Notification API + Sonner | Browser push alerts and lightweight in-app toast alerts |
+| **Icons & Assets** | Lucide React | Clean, minimalist SVG iconography |
+
+---
+
+## Local Setup & Verification
 
 ### Prerequisites
-- Node.js (v18 or higher)
-- npm or pnpm or yarn
+- Node.js `v18+` or `v20+`
+- npm `v9+`
 
-### Installation
+### 1. Clone & Install
+```bash
+git clone https://github.com/sachiny/Contrey.git
+cd Contrey
+npm install
+```
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/linux64nerd/Contrey.git
-   cd Contrey
-   ```
+### 2. Configure Environment (Optional)
+The project works 100% out of the box using public OpenStreetMap tiles and Frankfurter exchange rates. Optional keys can be placed in `.env`:
+```bash
+cp .env.example .env
+```
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+### 3. Run Development Server
+```bash
+npm run dev
+```
+Visit `http://localhost:5173` to explore the application.
 
-3. **Configure Environment Variables:**
-   ```bash
-   cp .env.example .env
-   ```
-   *(All features work out of the box with open-source free defaults)*
+### 4. Run TypeScript Quality & Verification Suites
+```bash
+# Type check without emission
+npm run lint
 
-4. **Start the local development server:**
-   ```bash
-   npm run dev
-   ```
-   Open [http://localhost:5173](http://localhost:5173) in your browser.
+# Run the 32-test automated financial math, security & engine suite
+npm run test:audit
 
-5. **Build for production:**
-   ```bash
-   npm run build
-   ```
-
----
-
-## 🌐 Deployment Guide
-
-### Deploying to Vercel
-1. Push your repository to GitHub.
-2. Go to [Vercel](https://vercel.com) and click **"New Project"**.
-3. Import the `Contrey` repository.
-4. Framework Preset will auto-detect **Vite**.
-5. Click **"Deploy"**.
-
-### Deploying to Netlify
-1. Go to [Netlify](https://netlify.com) and click **"Add new site"** > **"Import an existing project"**.
-2. Connect your GitHub repository.
-3. Build command: `npm run build`
-4. Publish directory: `dist`
-5. Click **"Deploy Contrey"**.
+# Compile production build
+npm run build
+```
 
 ---
 
-## 📄 License
-MIT License. Created with ❤️ for travelers worldwide.
+## Security & Financial Integrity Highlights
+
+Contrey has undergone a comprehensive engineering and security audit documented in [`docs/SECURITY_AUDIT.md`](docs/SECURITY_AUDIT.md):
+
+1. **Exact Remainder Cent Distribution**: Solves the classic 3-way floating-point split issue (e.g. ₹100 split 3 ways yields ₹33.34 + ₹33.33 + ₹33.33 = ₹100.00) with guaranteed zero fractional drift.
+2. **Mathematical Conservation of Funds**: In every settlement plan, total debtor obligations strictly equal total creditor payouts ($\sum \text{netBalance} = 0$), even when past travelers have been removed.
+3. **URI Injection Neutralization**: All parameters passed to UPI payment links (`upi://pay`) and WhatsApp messaging links (`wa.me`) are sanitized against parameter injection delimiters (`&`, `?`, `=`, `#`).
+4. **Resilient Network Handling**: External API calls (OSM Nominatim and Frankfurter) are bounded by an `AbortController` 5000ms timeout with automatic offline fallbacks.
+5. **Type-Safe Storage Guardrails**: Client-side storage enforces runtime schema guards and handles browser `QuotaExceededError` states without crashing.
+
+For algorithmic proofs and data flow diagrams, refer to [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+
+---
+
+## Deployment & License
+
+- **Deployment**: Contrey is a client-side single page application (SPA). It can be deployed instantly to Vercel, Netlify, Cloudflare Pages, or GitHub Pages.
+- **License**: MIT License. See [LICENSE](LICENSE) for details.

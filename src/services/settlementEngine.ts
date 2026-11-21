@@ -19,7 +19,12 @@ export interface SettlementEngineResult {
 
 /**
  * Calculates exact equal splits with remainder penny allocation.
- * Guarantees that the sum of splits equals totalAmount with zero fractional drift.
+ * Guarantees mathematical conservation of funds where the sum of allocated shares
+ * matches totalAmount exactly with zero fractional drift.
+ *
+ * @param totalAmount - Total expense amount in fractional currency (e.g. 100.00)
+ * @param travelerIds - List of traveler unique IDs sharing this expense
+ * @returns Array of exact allocations in currency units (sum matches totalAmount to 2 decimals)
  */
 export function calculateExactEqualSplits(
   totalAmount: number,
@@ -44,7 +49,25 @@ export function calculateExactEqualSplits(
 
 /**
  * Minimum-Transaction Settlement Plan Algorithm (Greedy Debt Simplification)
- * Operates in integer cents to ensure mathematical precision and complete conservation of funds.
+ *
+ * Reduces an arbitrary N-party peer debt graph into the theoretical minimum number
+ * of bilateral transfers (at most N - 1 transactions) using a greedy two-pointer strategy.
+ *
+ * Computational Steps:
+ * 1. Directory Reconstruction: Indexes all active and former travelers referenced in past expenses.
+ * 2. Integer-Cent Balancing: Converts all floating-point amounts to integer cents (cents = round(amount * 100))
+ *    to eliminate IEEE 754 floating-point rounding drift.
+ * 3. Net Balance Calculation: For each traveler, net = paid - fairShare.
+ * 4. Partitioning & Sorting: Segregates travelers into debtors (net < 0) and creditors (net > 0),
+ *    sorting both descending by magnitude O(N log N).
+ * 5. Greedy Settle: Matches the largest debtor against the largest creditor, fully extinguishing
+ *    at least one party's balance in every iteration until all debts are resolved.
+ *
+ * @param tripId - Target trip ID
+ * @param travelers - Active traveler roster
+ * @param expenses - All recorded trip expenses
+ * @param existingSettlements - Previous settlement states (preserves user-toggled settled flags)
+ * @returns SettlementEngineResult containing totalSpent, traveler balances, and minimal settlements
  */
 export function computeSettlements(
   tripId: string,

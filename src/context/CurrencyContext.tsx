@@ -84,8 +84,9 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           setRates(newRates);
           storageService.setItem(STORAGE_KEYS.EXCHANGE_RATES, newRates);
         }
-      } catch (err: any) {
-        if (err?.name === 'AbortError') {
+      } catch (err: unknown) {
+        const isAbort = err instanceof Error && err.name === 'AbortError';
+        if (isAbort) {
           console.warn('Rates fetch timed out after 5000ms. Using cached/default rates.');
         } else {
           console.warn('Using offline fallback exchange rates', err);
@@ -104,6 +105,15 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     };
   }, []);
 
+  /**
+   * Converts a monetary amount between currencies using a normalized EUR base pivot.
+   * Guarantees arithmetic stability, zero drift, and non-finite number guardrails.
+   *
+   * @param amount - Numerical quantity to convert
+   * @param from - Origin currency code (INR | EUR | USD)
+   * @param to - Target currency code (defaults to currently selected user currency)
+   * @returns Converted monetary value
+   */
   const convertAmount = (amount: number, from: CurrencyCode, to: CurrencyCode = currentCurrency): number => {
     if (from === to) return amount;
     if (!isFinite(amount) || isNaN(amount)) return 0;

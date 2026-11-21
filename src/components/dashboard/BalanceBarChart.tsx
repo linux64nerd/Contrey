@@ -12,10 +12,24 @@ import {
 import { TravelerBalance } from '../../services/settlementEngine';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useTheme } from '../../context/ThemeContext';
+import { CurrencyCode } from '../../types/currency';
 
 interface BalanceBarChartProps {
   balances: TravelerBalance[];
-  baseCurrency: string;
+  baseCurrency: CurrencyCode;
+}
+
+interface BalanceTooltipPayload {
+  name: string;
+  fullName: string;
+  paid: number;
+  share: number;
+  net: number;
+}
+
+interface BalanceTooltipProps {
+  active?: boolean;
+  payload?: Array<{ payload: BalanceTooltipPayload }>;
 }
 
 export const BalanceBarChart: React.FC<BalanceBarChartProps> = ({
@@ -26,8 +40,8 @@ export const BalanceBarChart: React.FC<BalanceBarChartProps> = ({
   const { isDark } = useTheme();
 
   const chartData = balances.map((b) => {
-    const paid = convertAmount(b.totalPaid, baseCurrency as any, currentCurrency);
-    const share = convertAmount(b.fairShare, baseCurrency as any, currentCurrency);
+    const paid = convertAmount(b.totalPaid, baseCurrency, currentCurrency);
+    const share = convertAmount(b.fairShare, baseCurrency, currentCurrency);
     const net = paid - share;
 
     return {
@@ -39,7 +53,7 @@ export const BalanceBarChart: React.FC<BalanceBarChartProps> = ({
     };
   });
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip: React.FC<BalanceTooltipProps> = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const item = payload[0].payload;
       return (

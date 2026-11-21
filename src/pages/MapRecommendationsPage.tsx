@@ -8,7 +8,7 @@ import { RecommendationsPanel } from '../components/map/RecommendationsPanel';
 import { ExpenseModal } from '../components/expenses/ExpenseModal';
 import { geocodeDestination, getCuratedRecommendations } from '../services/geocodingService';
 import { PlaceRecommendation } from '../types/map';
-import { ExpenseCategory } from '../types/expense';
+import { Expense, ExpenseCategory } from '../types/expense';
 import { MapPin, ArrowLeft, Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -26,7 +26,7 @@ export const MapRecommendationsPage: React.FC = () => {
 
   // Quick Expense modal from place
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState<boolean>(false);
-  const [prefilledExpense, setPrefilledExpense] = useState<any>(null);
+  const [prefilledExpense, setPrefilledExpense] = useState<Partial<Expense> | null>(null);
 
   // Sync with active trip destination
   useEffect(() => {

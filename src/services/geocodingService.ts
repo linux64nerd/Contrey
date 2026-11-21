@@ -49,7 +49,16 @@ const KNOWN_DESTINATIONS: Record<string, { lat: number; lng: number }> = {
 };
 
 /**
- * Geocode destination string using Nominatim OpenStreetMap API with 5s timeout & resilience
+ * Resolves free-form destination strings into geographic coordinates (latitude, longitude).
+ * 
+ * Pipeline:
+ * 1. O(1) instantaneous lookup against common pre-indexed world destinations.
+ * 2. Asynchronous forward geocoding against OpenStreetMap Nominatim with an AbortController
+ *    5000ms safety deadline to prevent hung requests on slow connections.
+ * 3. Graceful offline fallback to default coordinates if unresolvable.
+ *
+ * @param query - City, region, or landmark query string
+ * @returns GeocodingResult containing coordinates and canonical display name
  */
 export async function geocodeDestination(query: string): Promise<GeocodingResult> {
   const normalized = (query || '').trim().toLowerCase();
@@ -91,8 +100,9 @@ export async function geocodeDestination(query: string): Promise<GeocodingResult
           };
         }
       }
-    } catch (err: any) {
-      if (err?.name === 'AbortError') {
+    } catch (err: unknown) {
+      const isAbort = err instanceof Error && err.name === 'AbortError';
+      if (isAbort) {
         console.warn('Nominatim geocoding timed out after 5000ms. Falling back.');
       } else {
         console.warn('Nominatim geocoding failed, using destination fallback', err);

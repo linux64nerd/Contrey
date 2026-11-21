@@ -121,7 +121,7 @@ export const DestinationMap: React.FC<DestinationMapProps> = ({
   const radiusMeters = Math.max(100, Math.min(50000, (radiusKm || 2) * 1000));
 
   // OpenStreetMap 100% free tile layer (zero API key required, zero watermark)
-  const cartoApiKey = ((import.meta as any).env?.VITE_CARTO_API_KEY as string | undefined)?.trim();
+  const cartoApiKey = import.meta.env.VITE_CARTO_API_KEY?.trim();
   const isUsingOsm = !cartoApiKey;
 
   const tileUrl = cartoApiKey

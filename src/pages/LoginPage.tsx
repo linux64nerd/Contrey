@@ -5,6 +5,7 @@ import { GoogleAuthButton } from '../components/auth/GoogleAuthButton';
 import { UserIdPasswordForm } from '../components/auth/UserIdPasswordForm';
 import { useAuth } from '../context/AuthContext';
 import { useCurrency } from '../context/CurrencyContext';
+import { CurrencyCode } from '../types/currency';
 import { ThemeToggle } from '../components/common/ThemeToggle';
 import { Phone, Mail, KeyRound, Sparkles, ArrowLeft, ShieldCheck } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -46,7 +47,7 @@ export const LoginPage: React.FC = () => {
           <ThemeToggle />
           <select
             value={currentCurrency}
-            onChange={(e) => setCurrency(e.target.value as any)}
+            onChange={(e) => setCurrency(e.target.value as CurrencyCode)}
             className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-800 dark:text-slate-200 cursor-pointer focus:outline-none focus:border-indigo-500"
           >
             <option value="INR">INR (₹)</option>

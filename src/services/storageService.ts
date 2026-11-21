@@ -99,8 +99,9 @@ export const storageService = {
   setItem: <T>(key: string, value: T): void => {
     try {
       localStorage.setItem(key, JSON.stringify(value));
-    } catch (e: any) {
-      if (e?.name === 'QuotaExceededError') {
+    } catch (e: unknown) {
+      const isQuota = e instanceof Error && e.name === 'QuotaExceededError';
+      if (isQuota) {
         console.error(`Storage quota exceeded while writing ${key}. Data cannot be saved.`);
       } else {
         console.error(`Failed to store item ${key}`, e);

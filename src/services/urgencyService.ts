@@ -15,7 +15,18 @@ export interface UrgencyAnalysis {
 }
 
 /**
- * Analyzes trip budget against expenses and identifies urgency triggers
+ * Analyzes trip budget against expenses and identifies urgency triggers.
+ *
+ * Alert Threshold Specifications:
+ * - Single Heavy Expense: >= 40% of the entire trip budget in a single line item
+ * - High Category Spend: >= 40% of the entire trip budget concentrated in one category (e.g. Hotels)
+ * - Budget Cap Exhaustion: Total spent exceeds 100% of the allocated budget
+ * - Critical Budget Threshold: Remaining funds <= 20% of target budget (prompts austerity guidance)
+ * - Budget Caution: Remaining funds <= 35% of target budget
+ *
+ * @param trip - Current active trip metadata including totalBudget and baseCurrency
+ * @param expenses - List of recorded trip expenses
+ * @returns UrgencyAnalysis containing active alerts, category percentages, and critical flags
  */
 export function evaluateTripUrgency(trip: Trip, expenses: Expense[]): UrgencyAnalysis {
   const alerts: UrgencyAnalysis['alerts'] = [];

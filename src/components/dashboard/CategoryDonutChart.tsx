@@ -49,7 +49,22 @@ export const CategoryDonutChart: React.FC<CategoryDonutChartProps> = ({ expenses
 
   const totalSpent = chartData.reduce((acc, curr) => acc + curr.value, 0);
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  interface CategoryTooltipItem {
+    name: string;
+    value: number;
+    payload: {
+      name: string;
+      value: number;
+      color: string;
+    };
+  }
+
+  interface CategoryTooltipProps {
+    active?: boolean;
+    payload?: CategoryTooltipItem[];
+  }
+
+  const CustomTooltip: React.FC<CategoryTooltipProps> = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const data = payload[0];
       const percent = totalSpent > 0 ? ((data.value / totalSpent) * 100).toFixed(1) : 0;

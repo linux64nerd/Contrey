@@ -1,12 +1,13 @@
 import React from 'react';
 import { useCurrency } from '../../context/CurrencyContext';
+import { CurrencyCode } from '../../types/currency';
 import { Wallet, Users, ArrowUpRight, CheckCircle2, ShieldCheck, AlertCircle } from 'lucide-react';
 
 interface KpiSummaryCardsProps {
   totalBudget: number;
   totalSpent: number;
   numTravelers: number;
-  baseCurrency: string;
+  baseCurrency: CurrencyCode;
   totalSettlements: number;
   settledCount: number;
 }
@@ -21,8 +22,8 @@ export const KpiSummaryCards: React.FC<KpiSummaryCardsProps> = ({
 }) => {
   const { currentCurrency, format, convertAmount } = useCurrency();
 
-  const convertedBudget = convertAmount(totalBudget, baseCurrency as any, currentCurrency);
-  const convertedSpent = convertAmount(totalSpent, baseCurrency as any, currentCurrency);
+  const convertedBudget = convertAmount(totalBudget, baseCurrency, currentCurrency);
+  const convertedSpent = convertAmount(totalSpent, baseCurrency, currentCurrency);
   const remainingBudget = convertedBudget - convertedSpent;
   const perPersonShare = numTravelers > 0 ? convertedSpent / numTravelers : 0;
   const spendPercentage = convertedBudget > 0 ? Math.round((convertedSpent / convertedBudget) * 100) : 0;

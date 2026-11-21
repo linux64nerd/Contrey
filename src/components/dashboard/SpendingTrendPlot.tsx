@@ -9,6 +9,7 @@ import {
   CartesianGrid,
 } from 'recharts';
 import { Expense } from '../../types/expense';
+import { CurrencyCode } from '../../types/currency';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useTheme } from '../../context/ThemeContext';
 import { formatDate } from '../../utils/formatters';
@@ -18,7 +19,19 @@ interface SpendingTrendPlotProps {
   startDate: string;
   endDate: string;
   totalBudget: number;
-  baseCurrency: string;
+  baseCurrency: CurrencyCode;
+}
+
+interface TrendTooltipPayload {
+  date: string;
+  formattedDate: string;
+  daily: number;
+  cumulative: number;
+}
+
+interface TrendTooltipProps {
+  active?: boolean;
+  payload?: Array<{ payload: TrendTooltipPayload }>;
 }
 
 export const SpendingTrendPlot: React.FC<SpendingTrendPlotProps> = ({
@@ -54,9 +67,9 @@ export const SpendingTrendPlot: React.FC<SpendingTrendPlotProps> = ({
     };
   });
 
-  const convertedBudget = convertAmount(totalBudget, baseCurrency as any, currentCurrency);
+  const convertedBudget = convertAmount(totalBudget, baseCurrency, currentCurrency);
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip: React.FC<TrendTooltipProps> = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (

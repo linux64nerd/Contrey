@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { QRCodeCanvas } from 'qrcode.react';
 import { X, QrCode, Download, Copy, ArrowRight } from 'lucide-react';
 import { Settlement, Traveler } from '../../types/trip';
+import { CurrencyCode } from '../../types/currency';
 import { useCurrency } from '../../context/CurrencyContext';
 import { generateUpiLink } from '../../utils/upi';
 import { toast } from 'sonner';
@@ -13,7 +14,7 @@ interface SettlementQrModalProps {
   settlement: Settlement;
   debtor: Traveler;
   creditor: Traveler;
-  baseCurrency: string;
+  baseCurrency: CurrencyCode;
 }
 
 export const SettlementQrModal: React.FC<SettlementQrModalProps> = ({
@@ -47,7 +48,7 @@ export const SettlementQrModal: React.FC<SettlementQrModalProps> = ({
 
   if (!isOpen) return null;
 
-  const convertedAmount = convertAmount(settlement.amount, baseCurrency as any, currentCurrency);
+  const convertedAmount = convertAmount(settlement.amount, baseCurrency, currentCurrency);
 
   // Generate UPI payload if in INR, or generic payment string for EUR/USD
   const isUpiSupported = currentCurrency === 'INR' && creditor.upiId;

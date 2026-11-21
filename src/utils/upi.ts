@@ -12,6 +12,13 @@ export interface UpiPayloadOptions {
   tn?: string; // Transaction Note
 }
 
+/**
+ * Validates a Virtual Payment Address (VPA) / UPI ID against NPCI standards.
+ * Verifies the handle adheres to standard alphanumeric dot/dash/underscore patterns followed by @provider.
+ *
+ * @param vpa - UPI handle (e.g. 'rohan@okaxis')
+ * @returns boolean indicating whether the VPA is syntactically valid
+ */
 export function isValidVpa(vpa: string): boolean {
   if (!vpa) return false;
   const clean = vpa.trim();
@@ -19,6 +26,13 @@ export function isValidVpa(vpa: string): boolean {
   return /^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/.test(clean);
 }
 
+/**
+ * Constructs an NPCI-compliant UPI deep link URL (`upi://pay?...`) with rigorous parameter
+ * sanitization to neutralize URI parameter injection and ensure financial numerical precision.
+ *
+ * @param options - Payment parameters (payee VPA, payee name, amount, currency, note)
+ * @returns Fully formatted, URI-encoded UPI payment scheme link
+ */
 export function generateUpiLink(options: UpiPayloadOptions): string {
   const cleanPa = options.pa.trim();
   // Sanitize payee name and note to prevent URL parameter injection

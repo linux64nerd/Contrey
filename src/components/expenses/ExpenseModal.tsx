@@ -15,7 +15,7 @@ interface ExpenseModalProps {
   tripId: string;
   travelers: Traveler[];
   defaultCurrency: CurrencyCode;
-  initialExpense?: Expense | null;
+  initialExpense?: Partial<Expense> | null;
 }
 
 export const ExpenseModal: React.FC<ExpenseModalProps> = ({
@@ -39,13 +39,17 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
 
   useEffect(() => {
     if (initialExpense) {
-      setTitle(initialExpense.title);
-      setAmount(initialExpense.amount.toString());
-      setCurrency(initialExpense.currency);
-      setCategory(initialExpense.category);
-      setPaidById(initialExpense.paidById);
-      setSplitType(initialExpense.splitType);
-      setDate(initialExpense.date ? initialExpense.date.split('T')[0] : '');
+      setTitle(initialExpense.title || '');
+      setAmount(initialExpense.amount !== undefined ? initialExpense.amount.toString() : '');
+      setCurrency(initialExpense.currency || defaultCurrency);
+      setCategory(initialExpense.category || 'Food');
+      setPaidById(initialExpense.paidById || (travelers.length > 0 ? travelers[0].id : ''));
+      setSplitType(initialExpense.splitType || 'equal');
+      setDate(
+        initialExpense.date
+          ? initialExpense.date.split('T')[0]
+          : new Date().toISOString().split('T')[0]
+      );
       setNotes(initialExpense.notes || '');
 
       const splitMap: Record<string, string> = {};
