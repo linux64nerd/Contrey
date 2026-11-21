@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, Sparkles, Shield, Compass, RefreshCw } from 'lucide-react';
 import { InteractivePreviewCard } from './InteractivePreviewCard';
 
 interface HeroSectionProps {
@@ -7,73 +7,91 @@ interface HeroSectionProps {
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ onGetStarted }) => {
+  // Row of Notion-style character marks (40px circles with 2px colored borders)
+  const avatars = [
+    { initial: '👩‍🦰', border: '#f64932', name: 'Aisha' },
+    { initial: '👨‍🦱', border: '#097fe8', name: 'Rohan' },
+    { initial: '🧕', border: '#ffb110', name: 'Sara' },
+    { initial: '🧔', border: '#62aef0', name: 'Arjun' },
+    { initial: '👩‍🎨', border: '#e89d01', name: 'Elena' },
+    { initial: '👨‍💻', border: '#f64932', name: 'Dev' },
+    { initial: '🧑‍🚀', border: '#097fe8', name: 'Liam' },
+  ];
+
   return (
-    <section className="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-28">
-      {/* Background Glow Accents */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-emerald-200/40 via-teal-100/30 to-sky-100/20 rounded-full blur-3xl pointer-events-none -z-10" />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          {/* Left Column: Headline and Call to Actions */}
-          <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
-            {/* Tagline Pill */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/60 text-emerald-800 text-xs font-semibold shadow-sm">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Travel Smart, Spend Smart</span>
-            </div>
-
-            {/* Main Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.15]">
-              Master Group Expenses. <br />
-              <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-600 bg-clip-text text-transparent">
-                Settle Debts in Seconds.
-              </span>
-            </h1>
-
-            {/* Subheading */}
-            <p className="text-base sm:text-lg text-slate-600 max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
-              Say goodbye to messy spreadsheets and awkward money chats. Contrey automatically converts currencies, calculates minimal transactions, guides your stay with nearby map recommendations, and alerts you before you overspend.
-            </p>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
-              <button
-                onClick={onGetStarted}
-                className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold text-sm shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98]"
+    <section className="relative overflow-hidden pt-12 pb-20 md:pt-16 md:pb-28 bg-[#f6f5f4] text-[#000000]">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-4xl mx-auto space-y-6">
+          {/* Avatar Character Mark Row */}
+          <div className="flex items-center justify-center -space-x-2 pt-2 pb-1">
+            {avatars.map((av, i) => (
+              <div
+                key={i}
+                className="w-10 h-10 rounded-full bg-[#ffffff] flex items-center justify-center text-lg shadow-sm transition-transform hover:-translate-y-1"
+                style={{ border: `2px solid ${av.border}` }}
+                title={av.name}
               >
-                <span>Start Planning Free</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-
-              <a
-                href="#calculator-preview"
-                className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-sm flex items-center justify-center gap-2 shadow-sm transition-all hover:border-slate-300"
-              >
-                <span>Interactive Demo</span>
-              </a>
-            </div>
-
-            {/* Quick Value Prop Highlights */}
-            <div className="pt-6 border-t border-slate-200/70 grid grid-cols-3 gap-4 text-center lg:text-left">
-              <div>
-                <span className="text-2xl font-black text-slate-900 block">3</span>
-                <span className="text-xs text-slate-500 font-medium">Currencies (INR, EUR, USD)</span>
+                <span>{av.initial}</span>
               </div>
-              <div>
-                <span className="text-2xl font-black text-emerald-600 block">1-Click</span>
-                <span className="text-xs text-slate-500 font-medium">UPI & WhatsApp Splits</span>
-              </div>
-              <div>
-                <span className="text-2xl font-black text-slate-900 block">100%</span>
-                <span className="text-xs text-slate-500 font-medium">Offline Fallback Ready</span>
-              </div>
-            </div>
+            ))}
           </div>
 
-          {/* Right Column: Live Interactive Preview Card */}
-          <div id="calculator-preview" className="lg:col-span-6 w-full max-w-lg mx-auto lg:max-w-none">
-            <InteractivePreviewCard />
+          {/* Large Two-line Headline with Embedded Hero Highlight Pill */}
+          <h1 className="text-4xl sm:text-6xl lg:text-[72px] font-bold text-[#000000] tracking-[-1.5px] sm:tracking-[-2.016px] leading-[1.08]">
+            Where travel crews and friends{' '}
+            <span className="inline-block bg-[#ffb110] text-[#000000] px-4 py-0.5 sm:px-6 sm:py-1 rounded-full font-semibold mx-1 shadow-xs transform -rotate-1">
+              Settle
+            </span>{' '}
+            together.
+          </h1>
+
+          {/* Editorial Subhead in Lyon Text / Source Serif at 18px */}
+          <p className="font-serif text-[18px] sm:text-[20px] text-[#615d59] max-w-2xl mx-auto leading-[1.56]">
+            A warm, notebook-style workspace for group expenses. Settle multi-currency trip debts with greedy minimal transactions and explore spots on interactive maps.
+          </p>
+
+          {/* Two-Button CTA Row: Primary Blue (#0075de) + Ghost Sky Tint (#e6f3fe) */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3">
+            <button
+              onClick={onGetStarted}
+              className="w-full sm:w-auto px-5 py-2.5 rounded-[8px] bg-[#0075de] hover:bg-[#0066c0] text-[#ffffff] text-sm font-medium transition-all shadow-xs flex items-center justify-center gap-2"
+            >
+              <span>Get Contrey free</span>
+              <ArrowRight className="w-4 h-4 text-[#ffffff]" />
+            </button>
+
+            <a
+              href="#preview"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-[8px] bg-[#e6f3fe] hover:bg-[#d6ecfd] text-[#0075de] text-sm font-medium transition-all flex items-center justify-center gap-2"
+            >
+              <span>Try live preview</span>
+            </a>
           </div>
+
+          {/* Greyscale Logo Wall / Trust Marks */}
+          <div className="pt-8 flex flex-wrap items-center justify-center gap-8 text-xs text-[#757575] font-medium">
+            <div className="flex items-center gap-2">
+              <RefreshCw className="w-4 h-4 text-[#757575]" />
+              <span>Greedy Debt Minimizer</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[#757575]" />
+              <span>Live FX: INR • EUR • USD</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Compass className="w-4 h-4 text-[#757575]" />
+              <span>Radius Travel Map</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Shield className="w-4 h-4 text-[#757575]" />
+              <span>4-Method Authentication</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Embedded Product UI Mockup (with drop shadow 0 4px 12px) */}
+        <div id="preview" className="mt-14 max-w-4xl mx-auto">
+          <InteractivePreviewCard />
         </div>
       </div>
     </section>

@@ -7,37 +7,50 @@ export default {
   theme: {
     extend: {
       colors: {
-        brand: {
-          50: '#ecfdf5',
-          100: '#d1fae5',
-          200: '#a7f3d0',
-          300: '#6ee7b7',
-          400: '#34d399',
-          500: '#10b981', // Emerald primary
-          600: '#059669',
-          700: '#047857',
-          800: '#065f46',
-          900: '#064e3b',
-        },
-        ocean: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          400: '#38bdf8',
-          500: '#0284c7',
-          600: '#0369a1',
-          900: '#0c4a6e',
-        },
-        sunset: {
-          500: '#f97316',
-          600: '#ea580c',
-        }
+        // Notion Palette
+        'notion-blue': '#0075de',
+        'notion-canvas': '#f6f5f4',
+        'notion-white': '#ffffff',
+        'notion-black': '#000000',
+        'notion-charcoal': '#111111',
+        'notion-stone': '#757575',
+        'notion-graphite': '#615d59',
+        'notion-slate': '#696969',
+        'notion-sky-tint': '#e6f3fe',
+        'notion-marigold': '#ffb110',
+        'notion-coral': '#f64932',
+        'notion-saffron': '#e89d01',
+        'notion-vermillion': '#e32d14',
+        'notion-mocha': '#b18164',
+        'notion-signal-blue': '#097fe8',
+        'notion-sky-wash': '#62aef0',
+        'notion-midnight': '#02093a',
+        'notion-peach': '#f6d5b8',
+        'notion-border': 'rgba(0, 0, 0, 0.08)',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['NotionInter', 'Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+        serif: ['Lyon Text', 'Source Serif 4', 'Georgia', 'serif'],
+      },
+      borderRadius: {
+        'notion-card': '12px',
+        'notion-btn': '8px',
+        'notion-sm': '4px',
+        'notion-pill': '9999px',
       },
       boxShadow: {
-        glass: '0 8px 32px 0 rgba(0, 0, 0, 0.08)',
-        subtle: '0 2px 10px 0 rgba(0, 0, 0, 0.04)',
+        'notion-nav': '0px 0.7px 1.462px 0px rgba(0, 0, 0, 0.015), 0px 3px 9px 0px rgba(0, 0, 0, 0.03)',
+        'notion-mockup': '0 4px 12px rgba(0, 0, 0, 0.1)',
+        'notion-subtle': '0 1px 3px rgba(0, 0, 0, 0.04)',
+      },
+      letterSpacing: {
+        'notion-display-lg': '-4.6px',
+        'notion-display': '-2.016px',
+        'notion-display-sm': '-1.89px',
+        'notion-heading-sm': '-0.242px',
+      },
+      maxWidth: {
+        'notion-page': '1440px',
       }
     },
   },

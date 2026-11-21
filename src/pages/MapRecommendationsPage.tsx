@@ -93,52 +93,52 @@ export const MapRecommendationsPage: React.FC = () => {
       amount: place.estimatedPrice,
       currency: 'EUR',
       category: mappedCat,
-      notes: `Smart Recommendation: ${place.name} (${place.distanceKm} km away)`,
+      notes: `Recommendation: ${place.name} (${place.distanceKm} km away)`,
     });
     setIsExpenseModalOpen(true);
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 selection:bg-emerald-500 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-[#f6f5f4] text-[#000000] font-sans selection:bg-[#e6f3fe] selection:text-[#0075de]">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <main className="flex-1 max-w-[1440px] mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         {/* Top Header Banner */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <Link
                 to="/dashboard"
-                className="text-xs font-semibold text-slate-500 hover:text-emerald-700 flex items-center gap-1 transition-colors"
+                className="text-xs font-medium text-[#757575] hover:text-[#0075de] flex items-center gap-1 transition-colors"
               >
                 <ArrowLeft className="w-3.5 h-3.5" /> Back to Dashboard
               </Link>
-              <span className="text-slate-300">•</span>
-              <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider">
-                Interactive Travel Map
+              <span className="text-[#757575]">•</span>
+              <span className="text-xs font-semibold text-[#0075de] uppercase tracking-wider">
+                Travel Map
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-              <span>Explore Destination & Smart Spots</span>
-              <span className="text-emerald-600">🗺️</span>
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#000000] tracking-tight flex items-center gap-2">
+              <span>Destination map & recommendations</span>
+              <span>🗺️</span>
             </h1>
           </div>
 
           {/* Search Geocoding Form */}
           <form onSubmit={handleSearchSubmit} className="flex items-center gap-2 max-w-md w-full sm:w-auto">
             <div className="relative flex-1">
-              <MapPin className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
+              <MapPin className="w-4 h-4 absolute left-3 top-2.5 text-[#757575]" />
               <input
                 type="text"
                 placeholder="Search any destination city..."
                 value={destinationQuery}
                 onChange={(e) => setDestinationQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 rounded-2xl border border-slate-200 text-xs text-slate-900 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 shadow-sm"
+                className="w-full pl-9 pr-3 py-1.5 rounded-[8px] border border-[rgba(0,0,0,0.12)] text-xs text-[#000000] bg-[#ffffff] placeholder:text-[#757575] focus:outline-none focus:border-[#0075de]"
               />
             </div>
             <button
               type="submit"
-              className="px-4 py-2 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition-all hover:scale-105 active:scale-95"
+              className="px-4 py-1.5 rounded-[8px] bg-[#0075de] hover:bg-[#0066c0] text-[#ffffff] text-xs font-medium transition-colors shadow-xs"
             >
               Search
             </button>
@@ -158,25 +158,24 @@ export const MapRecommendationsPage: React.FC = () => {
 
         {/* Map and Recommendations Split Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Left Column: Interactive Map (55%) */}
-          <div className="lg:col-span-7">
+          {/* Left Column: Interactive Leaflet Map */}
+          <div className="lg:col-span-7 bg-[#ffffff] p-3 rounded-[12px] border border-[rgba(0,0,0,0.08)]">
             <DestinationMap
               center={mapCenter}
-              destinationName={destinationQuery}
               radiusKm={radiusKm}
               places={sortedPlaces}
               selectedPlace={selectedPlace}
-              onSelectPlace={(place) => setSelectedPlace(place)}
+              onSelectPlace={setSelectedPlace}
             />
           </div>
 
-          {/* Right Column: Smart Recommendations List (45%) */}
-          <div className="lg:col-span-5 max-h-[600px] overflow-y-auto pr-1">
+          {/* Right Column: Recommendations Panel */}
+          <div className="lg:col-span-5 space-y-4">
             <RecommendationsPanel
               places={sortedPlaces}
               selectedPlace={selectedPlace}
-              onSelectPlace={(place) => setSelectedPlace(place)}
-              onQuickAddExpense={handleQuickAddExpense}
+              onSelectPlace={setSelectedPlace}
+              onQuickAddExpense={activeTrip ? handleQuickAddExpense : undefined}
             />
           </div>
         </div>
@@ -185,14 +184,11 @@ export const MapRecommendationsPage: React.FC = () => {
       <Footer />
 
       {/* Quick Add Expense Modal */}
-      {isExpenseModalOpen && activeTrip && (
+      {activeTrip && (
         <ExpenseModal
           isOpen={isExpenseModalOpen}
           onClose={() => setIsExpenseModalOpen(false)}
-          onSubmit={(expenseData) => {
-            addExpense(expenseData);
-            setIsExpenseModalOpen(false);
-          }}
+          onSubmit={(expenseData) => addExpense(expenseData)}
           tripId={activeTrip.id}
           travelers={activeTrip.travelers}
           defaultCurrency={activeTrip.baseCurrency}

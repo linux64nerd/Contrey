@@ -22,25 +22,25 @@ const MapController: React.FC<{ center: [number, number]; selectedPlace: PlaceRe
   return null;
 };
 
-// Create custom colored DivIcon for each category
+// Create custom colored DivIcon for each category matching Notion tones
 function createCustomPin(category: PlaceCategory | 'center', isSelected: boolean = false) {
-  let color = '#10b981'; // emerald
+  let color = '#0075de'; // Notion Blue
   let label = '📍';
 
   if (category === 'center') {
-    color = '#059669';
+    color = '#0075de';
     label = '✈️';
   } else if (category === 'hotel') {
-    color = '#6366f1';
+    color = '#0075de';
     label = '🏨';
   } else if (category === 'restaurant') {
-    color = '#f59e0b';
+    color = '#ffb110'; // Marigold
     label = '🍽️';
   } else if (category === 'shopping') {
-    color = '#f43f5e';
+    color = '#f64932'; // Coral
     label = '🛍️';
   } else if (category === 'attraction') {
-    color = '#0284c7';
+    color = '#62aef0'; // Sky Wash
     label = '🏖️';
   }
 
@@ -58,7 +58,7 @@ function createCustomPin(category: PlaceCategory | 'center', isSelected: boolean
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        box-shadow: 0 3px 8px rgba(0,0,0,0.25);
         border: 2px solid white;
         transition: transform 0.2s ease;
       ">
@@ -75,7 +75,7 @@ function createCustomPin(category: PlaceCategory | 'center', isSelected: boolean
 
 interface DestinationMapProps {
   center: [number, number];
-  destinationName: string;
+  destinationName?: string;
   radiusKm: number;
   places: PlaceRecommendation[];
   selectedPlace: PlaceRecommendation | null;
@@ -84,7 +84,7 @@ interface DestinationMapProps {
 
 export const DestinationMap: React.FC<DestinationMapProps> = ({
   center,
-  destinationName,
+  destinationName = 'Destination Anchor',
   radiusKm,
   places,
   selectedPlace,
@@ -94,7 +94,7 @@ export const DestinationMap: React.FC<DestinationMapProps> = ({
   const radiusMeters = radiusKm * 1000;
 
   return (
-    <div className="relative w-full h-[450px] sm:h-[550px] rounded-3xl overflow-hidden border border-slate-200/80 shadow-md">
+    <div className="relative w-full h-[450px] sm:h-[550px] rounded-[10px] overflow-hidden border border-[rgba(0,0,0,0.08)]">
       <MapContainer
         center={center}
         zoom={14}
@@ -109,16 +109,16 @@ export const DestinationMap: React.FC<DestinationMapProps> = ({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {/* Dynamic Radius Circle */}
+        {/* Dynamic Radius Circle in Notion Blue tint */}
         <Circle
           center={center}
           radius={radiusMeters}
           pathOptions={{
-            color: '#059669',
-            fillColor: '#10b981',
-            fillOpacity: 0.12,
-            weight: 2,
-            dashArray: '6, 6',
+            color: '#0075de',
+            fillColor: '#e6f3fe',
+            fillOpacity: 0.35,
+            weight: 1.5,
+            dashArray: '5, 5',
           }}
         />
 
@@ -126,9 +126,9 @@ export const DestinationMap: React.FC<DestinationMapProps> = ({
         <Marker position={center} icon={createCustomPin('center')}>
           <Popup>
             <div className="text-xs p-1">
-              <span className="font-extrabold text-slate-900 block">{destinationName}</span>
-              <span className="text-[11px] text-emerald-700 font-semibold">
-                Trip Center Anchor ({radiusKm} km radius filter)
+              <span className="font-bold text-[#000000] block">{destinationName}</span>
+              <span className="text-[11px] text-[#0075de]">
+                Center Anchor ({radiusKm} km radius)
               </span>
             </div>
           </Popup>
@@ -149,23 +149,23 @@ export const DestinationMap: React.FC<DestinationMapProps> = ({
               }}
             >
               <Popup>
-                <div className="text-xs p-1 max-w-[200px] space-y-1">
+                <div className="text-xs p-1 max-w-[210px] space-y-1">
                   <div className="flex items-center justify-between gap-1">
-                    <span className="font-extrabold text-slate-900 truncate">{place.name}</span>
+                    <span className="font-bold text-[#000000] truncate">{place.name}</span>
                     {place.isBestValue && (
-                      <span className="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[9px] font-bold">
+                      <span className="px-1.5 py-0.5 rounded-full bg-[#ffb110] text-[#000000] text-[9px] font-bold">
                         Best Value
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center justify-between text-[11px] text-slate-500">
-                    <span className="text-amber-600 font-bold">★ {place.rating}</span>
+                  <div className="flex items-center justify-between text-[11px] text-[#757575]">
+                    <span>★ {place.rating}</span>
                     <span>{place.distanceKm} km away</span>
                   </div>
-                  <p className="font-bold text-emerald-700 text-xs">
+                  <p className="font-bold text-sm text-[#0075de]">
                     Est. {format(convertedPrice)}
                   </p>
-                  <p className="text-[10px] text-slate-500 italic line-clamp-2">
+                  <p className="text-[10px] text-[#615d59] italic line-clamp-2">
                     "{place.reviewSnippet}"
                   </p>
                 </div>
@@ -176,18 +176,18 @@ export const DestinationMap: React.FC<DestinationMapProps> = ({
       </MapContainer>
 
       {/* Floating Map Legend Indicator */}
-      <div className="absolute bottom-4 left-4 z-10 glass-panel px-3 py-2 rounded-2xl border border-slate-200/80 shadow-lg text-[10px] font-semibold text-slate-700 flex flex-wrap items-center gap-3">
-        <span className="flex items-center gap-1">
-          <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" /> Hotels
+      <div className="absolute bottom-3 left-3 z-10 px-3 py-1.5 rounded-[6px] bg-[#ffffff]/95 backdrop-blur-xs border border-[rgba(0,0,0,0.12)] shadow-xs text-[11px] font-medium text-[#000000] flex flex-wrap items-center gap-3">
+        <span className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#0075de]" /> Hotels
         </span>
-        <span className="flex items-center gap-1">
-          <span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Dining
+        <span className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#ffb110]" /> Dining
         </span>
-        <span className="flex items-center gap-1">
-          <span className="w-2.5 h-2.5 rounded-full bg-rose-500" /> Shopping
+        <span className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#f64932]" /> Shopping
         </span>
-        <span className="flex items-center gap-1">
-          <span className="w-2.5 h-2.5 rounded-full bg-sky-500" /> Attractions
+        <span className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#62aef0]" /> Attractions
         </span>
       </div>
     </div>

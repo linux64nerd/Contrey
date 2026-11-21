@@ -2,26 +2,139 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Colors */
+  --color-notion-blue: #0075de;
+  --color-paper-warmth: #f6f5f4;
+  --color-pure-white: #ffffff;
+  --color-ink-black: #000000;
+  --color-charcoal: #111111;
+  --color-stone: #757575;
+  --color-graphite: #615d59;
+  --color-slate: #696969;
+  --color-sky-tint: #e6f3fe;
+  --color-marigold: #ffb110;
+  --color-coral: #f64932;
+  --color-saffron: #e89d01;
+  --color-vermillion: #e32d14;
+  --color-mocha: #b18164;
+  --color-signal-blue: #097fe8;
+  --color-sky-wash: #62aef0;
+  --color-midnight-ink: #02093a;
+  --color-peach: #f6d5b8;
+
+  /* Typography */
+  --font-notioninter: 'NotionInter', 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-lyon-text: 'Lyon Text', 'Source Serif 4', Georgia, serif;
+
+  /* Typography Scale */
+  --text-caption: 12px;
+  --leading-caption: 1.33;
+  --tracking-caption: 0.12px;
+  --text-body-sm: 14px;
+  --leading-body-sm: 1.43;
+  --text-body: 16px;
+  --leading-body: 1.5;
+  --text-subheading: 20px;
+  --leading-subheading: 1;
+  --text-heading-sm: 22px;
+  --leading-heading-sm: 1.27;
+  --tracking-heading-sm: -0.242px;
+  --text-heading: 40px;
+  --leading-heading: 1.5;
+  --text-heading-lg: 48px;
+  --leading-heading-lg: 1.5;
+  --text-display-sm: 54px;
+  --leading-display-sm: 1.04;
+  --tracking-display-sm: -1.89px;
+  --text-display: 72px;
+  --leading-display: 1.21;
+  --tracking-display: -2.016px;
+  --text-display-lg: 96px;
+  --leading-display-lg: 1.04;
+  --tracking-display-lg: -4.608px;
+
+  /* Border Radius */
+  --radius-cards: 12px;
+  --radius-pills: 9999px;
+  --radius-small: 4px;
+  --radius-buttons: 8px;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: var(--font-notioninter);
+    background-color: var(--color-paper-warmth);
+    color: var(--color-ink-black);
+  }
+
+  body {
+    background-color: #f6f5f4;
+    color: #000000;
   }
 }
 
-/* Glassmorphism helpers */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+/* White card on warm paper canvas */
+.notion-white-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: none;
 }
 
-.glass-card-dark {
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+/* Primary CTA Button */
+.notion-btn-primary {
+  background-color: #0075de;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 6px 15px;
+  transition: background-color 200ms ease;
+}
+
+.notion-btn-primary:hover {
+  background-color: #0066c0;
+}
+
+/* Ghost CTA Button */
+.notion-btn-ghost {
+  background-color: #e6f3fe;
+  color: #0075de;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 6px 15px;
+  transition: background-color 200ms ease;
+}
+
+.notion-btn-ghost:hover {
+  background-color: #d6ecfd;
+}
+
+/* Ghost Text Button */
+.notion-btn-text {
+  background-color: transparent;
+  color: rgba(0, 0, 0, 0.95);
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 6px 15px;
+  transition: background-color 200ms ease;
+}
+
+.notion-btn-text:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Hero Highlight Pill */
+.notion-highlight-pill {
+  background-color: #ffb110;
+  color: #000000;
+  border-radius: 9999px;
+  padding: 4px 16px;
+  display: inline-block;
 }
 
 /* Custom scrollbars */
@@ -29,13 +142,16 @@
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #d8d7d4;
   border-radius: 9999px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #b5b3af;
 }

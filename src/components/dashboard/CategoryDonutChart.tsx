@@ -13,12 +13,13 @@ interface CategoryDonutChartProps {
   expenses: Expense[];
 }
 
+// Notion distinct palette for categories
 const CATEGORY_COLORS: Record<ExpenseCategory, string> = {
-  Hotels: '#6366f1', // Indigo
-  Food: '#f59e0b', // Amber
-  Transportation: '#0284c7', // Sky Blue
-  Shopping: '#f43f5e', // Rose
-  Activities: '#10b981', // Emerald
+  Hotels: '#0075de', // Notion Blue
+  Food: '#ffb110', // Marigold Yellow
+  Transportation: '#62aef0', // Sky Wash
+  Shopping: '#f64932', // Coral Red
+  Activities: '#02093a', // Midnight Ink
 };
 
 export const CategoryDonutChart: React.FC<CategoryDonutChartProps> = ({ expenses }) => {
@@ -43,7 +44,7 @@ export const CategoryDonutChart: React.FC<CategoryDonutChartProps> = ({ expenses
     .map(([name, value]) => ({
       name,
       value: Math.round(value * 100) / 100,
-      color: CATEGORY_COLORS[name as ExpenseCategory] || '#94a3b8',
+      color: CATEGORY_COLORS[name as ExpenseCategory] || '#757575',
     }));
 
   const totalSpent = chartData.reduce((acc, curr) => acc + curr.value, 0);
@@ -53,16 +54,16 @@ export const CategoryDonutChart: React.FC<CategoryDonutChartProps> = ({ expenses
       const data = payload[0];
       const percent = totalSpent > 0 ? ((data.value / totalSpent) * 100).toFixed(1) : 0;
       return (
-        <div className="bg-slate-900 text-white p-3 rounded-2xl shadow-xl text-xs space-y-1 border border-slate-700">
-          <p className="font-bold flex items-center gap-1.5">
+        <div className="bg-[#ffffff] text-[#000000] p-3 rounded-[8px] border border-[rgba(0,0,0,0.12)] shadow-[0_4px_12px_rgba(0,0,0,0.08)] text-xs space-y-1">
+          <p className="font-semibold flex items-center gap-1.5">
             <span
               className="w-2.5 h-2.5 rounded-full"
               style={{ backgroundColor: data.payload.color }}
             />
-            {data.name}
+            <span>{data.name}</span>
           </p>
-          <p className="text-emerald-400 font-extrabold text-sm">{format(data.value)}</p>
-          <p className="text-slate-400 text-[10px]">{percent}% of total spending</p>
+          <p className="font-bold text-sm text-[#0075de]">{format(data.value)}</p>
+          <p className="text-[#757575] text-[11px]">{percent}% of spending</p>
         </div>
       );
     }
@@ -70,16 +71,18 @@ export const CategoryDonutChart: React.FC<CategoryDonutChartProps> = ({ expenses
   };
 
   return (
-    <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm flex flex-col justify-between">
+    <div className="bg-[#ffffff] rounded-[12px] p-6 border border-[rgba(0,0,0,0.08)] flex flex-col justify-between">
       <div className="mb-4">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 block">
-          Distribution
+        <span className="text-xs uppercase tracking-wider font-semibold text-[#757575] block">
+          Category Distribution
         </span>
-        <h3 className="text-base font-extrabold text-slate-900">Spending by Category</h3>
+        <h3 className="text-base font-bold text-[#000000] tracking-tight mt-0.5">
+          Spending by category
+        </h3>
       </div>
 
       {chartData.length === 0 ? (
-        <div className="h-64 flex items-center justify-center text-xs text-slate-400">
+        <div className="h-64 flex items-center justify-center text-xs text-[#757575]">
           No expenses recorded yet.
         </div>
       ) : (
@@ -91,12 +94,12 @@ export const CategoryDonutChart: React.FC<CategoryDonutChartProps> = ({ expenses
                 cx="50%"
                 cy="50%"
                 innerRadius={65}
-                outerRadius={95}
-                paddingAngle={4}
+                outerRadius={92}
+                paddingAngle={3}
                 dataKey="value"
               >
                 {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} stroke="transparent" />
+                  <Cell key={`cell-${index}`} fill={entry.color} stroke="#ffffff" strokeWidth={2} />
                 ))}
               </Pie>
               <Tooltip content={<CustomTooltip />} />
@@ -105,16 +108,16 @@ export const CategoryDonutChart: React.FC<CategoryDonutChartProps> = ({ expenses
 
           {/* Center stats */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+            <span className="text-[10px] uppercase tracking-wider text-[#757575] font-semibold">
               Total
             </span>
-            <span className="text-sm font-black text-slate-800">{format(totalSpent)}</span>
+            <span className="text-sm font-bold text-[#000000]">{format(totalSpent)}</span>
           </div>
         </div>
       )}
 
       {/* Legend Chips */}
-      <div className="flex flex-wrap items-center justify-center gap-2 pt-4 border-t border-slate-100 text-[11px] font-medium text-slate-600">
+      <div className="flex flex-wrap items-center justify-center gap-3 pt-4 border-t border-[rgba(0,0,0,0.06)] text-xs text-[#615d59]">
         {chartData.map((item) => (
           <div key={item.name} className="flex items-center gap-1.5">
             <span

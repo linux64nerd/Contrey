@@ -22,57 +22,57 @@ export const RadiusSelector: React.FC<RadiusSelectorProps> = ({
 }) => {
   const categories: { id: string; label: string }[] = [
     { id: 'all', label: 'All Categories' },
-    { id: 'hotel', label: '🏨 Hotels' },
-    { id: 'restaurant', label: '🍽️ Dining & Cafes' },
-    { id: 'shopping', label: '🛍️ Shopping' },
-    { id: 'attraction', label: '🏖️ Tourist Attractions' },
+    { id: 'hotel', label: 'Hotels' },
+    { id: 'restaurant', label: 'Dining & Cafes' },
+    { id: 'shopping', label: 'Shopping' },
+    { id: 'attraction', label: 'Attractions' },
   ];
 
   return (
-    <div className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/80 shadow-sm space-y-4">
+    <div className="bg-[#ffffff] rounded-[12px] p-4 sm:p-5 border border-[rgba(0,0,0,0.08)] space-y-3.5">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         {/* Radius Filter */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-slate-700 flex items-center gap-1">
-            <Compass className="w-3.5 h-3.5 text-emerald-600" />
+        <div className="flex items-center gap-3">
+          <span className="text-xs font-semibold text-[#000000] flex items-center gap-1.5">
+            <Compass className="w-3.5 h-3.5 text-[#0075de]" />
             <span>Search Radius:</span>
           </span>
-          <div className="flex p-1 bg-slate-100 rounded-xl">
+          <div className="flex p-0.5 bg-[#f6f5f4] rounded-[6px] border border-[rgba(0,0,0,0.06)]">
             <button
               onClick={() => onSelectRadius(1)}
-              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+              className={`px-3 py-1 rounded-[4px] text-xs font-medium transition-all ${
                 radiusKm === 1
-                  ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-[#ffffff] text-[#0075de] shadow-xs font-semibold'
+                  : 'text-[#757575] hover:text-[#000000]'
               }`}
             >
-              1 km Radius
+              1 km
             </button>
             <button
               onClick={() => onSelectRadius(2)}
-              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+              className={`px-3 py-1 rounded-[4px] text-xs font-medium transition-all ${
                 radiusKm === 2
-                  ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-[#ffffff] text-[#0075de] shadow-xs font-semibold'
+                  : 'text-[#757575] hover:text-[#000000]'
               }`}
             >
-              2 km Radius
+              2 km
             </button>
           </div>
         </div>
 
         {/* Sort Selector */}
         <div className="flex items-center gap-2">
-          <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
-          <span className="text-xs font-medium text-slate-500">Sort By:</span>
+          <ArrowUpDown className="w-3.5 h-3.5 text-[#757575]" />
+          <span className="text-xs font-medium text-[#757575]">Sort By:</span>
           <select
             value={sortBy}
             onChange={(e) => onSelectSortBy(e.target.value as any)}
-            className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-800 bg-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+            className="px-2.5 py-1 rounded-[6px] border border-[rgba(0,0,0,0.12)] text-xs font-medium text-[#000000] bg-[#ffffff] focus:outline-none focus:border-[#0075de] cursor-pointer"
           >
-            <option value="best-value">✨ Best Value (Rating + Price)</option>
+            <option value="best-value">✨ Best Value</option>
             <option value="rating">★ Highest Rating</option>
-            <option value="price">💰 Lowest Estimated Price</option>
+            <option value="price">💰 Lowest Price</option>
             <option value="distance">📍 Nearest Distance</option>
           </select>
         </div>
@@ -80,21 +80,21 @@ export const RadiusSelector: React.FC<RadiusSelectorProps> = ({
 
       {/* Category Pills Bar */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
-        <Filter className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+        <Filter className="w-3.5 h-3.5 text-[#757575] shrink-0" />
         {categories.map((cat) => (
           <button
             key={cat.id}
             onClick={() => onSelectCategory(cat.id)}
-            className={`px-3 py-1.5 rounded-xl whitespace-nowrap font-semibold transition-all ${
+            className={`px-3 py-1 rounded-full whitespace-nowrap font-medium transition-all border ${
               selectedCategory === cat.id
-                ? 'bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold'
-                : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200'
+                ? 'bg-[#0075de] text-[#ffffff] border-[#0075de]'
+                : 'bg-[#f6f5f4] hover:bg-[#ffffff] text-[#615d59] border-[rgba(0,0,0,0.08)]'
             }`}
           >
             {cat.label}
           </button>
         ))}
-        <span className="text-[11px] text-slate-400 ml-auto whitespace-nowrap">
+        <span className="text-xs text-[#757575] ml-auto whitespace-nowrap font-medium">
           {totalFound} spots found
         </span>
       </div>

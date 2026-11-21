@@ -1,104 +1,138 @@
 import React from 'react';
-import { 
-  Split, 
-  Coins, 
-  MapPin, 
-  BellRing, 
-  MessageSquare, 
-  QrCode, 
-  BarChart4, 
-  LockKeyhole 
+import {
+  RefreshCw,
+  Coins,
+  MapPin,
+  BellRing,
+  MessageSquare,
+  QrCode
 } from 'lucide-react';
 
 export const FeaturesGrid: React.FC = () => {
-  const features = [
-    {
-      icon: Split,
-      color: 'from-emerald-500 to-teal-500',
-      title: 'Smart Expense Splitter',
-      description: 'Automatically minimizes group transactions. Instead of 10 complicated cross-payments, settle the entire trip with minimal transfers.',
-    },
-    {
-      icon: Coins,
-      color: 'from-blue-500 to-indigo-500',
-      title: 'Live Multi-Currency (INR, EUR, USD)',
-      description: 'Switch currencies dynamically. Real-time rates from Frankfurter API with robust offline fallbacks ensure accurate calculations anywhere.',
-    },
-    {
-      icon: MapPin,
-      color: 'from-amber-500 to-orange-500',
-      title: 'Radius Travel Map & Recommendations',
-      description: 'Discover nearby hotels, cafes, shopping, and tourist attractions within 1-2 km of your destination with price estimates and "Best Value" badges.',
-    },
-    {
-      icon: BellRing,
-      color: 'from-rose-500 to-red-500',
-      title: 'Urgency Budget Reminders',
-      description: 'Push notifications & dashboard banners trigger when a single category eats ≥ 40% of the budget or remaining funds hit critical levels (≤ 20%).',
-    },
-    {
-      icon: MessageSquare,
-      color: 'from-emerald-600 to-green-600',
-      title: 'One-Click WhatsApp Integration',
-      description: 'Send itemized debt summaries and settlement reminders straight to group members via pre-filled WhatsApp messages with a single tap.',
-    },
-    {
-      icon: QrCode,
-      color: 'from-purple-500 to-indigo-500',
-      title: 'Instant QR Settlement & Sharing',
-      description: 'Generate dynamic UPI QR codes (`upi://pay`) for seamless payment execution in INR, plus downloadable trip summary QR passes.',
-    },
-    {
-      icon: BarChart4,
-      color: 'from-cyan-500 to-blue-500',
-      title: 'Interactive Recharts Analytics',
-      description: 'Visual category donuts, paid-vs-fair-share bar graphs, and daily spending velocity line charts keep everyone transparently aligned.',
-    },
-    {
-      icon: LockKeyhole,
-      color: 'from-slate-700 to-slate-900',
-      title: 'Multi-Method Secure Auth',
-      description: 'Log in with Phone + OTP, Email & Password, Google OAuth, or unique User ID credentials with protected route gates.',
-    },
-  ];
-
   return (
-    <section id="features" className="py-20 bg-white border-y border-slate-200/60">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-          <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-600">
-            Engineered For Modern Travelers
+    <section id="features" className="py-20 bg-[#f6f5f4] text-[#000000]">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
+          <span className="text-xs uppercase tracking-wider font-semibold text-[#757575]">
+            Everything in one notebook
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            Everything you need for seamless group trips
+          <h2 className="text-3xl sm:text-4xl font-bold text-[#000000] tracking-[-1.89px]">
+            Designed like a notebook. Powered like an engine.
           </h2>
-          <p className="text-base text-slate-600 font-normal">
-            No spreadsheets, no manual conversions, no forgotten IOUs. Just frictionless travel with friends, family, or solo.
+          <p className="font-serif text-[18px] text-[#615d59] leading-[1.56]">
+            Every feature works like a sticky note on your travel board, simplifying group economics.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature, idx) => {
-            const Icon = feature.icon;
-            return (
-              <div
-                key={idx}
-                className="group relative p-6 rounded-2xl bg-slate-50/70 hover:bg-white border border-slate-200/80 hover:border-emerald-200 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
-              >
-                <div>
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-tr ${feature.color} flex items-center justify-center text-white mb-5 shadow-md shadow-emerald-500/10 group-hover:scale-110 transition-transform`}>
-                    <Icon className="w-6 h-6" />
-                  </div>
-                  <h3 className="text-base font-bold text-slate-900 mb-2">
-                    {feature.title}
-                  </h3>
-                  <p className="text-xs text-slate-600 leading-relaxed font-normal">
-                    {feature.description}
-                  </p>
-                </div>
+        {/* 6 Sticky-Note Cards with rotating Notion accent cast */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* 1. Accent Card in Marigold (#ffb110) */}
+          <div className="rounded-[12px] p-6 bg-[#ffb110] text-[#000000] flex flex-col justify-between transition-transform hover:-translate-y-1">
+            <div className="space-y-3">
+              <div className="w-9 h-9 rounded-full bg-[#ffffff] flex items-center justify-center text-[#000000] shadow-sm">
+                <RefreshCw className="w-4 h-4" />
               </div>
-            );
-          })}
+              <span className="text-xs uppercase tracking-wider font-bold text-[rgba(0,0,0,0.7)] block">
+                Algorithm
+              </span>
+              <h3 className="text-xl font-bold tracking-tight">
+                Greedy debt minimizer
+              </h3>
+              <p className="text-sm font-normal text-[rgba(0,0,0,0.85)] leading-relaxed">
+                Condenses complex multi-person group debts into the fewest possible payments. Eliminates messy circular bank transfers.
+              </p>
+            </div>
+          </div>
+
+          {/* 2. White Feature Card (Pure White on warm canvas) */}
+          <div className="rounded-[12px] p-6 bg-[#ffffff] border border-[rgba(0,0,0,0.08)] flex flex-col justify-between transition-transform hover:-translate-y-1">
+            <div className="space-y-3">
+              <div className="w-9 h-9 rounded-full bg-[#f6f5f4] flex items-center justify-center text-[#0075de]">
+                <Coins className="w-4 h-4" />
+              </div>
+              <span className="text-xs uppercase tracking-wider font-semibold text-[#757575] block">
+                Currency
+              </span>
+              <h3 className="text-xl font-bold text-[#000000] tracking-tight">
+                Real-time multi-currency FX
+              </h3>
+              <p className="text-sm text-[#615d59] leading-relaxed">
+                Switch between INR, EUR, and USD instantly with live ECB rates and automatic offline fallback cache for remote journeys.
+              </p>
+            </div>
+          </div>
+
+          {/* 3. Accent Card in Sky Wash (#62aef0) */}
+          <div className="rounded-[12px] p-6 bg-[#62aef0] text-[#000000] flex flex-col justify-between transition-transform hover:-translate-y-1">
+            <div className="space-y-3">
+              <div className="w-9 h-9 rounded-full bg-[#ffffff] flex items-center justify-center text-[#000000] shadow-sm">
+                <MapPin className="w-4 h-4" />
+              </div>
+              <span className="text-xs uppercase tracking-wider font-bold text-[rgba(0,0,0,0.7)] block">
+                Navigation
+              </span>
+              <h3 className="text-xl font-bold tracking-tight">
+                Radius travel map
+              </h3>
+              <p className="text-sm font-normal text-[rgba(0,0,0,0.85)] leading-relaxed">
+                Find curated dining, stays, and activities within 1 km or 2 km radius circles, complete with 1-click expense logging.
+              </p>
+            </div>
+          </div>
+
+          {/* 4. Accent Card in Coral (#f64932) */}
+          <div className="rounded-[12px] p-6 bg-[#f64932] text-[#ffffff] flex flex-col justify-between transition-transform hover:-translate-y-1">
+            <div className="space-y-3">
+              <div className="w-9 h-9 rounded-full bg-[#ffffff] flex items-center justify-center text-[#f64932] shadow-sm">
+                <BellRing className="w-4 h-4" />
+              </div>
+              <span className="text-xs uppercase tracking-wider font-bold text-[rgba(255,255,255,0.8)] block">
+                Urgency Alerts
+              </span>
+              <h3 className="text-xl font-bold tracking-tight">
+                Proactive spend alerts
+              </h3>
+              <p className="text-sm font-normal text-[rgba(255,255,255,0.9)] leading-relaxed">
+                Smart warnings fire before money depletes — triggers alerts when category spend exceeds 40% or remaining buffer drops below 20%.
+              </p>
+            </div>
+          </div>
+
+          {/* 5. White Feature Card */}
+          <div className="rounded-[12px] p-6 bg-[#ffffff] border border-[rgba(0,0,0,0.08)] flex flex-col justify-between transition-transform hover:-translate-y-1">
+            <div className="space-y-3">
+              <div className="w-9 h-9 rounded-full bg-[#e6f3fe] flex items-center justify-center text-[#0075de]">
+                <MessageSquare className="w-4 h-4" />
+              </div>
+              <span className="text-xs uppercase tracking-wider font-semibold text-[#757575] block">
+                Communication
+              </span>
+              <h3 className="text-xl font-bold text-[#000000] tracking-tight">
+                1-Click WhatsApp settlements
+              </h3>
+              <p className="text-sm text-[#615d59] leading-relaxed">
+                Pre-composed WhatsApp messages sent in 1 tap, detailing exact debt amounts, currency figures, and payee UPI IDs.
+              </p>
+            </div>
+          </div>
+
+          {/* 6. Dark Card Surface in Midnight Ink (#02093a) */}
+          <div className="rounded-[12px] p-6 bg-[#02093a] text-[#ffffff] flex flex-col justify-between transition-transform hover:-translate-y-1">
+            <div className="space-y-3">
+              <div className="w-9 h-9 rounded-full bg-[#ffffff] flex items-center justify-center text-[#02093a] shadow-sm">
+                <QrCode className="w-4 h-4" />
+              </div>
+              <span className="text-xs uppercase tracking-wider font-bold text-[#62aef0] block">
+                Instant UPI
+              </span>
+              <h3 className="text-xl font-bold tracking-tight">
+                NPCI UPI QR generator
+              </h3>
+              <p className="text-sm font-normal text-[rgba(255,255,255,0.85)] leading-relaxed">
+                Generate and scan instant scannable UPI QR codes directly inside the settlement ledger for zero-friction debt clearing.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>

@@ -14,7 +14,7 @@ export const LandingPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 selection:bg-emerald-500 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-[#f6f5f4] text-[#000000] font-sans selection:bg-[#e6f3fe] selection:text-[#0075de]">
       <Navbar onOpenAuth={handleOpenAuth} />
       <main className="flex-1">
         <HeroSection onGetStarted={handleOpenAuth} />

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Trip } from '../../types/trip';
-import { MapPin, Calendar, Plus, ChevronDown } from 'lucide-react';
+import { Calendar, Plus, ChevronDown } from 'lucide-react';
 import { formatDate } from '../../utils/formatters';
 
 interface TripSelectorProps {
@@ -17,20 +17,20 @@ export const TripSelector: React.FC<TripSelectorProps> = ({
   onCreateNewTrip,
 }) => {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#ffffff] p-5 rounded-[12px] border border-[rgba(0,0,0,0.08)]">
       <div className="flex items-center gap-3">
-        <div className="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold border border-emerald-100 shadow-sm">
-          <MapPin className="w-5 h-5 text-emerald-600" />
+        <div className="w-10 h-10 rounded-[8px] bg-[#f6f5f4] text-[#000000] flex items-center justify-center font-bold border border-[rgba(0,0,0,0.06)] text-xl">
+          🏖️
         </div>
         <div>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 block">
-            Active Trip Space
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-[#757575] block">
+            Trip Space
           </span>
-          <div className="relative inline-block">
+          <div className="relative inline-block mt-0.5">
             <select
               value={activeTrip?.id || ''}
               onChange={(e) => onSelectTrip(e.target.value)}
-              className="appearance-none pr-8 bg-transparent text-lg font-extrabold text-slate-900 cursor-pointer focus:outline-none focus:underline"
+              className="appearance-none pr-8 bg-transparent text-lg font-bold text-[#000000] cursor-pointer focus:outline-none hover:text-[#0075de]"
             >
               {trips.map((t) => (
                 <option key={t.id} value={t.id}>
@@ -38,11 +38,11 @@ export const TripSelector: React.FC<TripSelectorProps> = ({
                 </option>
               ))}
             </select>
-            <ChevronDown className="w-4 h-4 text-slate-400 absolute right-1 top-2 pointer-events-none" />
+            <ChevronDown className="w-4 h-4 text-[#757575] absolute right-1 top-1.5 pointer-events-none" />
           </div>
           {activeTrip && (
-            <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-              <Calendar className="w-3.5 h-3.5 text-slate-400" />
+            <div className="flex items-center gap-2 text-xs text-[#757575] font-normal mt-0.5">
+              <Calendar className="w-3.5 h-3.5 text-[#757575]" />
               <span>
                 {formatDate(activeTrip.startDate)} – {formatDate(activeTrip.endDate)}
               </span>
@@ -56,9 +56,9 @@ export const TripSelector: React.FC<TripSelectorProps> = ({
       <div className="flex items-center gap-2">
         <button
           onClick={onCreateNewTrip}
-          className="flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md shadow-emerald-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-[#0075de] hover:bg-[#0066c0] text-[#ffffff] text-xs font-medium shadow-xs transition-colors"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-4 h-4 text-[#ffffff]" />
           <span>New Trip</span>
         </button>
       </div>

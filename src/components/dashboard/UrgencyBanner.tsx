@@ -18,36 +18,41 @@ export const UrgencyBanner: React.FC = () => {
 
   return (
     <div
-      className={`relative overflow-hidden rounded-3xl p-5 shadow-lg border transition-all animate-in fade-in slide-in-from-top-2 ${
-        isCritical
-          ? 'bg-gradient-to-r from-rose-600 via-amber-600 to-rose-700 text-white border-rose-500/40'
-          : 'bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-400/40'
-      }`}
+      className={`relative overflow-hidden rounded-[12px] p-4 border transition-all animate-in fade-in slide-in-from-top-1 ${isCritical
+        ? 'bg-[#f64932]/10 border-[#f64932]/30 text-[#000000]'
+        : 'bg-[#ffb110]/15 border-[#ffb110]/40 text-[#000000]'
+        }`}
     >
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-start gap-3.5">
-          <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start gap-3">
+          <div
+            className={`w-8 h-8 rounded-[6px] flex items-center justify-center shrink-0 ${isCritical ? 'bg-[#f64932] text-[#ffffff]' : 'bg-[#ffb110] text-[#000000]'
+              }`}
+          >
             {isCritical ? (
-              <ShieldAlert className="w-5 h-5 text-white animate-pulse" />
+              <ShieldAlert className="w-4 h-4" />
             ) : (
-              <AlertTriangle className="w-5 h-5 text-white" />
+              <AlertTriangle className="w-4 h-4" />
             )}
           </div>
 
-          <div className="space-y-1">
+          <div className="space-y-0.5">
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded-full bg-white/25 text-[10px] font-black uppercase tracking-wider">
-                {isCritical ? 'URGENCY REMINDER' : 'BUDGET CAUTION'}
+              <span
+                className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${isCritical ? 'bg-[#f64932] text-[#ffffff]' : 'bg-[#ffb110] text-[#000000]'
+                  }`}
+              >
+                {isCritical ? 'Urgency Alert' : 'Budget Warning'}
               </span>
-              <span className="text-xs font-bold text-white/90">
+              <span className="text-xs text-[#757575] font-medium">
                 {primaryAlert.category ? `Category: ${primaryAlert.category}` : 'Trip Budget Guard'}
               </span>
             </div>
 
-            <h4 className="text-base font-extrabold tracking-tight text-white">
+            <h4 className="text-sm font-bold text-[#000000]">
               {primaryAlert.title}
             </h4>
-            <p className="text-xs text-white/95 leading-relaxed font-medium max-w-3xl">
+            <p className="text-xs text-[#615d59] leading-relaxed">
               {primaryAlert.message}
             </p>
           </div>
@@ -55,7 +60,7 @@ export const UrgencyBanner: React.FC = () => {
 
         <button
           onClick={dismissUrgencyBanner}
-          className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors"
+          className="p-1 rounded-[6px] hover:bg-black/5 text-[#757575] transition-colors"
           title="Dismiss Banner"
         >
           <X className="w-4 h-4" />

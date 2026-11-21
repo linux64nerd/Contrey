@@ -35,12 +35,12 @@ export const SettlementQrModal: React.FC<SettlementQrModalProps> = ({
 
   const qrPayload = isUpiSupported
     ? generateUpiLink({
-        pa: creditor.upiId || 'payee@upi',
-        pn: creditor.name,
-        am: convertedAmount,
-        cu: 'INR',
-        tn: `Contrey Trip Settlement from ${debtor.name}`,
-      })
+      pa: creditor.upiId || 'payee@upi',
+      pn: creditor.name,
+      am: convertedAmount,
+      cu: 'INR',
+      tn: `Contrey Trip Settlement from ${debtor.name}`,
+    })
     : `PAYMENT TO: ${creditor.name} | AMOUNT: ${format(convertedAmount)} | FROM: ${debtor.name} | REF: Contrey Travel Settlement`;
 
   const handleDownloadQr = () => {
@@ -61,20 +61,20 @@ export const SettlementQrModal: React.FC<SettlementQrModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden text-center flex flex-col"
+        className="relative w-full max-w-sm bg-[#ffffff] rounded-[12px] shadow-[0_4px_16px_rgba(0,0,0,0.15)] border border-[rgba(0,0,0,0.08)] overflow-hidden text-center flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-between">
+        <div className="p-4 bg-[#ffffff] border-b border-[rgba(0,0,0,0.08)] flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <QrCode className="w-5 h-5" />
-            <h3 className="text-sm font-bold">Instant Settlement QR</h3>
+            <QrCode className="w-4 h-4 text-[#0075de]" />
+            <h3 className="text-sm font-bold text-[#000000]">Instant Settlement QR</h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors"
+            className="p-1 rounded-[6px] hover:bg-[#f6f5f4] text-[#757575] hover:text-[#000000] transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -82,41 +82,41 @@ export const SettlementQrModal: React.FC<SettlementQrModalProps> = ({
 
         {/* Body */}
         <div className="p-6 space-y-4">
-          <div className="flex items-center justify-center gap-2 text-xs font-bold text-slate-800">
+          <div className="flex items-center justify-center gap-2 text-xs font-semibold text-[#000000]">
             <span>{debtor.name}</span>
-            <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
-            <span className="text-emerald-700">{creditor.name}</span>
+            <ArrowRight className="w-3.5 h-3.5 text-[#757575]" />
+            <span className="text-[#0075de]">{creditor.name}</span>
           </div>
 
-          <div className="text-3xl font-black text-slate-900 tracking-tight">
+          <div className="text-3xl font-bold text-[#000000] tracking-tight">
             {format(convertedAmount)}
           </div>
 
           {/* Scannable Canvas QR */}
           <div
             ref={qrRef}
-            className="p-4 bg-white rounded-2xl border border-slate-200/80 shadow-inner inline-block mx-auto"
+            className="p-3 bg-[#ffffff] rounded-[8px] border border-[rgba(0,0,0,0.12)] inline-block mx-auto shadow-xs"
           >
             <QRCodeCanvas
               value={qrPayload}
               size={180}
               level="H"
               marginSize={2}
-              fgColor="#0f172a"
+              fgColor="#000000"
             />
           </div>
 
           {/* Payment Method Details */}
-          <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 text-xs text-slate-600 space-y-1">
-            <p className="font-semibold text-slate-800">
-              {isUpiSupported ? '📱 UPI Auto-Payment QR' : '💳 Bank / Card Transfer'}
+          <div className="p-3 rounded-[8px] bg-[#f6f5f4] border border-[rgba(0,0,0,0.08)] text-xs text-[#615d59] space-y-0.5">
+            <p className="font-semibold text-[#000000]">
+              {isUpiSupported ? '📱 UPI Direct Transfer QR' : '💳 Bank / Card Transfer'}
             </p>
             {creditor.upiId && (
-              <p className="font-mono text-[11px] text-emerald-800">
+              <p className="font-mono text-[11px] text-[#0075de]">
                 UPI ID: {creditor.upiId}
               </p>
             )}
-            <p className="text-[10px] text-slate-400">
+            <p className="text-[10px] text-[#757575]">
               Scan with GPay, PhonePe, Paytm, or any banking app.
             </p>
           </div>
@@ -125,14 +125,14 @@ export const SettlementQrModal: React.FC<SettlementQrModalProps> = ({
           <div className="flex items-center gap-2 pt-2">
             <button
               onClick={handleCopyLink}
-              className="flex-1 py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
+              className="flex-1 py-2 px-3 rounded-[8px] bg-[#f6f5f4] hover:bg-[rgba(0,0,0,0.05)] border border-[rgba(0,0,0,0.08)] text-[#000000] text-xs font-medium flex items-center justify-center gap-1.5 transition-colors"
             >
-              <Copy className="w-3.5 h-3.5" />
+              <Copy className="w-3.5 h-3.5 text-[#757575]" />
               <span>Copy Link</span>
             </button>
             <button
               onClick={handleDownloadQr}
-              className="flex-1 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md shadow-emerald-500/20 flex items-center justify-center gap-1.5 transition-all"
+              className="flex-1 py-2 px-3 rounded-[8px] bg-[#0075de] hover:bg-[#0066c0] text-[#ffffff] text-xs font-medium shadow-xs flex items-center justify-center gap-1.5 transition-colors"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Download QR</span>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Settlement, Traveler } from '../../types/trip';
 import { useCurrency } from '../../context/CurrencyContext';
-import { RefreshCw, CheckCircle2, Clock, ArrowRight, MessageSquare, QrCode } from 'lucide-react';
+import { RefreshCw, CheckCircle2, ArrowRight, MessageSquare, QrCode } from 'lucide-react';
 import { generateSettlementWhatsAppUrl } from '../../utils/whatsapp';
 
 interface SettlementListProps {
@@ -31,29 +31,29 @@ export const SettlementList: React.FC<SettlementListProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-100">
+    <div className="bg-[#ffffff] rounded-[12px] p-6 border border-[rgba(0,0,0,0.08)] space-y-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-[rgba(0,0,0,0.06)]">
         <div>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 block">
-            Smart Splitter Engine
+          <span className="text-xs uppercase tracking-wider font-semibold text-[#757575] block">
+            Greedy Settlement Algorithm
           </span>
-          <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
-            <span>Minimum-Transaction Settlement Plan</span>
-            <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
-              Greedy Algorithm
+          <h3 className="text-base font-bold text-[#000000] tracking-tight mt-0.5 flex items-center gap-2">
+            <span>Minimum-transaction debt plan</span>
+            <span className="px-2 py-0.5 rounded-full bg-[#e6f3fe] text-[#0075de] text-[10px] font-semibold">
+              Optimal greedy resolution
             </span>
           </h3>
         </div>
-        <p className="text-xs text-slate-500">
-          All group debts reduced to the lowest possible number of transfers.
+        <p className="text-xs text-[#757575]">
+          All debts resolved in the fewest possible payments.
         </p>
       </div>
 
       {settlements.length === 0 ? (
-        <div className="p-8 text-center text-slate-400 space-y-1.5">
-          <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto" />
-          <p className="text-sm font-bold text-slate-700">All Balances Settled!</p>
-          <p className="text-xs">No pending transfers needed among travelers.</p>
+        <div className="p-10 text-center text-[#757575] space-y-2">
+          <CheckCircle2 className="w-8 h-8 text-[#0075de] mx-auto" />
+          <p className="text-sm font-semibold text-[#000000]">All balances settled!</p>
+          <p className="text-xs">No pending transfers needed across your crew.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -78,46 +78,46 @@ export const SettlementList: React.FC<SettlementListProps> = ({
             return (
               <div
                 key={s.id}
-                className={`p-4 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
+                className={`p-3.5 rounded-[8px] border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
                   s.isSettled
-                    ? 'bg-slate-50 border-slate-200 opacity-60'
-                    : 'bg-emerald-50/40 border-emerald-200 hover:shadow-md'
+                    ? 'bg-[#f6f5f4] border-[rgba(0,0,0,0.06)] opacity-60'
+                    : 'bg-[#ffffff] border-[rgba(0,0,0,0.1)] hover:border-[#0075de]/40'
                 }`}
               >
                 {/* Flow: A pays B */}
                 <div className="flex items-center gap-3">
                   <div
-                    className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs ${
+                    className={`w-8 h-8 rounded-[6px] flex items-center justify-center text-xs font-semibold ${
                       s.isSettled
-                        ? 'bg-slate-200 text-slate-600'
-                        : 'bg-emerald-600 text-white shadow-sm'
+                        ? 'bg-[#f6f5f4] text-[#757575]'
+                        : 'bg-[#e6f3fe] text-[#0075de]'
                     }`}
                   >
-                    <RefreshCw className="w-4 h-4" />
+                    <RefreshCw className="w-3.5 h-3.5" />
                   </div>
 
                   <div>
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
-                      <span className="text-slate-900">{debtor?.name || 'Traveler A'}</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
-                      <span className="text-emerald-700">{creditor?.name || 'Traveler B'}</span>
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-[#000000]">
+                      <span>{debtor?.name || 'Traveler A'}</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-[#757575]" />
+                      <span className="text-[#0075de]">{creditor?.name || 'Traveler B'}</span>
                     </div>
-                    <div className="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
+                    <div className="text-[11px] text-[#757575] flex items-center gap-2 mt-0.5">
                       <span>UPI: {creditor?.upiId || 'Not set'}</span>
                       <span>•</span>
-                      <span>WhatsApp: {debtor?.phone || 'N/A'}</span>
+                      <span>Phone: {debtor?.phone || 'N/A'}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Amount, WhatsApp, QR, and Mark Paid Actions */}
-                <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2.5 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200">
+                <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2.5 pt-2 sm:pt-0 border-t sm:border-t-0 border-[rgba(0,0,0,0.06)]">
                   <div className="text-right mr-1">
-                    <span className="text-base font-black text-slate-900 block">
+                    <span className="text-base font-bold text-[#000000] block">
                       {format(convertedAmount)}
                     </span>
                     {baseCurrency !== currentCurrency && (
-                      <span className="text-[10px] text-slate-400">
+                      <span className="text-[10px] text-[#757575]">
                         {baseCurrency} {s.amount.toFixed(2)}
                       </span>
                     )}
@@ -128,10 +128,10 @@ export const SettlementList: React.FC<SettlementListProps> = ({
                     href={whatsAppUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="p-2 rounded-xl bg-green-50 hover:bg-green-100 text-green-700 border border-green-200 text-xs font-bold flex items-center gap-1 transition-colors"
-                    title="Send Reminder via WhatsApp"
+                    className="px-2.5 py-1.5 rounded-[6px] bg-[#f6f5f4] hover:bg-[#e6f3fe] text-[#0075de] border border-[rgba(0,0,0,0.08)] text-xs font-medium flex items-center gap-1 transition-colors"
+                    title="Send WhatsApp Reminder"
                   >
-                    <MessageSquare className="w-3.5 h-3.5 text-green-600" />
+                    <MessageSquare className="w-3.5 h-3.5" />
                     <span className="hidden sm:inline">WhatsApp</span>
                   </a>
 
@@ -139,10 +139,10 @@ export const SettlementList: React.FC<SettlementListProps> = ({
                   {debtor && creditor && onOpenQr && (
                     <button
                       onClick={() => onOpenQr(s, debtor, creditor)}
-                      className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 text-xs font-bold flex items-center gap-1 transition-colors"
+                      className="px-2.5 py-1.5 rounded-[6px] bg-[#f6f5f4] hover:bg-[rgba(0,0,0,0.05)] text-[#000000] border border-[rgba(0,0,0,0.08)] text-xs font-medium flex items-center gap-1 transition-colors"
                       title="Open Instant QR Code"
                     >
-                      <QrCode className="w-3.5 h-3.5 text-slate-700" />
+                      <QrCode className="w-3.5 h-3.5 text-[#757575]" />
                       <span className="hidden sm:inline">Pay QR</span>
                     </button>
                   )}
@@ -150,23 +150,13 @@ export const SettlementList: React.FC<SettlementListProps> = ({
                   {/* Toggle Settled Status */}
                   <button
                     onClick={() => onToggleSettlement(s.id)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
+                    className={`px-3 py-1.5 rounded-[6px] text-xs font-medium transition-all ${
                       s.isSettled
-                        ? 'bg-slate-200 text-slate-700 hover:bg-slate-300'
-                        : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm hover:scale-105'
+                        ? 'bg-[#f6f5f4] text-[#757575] hover:bg-[#ffffff] border border-[rgba(0,0,0,0.08)]'
+                        : 'bg-[#0075de] hover:bg-[#0066c0] text-[#ffffff] shadow-xs'
                     }`}
                   >
-                    {s.isSettled ? (
-                      <>
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>Settled</span>
-                      </>
-                    ) : (
-                      <>
-                        <Clock className="w-3.5 h-3.5" />
-                        <span>Mark Paid</span>
-                      </>
-                    )}
+                    {s.isSettled ? 'Mark Unpaid' : 'Mark Paid'}
                   </button>
                 </div>
               </div>

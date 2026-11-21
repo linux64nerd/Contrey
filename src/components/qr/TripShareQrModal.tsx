@@ -48,20 +48,20 @@ export const TripShareQrModal: React.FC<TripShareQrModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden text-center flex flex-col"
+        className="relative w-full max-w-sm bg-[#ffffff] rounded-[12px] shadow-[0_4px_16px_rgba(0,0,0,0.15)] border border-[rgba(0,0,0,0.08)] overflow-hidden text-center flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 text-white flex items-center justify-between">
+        <div className="p-4 bg-[#ffffff] border-b border-[rgba(0,0,0,0.08)] flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Plane className="w-5 h-5 -rotate-45" />
-            <h3 className="text-sm font-bold">Trip Share Pass</h3>
+            <Plane className="w-4 h-4 text-[#0075de] -rotate-45" />
+            <h3 className="text-sm font-bold text-[#000000]">Trip Share Pass</h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors"
+            className="p-1 rounded-[6px] hover:bg-[#f6f5f4] text-[#757575] hover:text-[#000000] transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -70,8 +70,8 @@ export const TripShareQrModal: React.FC<TripShareQrModalProps> = ({
         {/* Body */}
         <div className="p-6 space-y-4">
           <div>
-            <h4 className="text-lg font-black text-slate-900">{trip.name}</h4>
-            <p className="text-xs text-slate-500 font-medium">
+            <h4 className="text-lg font-bold text-[#000000]">{trip.name}</h4>
+            <p className="text-xs text-[#757575] mt-0.5">
               {trip.destination} • {trip.travelers.length} Crew Members
             </p>
           </div>
@@ -79,23 +79,23 @@ export const TripShareQrModal: React.FC<TripShareQrModalProps> = ({
           {/* QR */}
           <div
             ref={qrRef}
-            className="p-4 bg-white rounded-2xl border border-slate-200 shadow-inner inline-block mx-auto"
+            className="p-3 bg-[#ffffff] rounded-[8px] border border-[rgba(0,0,0,0.12)] inline-block mx-auto shadow-xs"
           >
             <QRCodeCanvas
               value={sharePayload}
               size={180}
               level="H"
               marginSize={2}
-              fgColor="#064e3b"
+              fgColor="#000000"
             />
           </div>
 
-          <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-100 text-xs space-y-0.5">
-            <span className="text-emerald-800 font-semibold block">Total Group Spend Plotted</span>
-            <span className="text-base font-extrabold text-emerald-950">
+          <div className="p-3 rounded-[8px] bg-[#f6f5f4] border border-[rgba(0,0,0,0.08)] text-xs space-y-0.5">
+            <span className="text-[#757575] uppercase tracking-wider text-[10px] font-semibold block">Total Group Spend Plotted</span>
+            <span className="text-base font-bold text-[#0075de]">
               {format(convertedTotal)}
             </span>
-            <p className="text-[10px] text-emerald-700 pt-0.5">
+            <p className="text-[10px] text-[#757575] pt-0.5">
               Scan to view trip breakdown on Contrey
             </p>
           </div>
@@ -104,14 +104,14 @@ export const TripShareQrModal: React.FC<TripShareQrModalProps> = ({
           <div className="flex items-center gap-2 pt-2">
             <button
               onClick={handleCopyLink}
-              className="flex-1 py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
+              className="flex-1 py-2 px-3 rounded-[8px] bg-[#f6f5f4] hover:bg-[rgba(0,0,0,0.05)] border border-[rgba(0,0,0,0.08)] text-[#000000] text-xs font-medium flex items-center justify-center gap-1.5 transition-colors"
             >
-              <Copy className="w-3.5 h-3.5" />
+              <Copy className="w-3.5 h-3.5 text-[#757575]" />
               <span>Copy URL</span>
             </button>
             <button
               onClick={handleDownloadQr}
-              className="flex-1 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md shadow-emerald-500/20 flex items-center justify-center gap-1.5 transition-all"
+              className="flex-1 py-2 px-3 rounded-[8px] bg-[#0075de] hover:bg-[#0066c0] text-[#ffffff] text-xs font-medium shadow-xs flex items-center justify-center gap-1.5 transition-colors"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Download Pass</span>

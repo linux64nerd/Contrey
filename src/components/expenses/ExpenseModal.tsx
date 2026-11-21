@@ -142,68 +142,72 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden max-h-[90vh] flex flex-col"
+        className="relative w-full max-w-lg bg-[#ffffff] rounded-[12px] shadow-[0_4px_16px_rgba(0,0,0,0.15)] border border-[rgba(0,0,0,0.08)] overflow-hidden max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-6 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-between">
+        <div className="px-6 py-4 bg-[#ffffff] border-b border-[rgba(0,0,0,0.08)] flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Receipt className="w-5 h-5" />
-            <h3 className="text-base font-bold">
-              {initialExpense ? 'Edit Expense' : 'Add New Expense'}
+            <Receipt className="w-5 h-5 text-[#0075de]" />
+            <h3 className="text-base font-bold text-[#000000]">
+              {initialExpense ? 'Edit Expense' : 'Record New Expense'}
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors"
+            className="p-1 rounded-[6px] hover:bg-[#f6f5f4] text-[#757575] hover:text-[#000000] transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Scrollable Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4 text-xs">
+        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4 text-xs font-normal">
           {/* Title & Amount */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="sm:col-span-2">
-              <label className="block font-semibold text-slate-700 mb-1">Expense Title</label>
+              <label className="block text-xs font-medium text-[#000000] mb-1">
+                Expense Title
+              </label>
               <input
                 type="text"
-                placeholder="e.g. Scuba Diving Tour, Seafood Dinner"
+                placeholder="e.g. Seafood Dinner, Surf Lessons"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                className="w-full px-3 py-2 rounded-[8px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-[#000000] text-xs focus:outline-none focus:border-[#0075de]"
                 required
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Amount</label>
-              <div className="relative">
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0.01"
-                  placeholder="0.00"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-slate-900 font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
-                  required
-                />
-              </div>
+              <label className="block text-xs font-medium text-[#000000] mb-1">
+                Amount
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                min="0.01"
+                placeholder="0.00"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="w-full px-3 py-2 rounded-[8px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-[#000000] font-bold text-xs focus:outline-none focus:border-[#0075de]"
+                required
+              />
             </div>
           </div>
 
-          {/* Currency & Category */}
+          {/* Currency & Date */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Currency</label>
+              <label className="block text-xs font-medium text-[#000000] mb-1">
+                Currency
+              </label>
               <select
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value as CurrencyCode)}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium"
+                className="w-full px-3 py-2 rounded-[8px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-[#000000] text-xs focus:outline-none focus:border-[#0075de]"
               >
                 <option value="INR">INR (₹) - Indian Rupee</option>
                 <option value="EUR">EUR (€) - Euro</option>
@@ -212,20 +216,24 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Date</label>
+              <label className="block text-xs font-medium text-[#000000] mb-1">
+                Date
+              </label>
               <input
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                className="w-full px-3 py-2 rounded-[8px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-[#000000] text-xs focus:outline-none focus:border-[#0075de]"
               />
             </div>
           </div>
 
           {/* Category Selector Chips */}
           <div>
-            <label className="block font-semibold text-slate-700 mb-1.5">Category</label>
-            <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5">
+            <label className="block text-xs font-medium text-[#000000] mb-1.5">
+              Category
+            </label>
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
               {(Object.keys(CATEGORY_CONFIG) as ExpenseCategory[]).map((cat) => {
                 const conf = CATEGORY_CONFIG[cat];
                 const Icon = conf.icon;
@@ -235,10 +243,10 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
                     key={cat}
                     type="button"
                     onClick={() => setCategory(cat)}
-                    className={`p-2 rounded-xl border flex flex-col items-center justify-center gap-1 transition-all ${
+                    className={`p-2 rounded-[8px] border flex flex-col items-center justify-center gap-1 transition-all ${
                       isSelected
-                        ? `${conf.bgClass} ${conf.colorClass} border-emerald-500 font-bold shadow-sm ring-2 ring-emerald-500/20`
-                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                        ? `${conf.bgClass} ${conf.colorClass} border-[#0075de] font-semibold ring-1 ring-[#0075de]`
+                        : 'bg-[#f6f5f4] border-[rgba(0,0,0,0.06)] text-[#615d59] hover:bg-[#ffffff]'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -251,11 +259,13 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
 
           {/* Paid By Selector */}
           <div>
-            <label className="block font-semibold text-slate-700 mb-1">Paid By (Who footed the bill?)</label>
+            <label className="block text-xs font-medium text-[#000000] mb-1">
+              Paid By
+            </label>
             <select
               value={paidById}
               onChange={(e) => setPaidById(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-slate-900 font-semibold bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+              className="w-full px-3 py-2 rounded-[8px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-[#000000] font-medium text-xs focus:outline-none focus:border-[#0075de]"
               required
             >
               {travelers.map((t) => (
@@ -269,37 +279,37 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
           {/* Split Type Selector */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="font-semibold text-slate-700">Split Method</label>
+              <label className="text-xs font-medium text-[#000000]">Split Method</label>
               {splitType === 'custom' && (
                 <button
                   type="button"
                   onClick={handleDistributeCustomEqually}
-                  className="text-[10px] font-bold text-emerald-600 hover:underline"
+                  className="text-xs text-[#0075de] hover:underline font-medium"
                 >
                   Distribute Equally
                 </button>
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
+            <div className="grid grid-cols-2 gap-2 p-1 bg-[#f6f5f4] rounded-[8px] border border-[rgba(0,0,0,0.06)]">
               <button
                 type="button"
                 onClick={() => setSplitType('equal')}
-                className={`py-1.5 rounded-lg font-semibold transition-all ${
+                className={`py-1.5 rounded-[6px] font-medium transition-all ${
                   splitType === 'equal'
-                    ? 'bg-white text-emerald-800 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-800'
+                    ? 'bg-[#ffffff] text-[#0075de] shadow-xs font-semibold'
+                    : 'text-[#757575] hover:text-[#000000]'
                 }`}
               >
-                Equal Split ({travelers.length} People)
+                Equal Split ({travelers.length})
               </button>
               <button
                 type="button"
                 onClick={() => setSplitType('custom')}
-                className={`py-1.5 rounded-lg font-semibold transition-all ${
+                className={`py-1.5 rounded-[6px] font-medium transition-all ${
                   splitType === 'custom'
-                    ? 'bg-white text-emerald-800 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-800'
+                    ? 'bg-[#ffffff] text-[#0075de] shadow-xs font-semibold'
+                    : 'text-[#757575] hover:text-[#000000]'
                 }`}
               >
                 Custom Split
@@ -309,15 +319,15 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
 
           {/* Custom Split Allocation Table */}
           {splitType === 'custom' && (
-            <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-              <div className="flex justify-between items-center text-[11px] font-semibold text-slate-600">
-                <span>Member</span>
+            <div className="p-3 rounded-[8px] bg-[#f6f5f4] border border-[rgba(0,0,0,0.08)] space-y-2">
+              <div className="flex justify-between items-center text-xs font-medium text-[#757575]">
+                <span>Traveler</span>
                 <span>Custom Share ({currency})</span>
               </div>
 
               {travelers.map((t) => (
                 <div key={t.id} className="flex items-center justify-between gap-3">
-                  <span className="text-slate-800 font-medium truncate flex-1">{t.name}</span>
+                  <span className="text-[#000000] font-normal truncate flex-1">{t.name}</span>
                   <div className="w-28">
                     <input
                       type="number"
@@ -326,17 +336,17 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
                       placeholder="0.00"
                       value={customSplits[t.id] || ''}
                       onChange={(e) => handleCustomSplitChange(t.id, e.target.value)}
-                      className="w-full px-2.5 py-1 rounded-lg border border-slate-200 text-right font-mono text-slate-900 focus:outline-none focus:border-emerald-500"
+                      className="w-full px-2.5 py-1 rounded-[6px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-right font-mono text-[#000000] focus:outline-none focus:border-[#0075de]"
                     />
                   </div>
                 </div>
               ))}
 
-              <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-[11px]">
-                <span className="font-semibold text-slate-600">Unallocated Remaining:</span>
+              <div className="pt-2 border-t border-[rgba(0,0,0,0.08)] flex items-center justify-between text-xs">
+                <span className="text-[#757575]">Unallocated Remaining:</span>
                 <span
                   className={`font-mono font-bold ${
-                    Math.abs(remainingCustom) < 0.05 ? 'text-emerald-600' : 'text-rose-600'
+                    Math.abs(remainingCustom) < 0.05 ? 'text-[#0075de]' : 'text-[#f64932]'
                   }`}
                 >
                   {remainingCustom} {currency}
@@ -347,28 +357,30 @@ export const ExpenseModal: React.FC<ExpenseModalProps> = ({
 
           {/* Notes */}
           <div>
-            <label className="block font-semibold text-slate-700 mb-1">Notes / Receipts (Optional)</label>
+            <label className="block text-xs font-medium text-[#000000] mb-1">
+              Notes / Receipt Reference (Optional)
+            </label>
             <input
               type="text"
-              placeholder="e.g. Paid online, Invoice #1024"
+              placeholder="e.g. Paid via card, Table 4"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+              className="w-full px-3 py-2 rounded-[8px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-[#000000] text-xs focus:outline-none focus:border-[#0075de]"
             />
           </div>
 
           {/* Action Buttons */}
-          <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+          <div className="pt-4 border-t border-[rgba(0,0,0,0.08)] flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold"
+              className="px-4 py-2 rounded-[8px] text-[#757575] hover:text-[#000000] font-medium"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md shadow-emerald-500/20 transition-all"
+              className="px-5 py-2 rounded-[8px] bg-[#0075de] hover:bg-[#0066c0] text-[#ffffff] font-medium shadow-xs transition-colors"
             >
               {initialExpense ? 'Save Changes' : 'Record Expense'}
             </button>

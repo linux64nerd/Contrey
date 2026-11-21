@@ -91,14 +91,14 @@ export const DashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 selection:bg-emerald-500 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-[#f6f5f4] text-[#000000] font-sans selection:bg-[#e6f3fe] selection:text-[#0075de]">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        {/* High-Priority Smart Urgency Spend Alert Banner */}
+      <main className="flex-1 max-w-[1440px] mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+        {/* Urgency Alert Callout Banner */}
         <UrgencyBanner />
 
-        {/* Trip Space Header & Switcher */}
+        {/* Trip Notebook Header & Switcher */}
         <TripSelector
           trips={trips}
           activeTrip={activeTrip}
@@ -106,35 +106,35 @@ export const DashboardPage: React.FC = () => {
           onCreateNewTrip={handleOpenCreateTrip}
         />
 
-        {/* Action Bar & Section Tabs */}
+        {/* Action Bar & Section Tabs (Notion 8px pill selector) */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-          <div className="flex p-1 bg-white rounded-2xl border border-slate-200 shadow-sm text-xs font-semibold">
+          <div className="flex p-1 bg-[#ffffff] rounded-[8px] border border-[rgba(0,0,0,0.08)] text-xs font-medium">
             <button
               onClick={() => setActiveTab('overview')}
-              className={`px-4 py-2 rounded-xl transition-all ${
+              className={`px-3 py-1.5 rounded-[6px] transition-all ${
                 activeTab === 'overview'
-                  ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-[#f6f5f4] text-[#000000] font-semibold shadow-xs'
+                  : 'text-[#757575] hover:text-[#000000]'
               }`}
             >
               Overview & Analytics
             </button>
             <button
               onClick={() => setActiveTab('expenses')}
-              className={`px-4 py-2 rounded-xl transition-all ${
+              className={`px-3 py-1.5 rounded-[6px] transition-all ${
                 activeTab === 'expenses'
-                  ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-[#f6f5f4] text-[#000000] font-semibold shadow-xs'
+                  : 'text-[#757575] hover:text-[#000000]'
               }`}
             >
-              Expenses Table ({activeTripExpenses.length})
+              Expenses ({activeTripExpenses.length})
             </button>
             <button
               onClick={() => setActiveTab('settlements')}
-              className={`px-4 py-2 rounded-xl transition-all ${
+              className={`px-3 py-1.5 rounded-[6px] transition-all ${
                 activeTab === 'settlements'
-                  ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-[#f6f5f4] text-[#000000] font-semibold shadow-xs'
+                  : 'text-[#757575] hover:text-[#000000]'
               }`}
             >
               Settlement Plan ({settlementResult.settlements.length})
@@ -144,36 +144,37 @@ export const DashboardPage: React.FC = () => {
           <div className="flex flex-wrap items-center gap-2">
             <Link
               to="/map"
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold shadow-sm transition-all"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-[8px] bg-[#ffffff] hover:bg-[#f6f5f4] border border-[rgba(0,0,0,0.1)] text-[#000000] text-xs font-medium transition-colors"
             >
-              <Compass className="w-4 h-4 text-emerald-600" />
-              <span>Travel Map</span>
+              <Compass className="w-3.5 h-3.5 text-[#0075de]" />
+              <span>Explore Map</span>
             </Link>
 
             {activeTrip && (
               <button
                 onClick={() => setIsTripShareQrOpen(true)}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold shadow-sm transition-all"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-[8px] bg-[#ffffff] hover:bg-[#f6f5f4] border border-[rgba(0,0,0,0.1)] text-[#615d59] hover:text-[#000000] text-xs font-medium transition-colors"
                 title="Generate Trip Share Pass QR"
               >
-                <Share2 className="w-4 h-4 text-slate-500" />
+                <Share2 className="w-3.5 h-3.5" />
                 <span>Share QR</span>
               </button>
             )}
 
             <button
               onClick={handleOpenEditTrip}
-              className="px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition-all"
+              className="px-3.5 py-1.5 rounded-[8px] border border-[rgba(0,0,0,0.1)] bg-[#ffffff] hover:bg-[#f6f5f4] text-[#615d59] hover:text-[#000000] text-xs font-medium transition-colors"
             >
               Edit Trip
             </button>
 
+            {/* Primary Action Button */}
             <button
               onClick={handleOpenAddExpense}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold shadow-md shadow-emerald-500/20 transition-all hover:scale-105 active:scale-95"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-[8px] bg-[#0075de] hover:bg-[#0066c0] text-[#ffffff] text-xs font-medium shadow-xs transition-colors"
             >
               <Plus className="w-4 h-4" />
-              <span>Add Expense</span>
+              <span>New Expense</span>
             </button>
           </div>
         </div>
@@ -192,19 +193,19 @@ export const DashboardPage: React.FC = () => {
 
         {/* VIEW TAB: Overview & Analytics */}
         {activeTab === 'overview' && activeTrip && (
-          <div className="space-y-8">
-            {/* 3 Recharts Visualizations */}
+          <div className="space-y-6">
+            {/* 3 Recharts Visualizations (Pure white cards, 12px radius, no shadow) */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Chart 1: Donut Category Distribution */}
               <CategoryDonutChart expenses={activeTripExpenses} />
 
-              {/* Chart 2: Paid vs Fair Share Bar Graph */}
+              {/* Chart 2: Net Balances Paid vs Fair Share */}
               <BalanceBarChart
                 balances={settlementResult.balances}
                 baseCurrency={activeTrip.baseCurrency}
               />
 
-              {/* Chart 3: Cumulative Spending Trend Plot */}
+              {/* Chart 3: Cumulative Spending Velocity Plot */}
               <SpendingTrendPlot
                 expenses={activeTripExpenses}
                 startDate={activeTrip.startDate}
@@ -214,7 +215,7 @@ export const DashboardPage: React.FC = () => {
               />
             </div>
 
-            {/* Minimum-Transaction Settlement Plan Preview */}
+            {/* Quick Settlement Summary Section */}
             <SettlementList
               settlements={settlementResult.settlements}
               travelers={activeTrip.travelers}
@@ -225,47 +226,12 @@ export const DashboardPage: React.FC = () => {
                 setActiveQrSettlement({ settlement, debtor, creditor })
               }
             />
-
-            {/* Quick Expenses Table */}
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-base font-extrabold text-slate-900">Recent Trip Expenses</h3>
-                <button
-                  onClick={() => setActiveTab('expenses')}
-                  className="text-xs font-bold text-emerald-600 hover:underline"
-                >
-                  View All ({activeTripExpenses.length}) →
-                </button>
-              </div>
-              <ExpenseTable
-                expenses={activeTripExpenses}
-                travelers={activeTrip.travelers}
-                onEditExpense={handleOpenEditExpense}
-                onDeleteExpense={deleteExpense}
-              />
-            </div>
           </div>
         )}
 
-        {/* VIEW TAB: Expenses Table Only */}
+        {/* VIEW TAB: Expenses Table */}
         {activeTab === 'expenses' && activeTrip && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-bold text-slate-900">All Logged Expenses</h3>
-                <p className="text-xs text-slate-500">
-                  Search, filter, edit, or delete any shared payment across categories.
-                </p>
-              </div>
-              <button
-                onClick={handleOpenAddExpense}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>New Expense</span>
-              </button>
-            </div>
-
             <ExpenseTable
               expenses={activeTripExpenses}
               travelers={activeTrip.travelers}
@@ -275,7 +241,7 @@ export const DashboardPage: React.FC = () => {
           </div>
         )}
 
-        {/* VIEW TAB: Settlement Plan Only */}
+        {/* VIEW TAB: Settlements */}
         {activeTab === 'settlements' && activeTrip && (
           <div className="space-y-4">
             <SettlementList
@@ -294,18 +260,16 @@ export const DashboardPage: React.FC = () => {
 
       <Footer />
 
-      {/* Trip Modal */}
-      {isTripModalOpen && (
-        <TripModal
-          isOpen={isTripModalOpen}
-          onClose={() => setIsTripModalOpen(false)}
-          onSubmit={handleTripSubmit}
-          initialTrip={editingTrip}
-        />
-      )}
+      {/* Trip Modal (Create/Edit) */}
+      <TripModal
+        isOpen={isTripModalOpen}
+        onClose={() => setIsTripModalOpen(false)}
+        onSubmit={handleTripSubmit}
+        initialTrip={editingTrip}
+      />
 
-      {/* Expense Modal */}
-      {isExpenseModalOpen && activeTrip && (
+      {/* Expense Modal (Create/Edit) */}
+      {activeTrip && (
         <ExpenseModal
           isOpen={isExpenseModalOpen}
           onClose={() => setIsExpenseModalOpen(false)}
@@ -317,7 +281,7 @@ export const DashboardPage: React.FC = () => {
         />
       )}
 
-      {/* Settlement QR Modal */}
+      {/* Individual Settlement QR Modal */}
       {activeQrSettlement && activeTrip && (
         <SettlementQrModal
           isOpen={!!activeQrSettlement}
@@ -329,8 +293,8 @@ export const DashboardPage: React.FC = () => {
         />
       )}
 
-      {/* Trip Share QR Modal */}
-      {isTripShareQrOpen && activeTrip && (
+      {/* Trip Share Pass QR Modal */}
+      {activeTrip && (
         <TripShareQrModal
           isOpen={isTripShareQrOpen}
           onClose={() => setIsTripShareQrOpen(false)}

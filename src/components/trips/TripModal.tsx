@@ -108,51 +108,55 @@ export const TripModal: React.FC<TripModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden max-h-[90vh] flex flex-col"
+        className="relative w-full max-w-xl bg-[#ffffff] rounded-[12px] shadow-[0_4px_16px_rgba(0,0,0,0.15)] border border-[rgba(0,0,0,0.08)] overflow-hidden max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-6 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-between">
+        <div className="px-6 py-4 bg-[#ffffff] border-b border-[rgba(0,0,0,0.08)] flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Plane className="w-5 h-5 -rotate-45" />
-            <h3 className="text-base font-bold">
-              {initialTrip ? 'Edit Trip Settings' : 'Create New Trip'}
+            <Plane className="w-5 h-5 text-[#0075de] -rotate-45" />
+            <h3 className="text-base font-bold text-[#000000]">
+              {initialTrip ? 'Edit Trip Notebook' : 'Create New Trip Notebook'}
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors"
+            className="p-1 rounded-[6px] hover:bg-[#f6f5f4] text-[#757575] hover:text-[#000000] transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4 text-xs">
+        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4 text-xs font-normal">
           {/* Trip Name & Destination */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Trip Name</label>
+              <label className="block text-xs font-medium text-[#000000] mb-1">
+                Trip Name
+              </label>
               <input
                 type="text"
-                placeholder="e.g. Manali Snow Expedition 🏔️"
+                placeholder="e.g. Manali Snow Expedition"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                className="w-full px-3 py-2 rounded-[8px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-[#000000] focus:outline-none focus:border-[#0075de]"
                 required
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Destination City</label>
+              <label className="block text-xs font-medium text-[#000000] mb-1">
+                Destination City
+              </label>
               <input
                 type="text"
                 placeholder="e.g. Goa, Paris, Manali, Tokyo"
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                className="w-full px-3 py-2 rounded-[8px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-[#000000] focus:outline-none focus:border-[#0075de]"
                 required
               />
             </div>
@@ -161,23 +165,27 @@ export const TripModal: React.FC<TripModalProps> = ({
           {/* Dates */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Start Date</label>
+              <label className="block text-xs font-medium text-[#000000] mb-1">
+                Start Date
+              </label>
               <input
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-slate-800 focus:outline-none focus:border-emerald-500"
+                className="w-full px-3 py-2 rounded-[8px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-[#000000] focus:outline-none focus:border-[#0075de]"
                 required
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">End Date</label>
+              <label className="block text-xs font-medium text-[#000000] mb-1">
+                End Date
+              </label>
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-slate-800 focus:outline-none focus:border-emerald-500"
+                className="w-full px-3 py-2 rounded-[8px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-[#000000] focus:outline-none focus:border-[#0075de]"
                 required
               />
             </div>
@@ -186,24 +194,28 @@ export const TripModal: React.FC<TripModalProps> = ({
           {/* Budget & Currency */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Total Trip Budget</label>
+              <label className="block text-xs font-medium text-[#000000] mb-1">
+                Total Trip Budget
+              </label>
               <input
                 type="number"
                 min="1"
                 placeholder="e.g. 50000"
                 value={totalBudget}
                 onChange={(e) => setTotalBudget(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-slate-900 font-bold focus:outline-none focus:border-emerald-500"
+                className="w-full px-3 py-2 rounded-[8px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-[#000000] font-bold focus:outline-none focus:border-[#0075de]"
                 required
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Base Currency</label>
+              <label className="block text-xs font-medium text-[#000000] mb-1">
+                Base Currency
+              </label>
               <select
                 value={baseCurrency}
                 onChange={(e) => setBaseCurrency(e.target.value as CurrencyCode)}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-slate-800 bg-white font-medium focus:outline-none focus:border-emerald-500"
+                className="w-full px-3 py-2 rounded-[8px] bg-[#ffffff] border border-[rgba(0,0,0,0.12)] text-[#000000] focus:outline-none focus:border-[#0075de]"
               >
                 <option value="INR">INR (₹) - Indian Rupee</option>
                 <option value="EUR">EUR (€) - Euro</option>
@@ -215,14 +227,14 @@ export const TripModal: React.FC<TripModalProps> = ({
           {/* Travelers Roster Editor */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="font-semibold text-slate-800 flex items-center gap-1.5">
-                <Users className="w-3.5 h-3.5 text-emerald-600" />
+              <label className="text-xs font-medium text-[#000000] flex items-center gap-1.5">
+                <Users className="w-3.5 h-3.5 text-[#0075de]" />
                 <span>Travelers List ({travelers.length})</span>
               </label>
               <button
                 type="button"
                 onClick={handleAddTraveler}
-                className="text-[11px] font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 px-2 py-1 rounded bg-emerald-50"
+                className="text-xs font-medium text-[#0075de] hover:underline flex items-center gap-1 px-2 py-0.5 rounded-[6px] bg-[#e6f3fe]"
               >
                 <Plus className="w-3 h-3" /> Add Traveler
               </button>
@@ -232,7 +244,7 @@ export const TripModal: React.FC<TripModalProps> = ({
               {travelers.map((traveler) => (
                 <div
                   key={traveler.id}
-                  className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 grid grid-cols-1 sm:grid-cols-12 gap-2 items-center"
+                  className="p-2.5 rounded-[8px] bg-[#f6f5f4] border border-[rgba(0,0,0,0.08)] grid grid-cols-1 sm:grid-cols-12 gap-2 items-center"
                 >
                   <div className="sm:col-span-4">
                     <input
@@ -240,7 +252,7 @@ export const TripModal: React.FC<TripModalProps> = ({
                       placeholder="Name"
                       value={traveler.name}
                       onChange={(e) => handleUpdateTraveler(traveler.id, 'name', e.target.value)}
-                      className="w-full px-2 py-1 rounded-lg border border-slate-200 text-slate-900 font-semibold focus:outline-none focus:border-emerald-500"
+                      className="w-full px-2.5 py-1 rounded-[6px] bg-[#ffffff] border border-[rgba(0,0,0,0.1)] text-[#000000] focus:outline-none focus:border-[#0075de]"
                       required
                     />
                   </div>
@@ -248,10 +260,10 @@ export const TripModal: React.FC<TripModalProps> = ({
                   <div className="sm:col-span-4">
                     <input
                       type="tel"
-                      placeholder="WhatsApp (+91...)"
+                      placeholder="Phone (+91...)"
                       value={traveler.phone}
                       onChange={(e) => handleUpdateTraveler(traveler.id, 'phone', e.target.value)}
-                      className="w-full px-2 py-1 rounded-lg border border-slate-200 text-slate-900 focus:outline-none focus:border-emerald-500"
+                      className="w-full px-2.5 py-1 rounded-[6px] bg-[#ffffff] border border-[rgba(0,0,0,0.1)] text-[#000000] focus:outline-none focus:border-[#0075de]"
                     />
                   </div>
 
@@ -261,16 +273,16 @@ export const TripModal: React.FC<TripModalProps> = ({
                       placeholder="UPI ID (optional)"
                       value={traveler.upiId || ''}
                       onChange={(e) => handleUpdateTraveler(traveler.id, 'upiId', e.target.value)}
-                      className="w-full px-2 py-1 rounded-lg border border-slate-200 text-slate-900 font-mono text-[11px] focus:outline-none focus:border-emerald-500"
+                      className="w-full px-2.5 py-1 rounded-[6px] bg-[#ffffff] border border-[rgba(0,0,0,0.1)] text-[#000000] focus:outline-none focus:border-[#0075de]"
                     />
                   </div>
 
-                  <div className="sm:col-span-1 text-center">
+                  <div className="sm:col-span-1 text-right">
                     <button
                       type="button"
                       onClick={() => handleRemoveTraveler(traveler.id)}
-                      className="p-1 rounded text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
-                      title="Remove"
+                      className="p-1 rounded-[6px] text-[#757575] hover:text-[#f64932] transition-colors"
+                      title="Remove traveler"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -281,19 +293,19 @@ export const TripModal: React.FC<TripModalProps> = ({
           </div>
 
           {/* Action Buttons */}
-          <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+          <div className="pt-4 border-t border-[rgba(0,0,0,0.08)] flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold"
+              className="px-4 py-2 rounded-[8px] text-[#757575] hover:text-[#000000] font-medium"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md shadow-emerald-500/20 transition-all"
+              className="px-5 py-2 rounded-[8px] bg-[#0075de] hover:bg-[#0066c0] text-[#ffffff] font-medium shadow-xs transition-colors"
             >
-              {initialTrip ? 'Save Trip' : 'Create Trip'}
+              {initialTrip ? 'Save Changes' : 'Create Notebook'}
             </button>
           </div>
         </form>
